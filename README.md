@@ -9,3 +9,18 @@ This project is made with educating purpose and have no intention to be used as 
 |**1753027**|Lê Đặng Hoàng Ân|1753027@student.hcmus.edu.vn|
 |**1753045**|Lữ Anh Duy|1753045@student.hcmus.edu.vn|
 |**1753046**|Nguyễn Đăng Duy|1753046@student.hcmus.edu.vn|
+
+## Project Overview
+**Course** 
+```
+CSC13009 - Phát triển phần mềm cho thiết bị di động
+```
+**Lecturer**
+```
+Hồ Tuấn Thanh
+Trương Toàn Thịnh
+Nguyễn Lê Hoàng Dũng
+```
+
+## References
+**Trello**: https://trello.com/b/NKBZXKJp
