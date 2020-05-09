@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CardFlipper</string>
+    <string name="play_game">Play game</string>
+    <string name="card_flipper">Card Flipper</string>
+    <string name="exit">Exit</string>
+    <string name="normal">Normal</string>
+    <string name="hard">Hard</string>
+    <string name="easy">Easy</string>
+
+    <string name="choose_difficulty">Choose Difficulty</string>
+    <string name="scores_0">Scores: 0</string>
+
+</resources>
