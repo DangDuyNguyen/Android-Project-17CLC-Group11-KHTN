@@ -1,10 +1,15 @@
 package com.example.cardflipper;
 
+import android.provider.ContactsContract;
+
+import java.util.ArrayList;
+
 public class Card {
     int ImgDown;
     int ImgUp;
 
-    public Card(int imgDown, int imgUp) {
+
+    public Card(int imgDown,int imgUp) {
         ImgDown = R.drawable.card_down;
         ImgUp = imgUp;
     }
@@ -17,10 +22,5 @@ public class Card {
 
     public int DownCard(){
         return ImgDown;
-    }
-
-    public static Boolean checkCard(Card a, Card b)
-    {
-        return a.FlipCard() == b.FlipCard();
     }
 }

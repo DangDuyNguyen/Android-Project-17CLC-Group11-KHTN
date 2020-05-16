@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#0A1B75">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="40sp"
+        android:fontFamily="sans-serif-condensed"
+        android:textStyle="bold"
+        android:textColor="#ffff"
+        android:text="@string/setting"
+        android:gravity="center">
+    </TextView>
+
+    <Button
+        android:id="@+id/settingSoundButton"
+        android:layout_marginTop="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed"
+        android:textStyle="bold"
+        android:textColor="#ffff"
+        android:text="@string/soundOn"
+        android:background="@drawable/custom_button"
+        android:textSize="25sp">
+    </Button>
+
+    <Button
+        android:id="@+id/settingreturnToMenuButton"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-condensed"
+        android:textStyle="bold"
+        android:textColor="#ffff"
+        android:text="@string/returntomenu"
+        android:background="@drawable/custom_button"
+        android:textSize="25sp">
+    </Button>
+</LinearLayout>
+</FrameLayout>

@@ -8,15 +8,19 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CardAdapter extends BaseAdapter {
     private Context context;
     private List<Card> deck;
+    private static ArrayList<Boolean> itemClickable = new ArrayList<Boolean>();
 
     public CardAdapter(Context context, List<Card> deck) {
         this.context = context;
         this.deck = deck;
+        for (int i = 0; i < this.deck.size();i++)
+            itemClickable.add(true);
     }
 
     @Override
@@ -37,6 +41,26 @@ public class CardAdapter extends BaseAdapter {
     private class ViewHolder{
         ImageView img;
     }
+
+    @Override
+    public boolean areAllItemsEnabled() {
+        if (itemClickable.contains(true))
+            return false;
+        else return true;
+    }
+
+
+    @Override
+    public boolean isEnabled(int position) {
+        return itemClickable.get(position);
+    }
+
+    public void setItemClickable(int position,Boolean typeValue){
+        itemClickable.add (position,typeValue);
+    }
+
+
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder viewHolder;

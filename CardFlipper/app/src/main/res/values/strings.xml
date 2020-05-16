@@ -10,5 +10,9 @@
 
     <string name="choose_difficulty">Choose Difficulty</string>
     <string name="scores_0">Scores: 0</string>
+    <string name="setting">Setting</string>
+    <string name="returntomenu">Return to MENU</string>
+    <string name="soundOn">Sound: On</string>
+    <string name="play_again">Play Again</string>
 
 </resources>

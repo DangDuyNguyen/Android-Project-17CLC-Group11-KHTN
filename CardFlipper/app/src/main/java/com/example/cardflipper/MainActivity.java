@@ -14,19 +14,42 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     GameSystem sys;
-    Button button;
+    Button playButton;
+    ImageButton soundButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);//will hide the title
         getSupportActionBar().hide(); //hide the title bar
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        sys = new GameSystem(MainActivity.this,new Audio((ImageButton) findViewById(R.id.SoundButton),getApplicationContext()));
-        button =  (Button) findViewById(R.id.PlayButton);
-        button.setOnClickListener(new View.OnClickListener() {
+        sys = new GameSystem(MainActivity.this,new Audio(getApplicationContext(),R.raw.background));
+        setupComponent();
+    }
+
+    private void setupComponent()
+    {
+        playButton =  (Button) findViewById(R.id.PlayButton);
+        playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               sys.showDifficultyDialog();
+                sys.showDifficultyDialog();
+            }
+        });
+
+        soundButton = (ImageButton) findViewById(R.id.SoundButton);
+        soundButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (sys.audio.isPlaying())
+                {
+                    soundButton.setImageResource(R.drawable.sound_off);
+                    sys.audio.TurnOffSound();
+                }
+                else
+                {
+                    soundButton.setImageResource(R.drawable.sound_on);
+                    sys.audio.TurnOnSound();
+                }
             }
         });
     }

@@ -3,39 +3,39 @@ package com.example.cardflipper;
 import android.content.ComponentName;
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ImageButton;
 
-public class Audio {
+public class Audio extends AsyncTask<Void,Void,Void> {
     private Context context;
-    private ImageButton button;
     private MediaPlayer media;
 
-    public Audio(ImageButton button,  Context context) {
-        this.button = button;
+    public Audio(Context context, int music) {
         this.context = context;
-        media = MediaPlayer.create(context.getApplicationContext(), R.raw.background);
-        media.setLooping(true);
-        media.start();
-        if (media.isPlaying())
-            button.setImageResource(R.drawable.sound_on);
-        else button.setImageResource(R.drawable.sound_off);
-        this.button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (media.isPlaying()) TurnOffSound();
-                else TurnOnSound();
-            }
-        });
+        media = MediaPlayer.create(context.getApplicationContext(), music);
+        if (music == R.raw.background)
+            media.setLooping(true);
+        else media.setLooping(false);
     }
 
     public void TurnOffSound() {
             media.pause();
-            button.setImageResource(R.drawable.sound_off);
     }
 
     public void TurnOnSound() {
             media.start();
-            button.setImageResource(R.drawable.sound_on);
+    }
+
+    public boolean isPlaying()
+    {
+        return media.isPlaying();
+    }
+
+
+    @Override
+    protected Void doInBackground(Void... voids) {
+        TurnOnSound();
+        return null;
     }
 }
