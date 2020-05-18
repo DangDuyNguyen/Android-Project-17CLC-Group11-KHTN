@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentGame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pink"
+    android:orientation="vertical"
+    tools:context=".GameFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="50dp"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginRight="100dp"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/animalcrossbtn"
+                android:layout_width="100dp"
+                android:layout_height="101dp"
+                android:layout_weight="1"
+                android:background="#00FFFFFF"
+                android:scaleType="fitXY"
+                android:layout_gravity="center"
+                android:src="@drawable/animal_crossing_icon" />
+
+            <TextView
+                android:id="@+id/animalcrossTxtview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:textSize="17sp"
+                android:text="Animal Racing" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/snakebtn"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:background="#00FFFFFF"
+                android:scaleType="fitXY"
+                android:layout_gravity="center"
+                android:src="@drawable/snake_icon" />
+
+            <TextView
+                android:id="@+id/snakeTxtview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:textSize="17sp"
+                android:layout_gravity="center"
+                android:text="Snake!" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginRight="100dp"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/cardflipbtn"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:background="#00FFFFFF"
+                android:scaleType="fitXY"
+                android:layout_gravity="center"
+                android:src="@drawable/card_flipper_icon" />
+
+            <TextView
+                android:id="@+id/cardflipTxtview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:textSize="17sp"
+                android:layout_gravity="center"
+                android:text="Card Flipper" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageButton
+                android:id="@+id/sudokubtn"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:background="#00FFFFFF"
+                android:scaleType="fitXY"
+                android:layout_gravity="center"
+                android:src="@drawable/sudoku_icon" />
+
+            <TextView
+                android:id="@+id/sudokuTxtview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginTop="10dp"
+                android:textSize="17sp"
+                android:layout_gravity="center"
+                android:text="Sudoku" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
