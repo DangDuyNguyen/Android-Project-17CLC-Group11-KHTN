@@ -47,7 +47,7 @@
             android:icon="@drawable/cart_icon" />
     </com.google.android.material.tabs.TabLayout>
 
-    <androidx.viewpager.widget.ViewPager
+    <com.ndduy.gamecollection2020.MyViewPager
         android:id="@+id/viewpager"
         android:layout_width="match_parent"
         android:layout_height="0dp"

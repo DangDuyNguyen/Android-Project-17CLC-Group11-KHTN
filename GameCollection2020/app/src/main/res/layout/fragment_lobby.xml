@@ -92,43 +92,94 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="25dp"
-        android:tooltipText="100%"
         />
 
     <Button
         android:id="@+id/bathroom_status"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:background="@drawable/yellow_bathroom_status_button"
+        android:background="@drawable/green_bathroom_status_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/hungry_status"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="25dp"
-        android:tooltipText="100%"
         />
 
     <Button
         android:id="@+id/sleepy_status"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:background="@drawable/red_sleepy_status_button"
+        android:background="@drawable/green_sleepy_status_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/bathroom_status"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="25dp"
-        android:tooltipText="100%"
         />
 
     <Button
         android:id="@+id/mood_status"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:background="@drawable/yellow_mood_status_button"
+        android:background="@drawable/green_mood_status_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/sleepy_status"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="25dp"
-        android:tooltipText="100%"
+        />
+
+    <TextView
+        android:id="@+id/hungry_stat"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="100%"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/hungry_status"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginLeft="25dp"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:id="@+id/flatter_stat"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="100%"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/bathroom_status"
+        app:layout_constraintLeft_toRightOf="@id/hungry_stat"
+        android:layout_marginLeft="25dp"
+        android:layout_marginBottom="10dp"
+        />
+
+    <TextView
+        android:id="@+id/sleepy_stat"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="100%"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/sleepy_status"
+        app:layout_constraintLeft_toRightOf="@id/flatter_stat"
+        android:layout_marginLeft="25dp"
+        android:layout_marginBottom="10dp"
+        />
+
+    <TextView
+        android:id="@+id/mood_stat"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:text="100%"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toTopOf="@id/mood_status"
+        app:layout_constraintLeft_toRightOf="@id/sleepy_stat"
+        android:layout_marginLeft="25dp"
+        android:layout_marginBottom="10dp"
         />
 
 
