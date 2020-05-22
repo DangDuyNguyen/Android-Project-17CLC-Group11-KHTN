@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_layout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <com.example.project.ui.SudokuBoard
+            android:id="@+id/sudoku_board"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:keepScreenOn="true" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/timing_clock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#77333333"
+        android:textColor="#FFFFFFFF" />
+
+</RelativeLayout>
