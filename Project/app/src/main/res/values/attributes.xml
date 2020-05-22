@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SudokuBoard">
+        <attr name="lineColor" format="color" />
+        <attr name="boxLineColor" format="color" />
+        <attr name="textColor" format="color" />
+        <attr name="textColorReadOnly" format="color" />
+        <attr name="color" format="color" />
+        <attr name="colorSecondary" format="color" />
+        <attr name="colorReadOnly" format="color" />
+        <attr name="colorTouched" format="color" />
+        <attr name="colorSelected" format="color" />
+        <attr name="colorHighlighted" format="color" />
+    </declare-styleable>
+</resources>
