@@ -49,6 +49,7 @@ public class GameSystem  {
                 Intent intent = new Intent(context,GameActivity.class);
                 intent.putExtra("difficult",4);
                 intent.putIntegerArrayListExtra("deck",deck);
+                intent.putExtra("new_game",true);
                 audio.TurnOffSound();
                 context.startActivity(intent);
             }
@@ -58,8 +59,9 @@ public class GameSystem  {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context,GameActivity.class);
-                intent.putExtra("difficult",8);
+                intent.putExtra("difficult",6);
                 intent.putIntegerArrayListExtra("deck",deck);
+                intent.putExtra("new_game",true);
                 audio.TurnOffSound();
                 context.startActivity(intent);
             }
@@ -69,8 +71,9 @@ public class GameSystem  {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context,GameActivity.class);
-                intent.putExtra("difficult",12);
+                intent.putExtra("difficult",8);
                 intent.putIntegerArrayListExtra("deck",deck);
+                intent.putExtra("new_game",true);
                 audio.TurnOffSound();
                 context.startActivity(intent);
             }

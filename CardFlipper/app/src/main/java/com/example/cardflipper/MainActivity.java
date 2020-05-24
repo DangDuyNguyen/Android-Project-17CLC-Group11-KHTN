@@ -3,7 +3,10 @@ package com.example.cardflipper;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -12,10 +15,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
     GameSystem sys;
     Button playButton;
     ImageButton soundButton;
+    Boolean isSaved;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);//will hide the title
@@ -36,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
         soundButton = (ImageButton) findViewById(R.id.SoundButton);
         soundButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,5 +61,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 }
