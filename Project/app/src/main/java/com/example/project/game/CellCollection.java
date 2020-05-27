@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 public class CellCollection {
     public static final int SIZE = 9;
@@ -177,54 +176,6 @@ public class CellCollection {
         }
 
         return valsUsed;
-    }
-
-    public static CellCollection loadGame(String data) {
-        String[] lines = data.split("\n");
-        if (lines.length == 0)
-            throw new IllegalArgumentException("Cannot load game Sudoku: error data input.");
-
-        String line = lines[0];
-        if (line.startsWith("Sudoku data:"))
-            return loadString(lines[1]);
-        else throw new IllegalArgumentException("Cannot load game Sudoku: error data input.");
-    }
-
-    public static CellCollection loadString(String data) {
-        Cell[][] cells = new Cell[SIZE][SIZE];
-        String[] vals = data.split("|");
-        int num = 0;
-
-        for (int i = 0; i < CellCollection.SIZE; i++) {
-            for (int j = 0; j < CellCollection.SIZE; j++) {
-                StringTokenizer val = new StringTokenizer(vals[num]);
-                Cell cell = new Cell();
-                cell.setValue(Integer.parseInt(val.nextToken()));
-                cell.setEditable(Boolean.parseBoolean(val.nextToken()));
-                cells[i][j] = cell;
-                num++;
-            }
-        }
-
-        return new CellCollection(cells);
-    }
-
-    public String saveGame() {
-        StringBuilder data = new StringBuilder();
-        saveGame(data);
-        return data.toString();
-    }
-
-    public void saveGame(StringBuilder data) {
-        data.append("Sudoku data: ");
-        data.append("\n");
-
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                Cell cell = mCells[i][j];
-                cell.saveGame(data);
-            }
-        }
     }
 
     public void addOnChangeListener(OnChangeListener listener) {

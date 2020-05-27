@@ -14,8 +14,6 @@ import com.example.project.game.Cell;
 import com.example.project.game.CellCollection;
 import com.example.project.R;
 
-import java.util.Collection;
-
 public class SudokuBoard extends View {
     public static final int DEFAULT_BOARD_SIZE = 100;
     private static final int NONE_COLOR = 0;

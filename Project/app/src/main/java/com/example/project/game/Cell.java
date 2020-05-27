@@ -1,7 +1,5 @@
 package com.example.project.game;
 
-import java.util.StringTokenizer;
-
 public class Cell {
     private CellCollection mCollection;
     private final Object mCollectionLock = new Object();
@@ -101,17 +99,6 @@ public class Cell {
     public void setValid(Boolean validProp) {
         mValid = validProp;
         onChange();
-    }
-
-    public void saveGame(StringBuilder data) {
-        data.append(mValue).append(" ");
-        data.append(mEditable ? "1" : "0").append("|");
-    }
-
-    public String saveGame() {
-        StringBuilder data = new StringBuilder();
-        saveGame(data);
-        return data.toString();
     }
 
     private void onChange() {
