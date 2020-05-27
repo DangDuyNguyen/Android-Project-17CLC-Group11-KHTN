@@ -33,6 +33,7 @@ public class GameActivity extends AppCompatActivity {
     GridView table;
     Animation anim;
     TextView scores;
+    ArrayList<Integer> Deck;
     Audio wrong, correct;
     ArrayList<Card> deck;
     ArrayList<Integer> diff;
@@ -58,7 +59,7 @@ public class GameActivity extends AppCompatActivity {
         intent = getIntent();
         diff = new ArrayList<>();
         diff.add(intent.getIntExtra("difficult", 8));
-        ArrayList<Integer> Deck = intent.getIntegerArrayListExtra("deck");
+        Deck = intent.getIntegerArrayListExtra("deck");
         setUpComponent();
         setUpComponentListener();
         new BackgroundJob().execute(diff, Deck);
@@ -107,13 +108,14 @@ public class GameActivity extends AppCompatActivity {
         settingButton = (ImageView) findViewById(R.id.settingButton);
         correct = new Audio(GameActivity.this, R.raw.correct);
         wrong = new Audio(GameActivity.this, R.raw.wrong);
+
     }
 
 
     private void checkState() {
         if (adapter.areAllItemsEnabled()) {
 
-            Dialog win = new Dialog(GameActivity.this);
+            final Dialog win = new Dialog(GameActivity.this);
             win.requestWindowFeature(Window.FEATURE_NO_TITLE);
             win.setContentView(R.layout.custom_endgame_dialog);
 
@@ -133,8 +135,10 @@ public class GameActivity extends AppCompatActivity {
             playAgain.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent inten = new Intent(GameActivity.this, GameActivity.class);
-                    startActivity(inten);
+                    new BackgroundJob().execute(diff,Deck);
+                    player_score = 0;
+                    scores.setText("Scores: "+ player_score);
+                    win.dismiss();
                 }
             });
             result.setText("Your score: " + player_score);
