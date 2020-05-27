@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.example.project.game.SudokuGame;
 import com.example.project.game.Cell;
 import com.example.project.game.CellCollection;
 import com.example.project.R;
@@ -27,6 +28,8 @@ public class SudokuBoard extends View {
     private boolean mReadOnly = false;
     private boolean mHighlightWrongVals = true;
     private boolean mHighlightTouchedCell = true;
+
+    private SudokuGame mSudokuGame;
 
     public SudokuBoard(Context context) {
         super(context);

@@ -7,16 +7,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
-import org.moire.opensudoku.game.command.AbstractCommand;
-import org.moire.opensudoku.game.command.ClearAllNotesCommand;
-import org.moire.opensudoku.game.command.CommandStack;
-import org.moire.opensudoku.game.command.EditCellNoteCommand;
-import org.moire.opensudoku.game.command.FillInNotesCommand;
-import org.moire.opensudoku.game.command.SetCellValueAndRemoveNotesCommand;
-import org.moire.opensudoku.game.command.SetCellValueCommand;
-
 public class SudokuGame {
-
     public static final int GAME_STATE_PLAYING = 0;
     public static final int GAME_STATE_NOT_STARTED = 1;
     public static final int GAME_STATE_COMPLETED = 2;
@@ -26,21 +17,19 @@ public class SudokuGame {
     private int mState;
     private long mTime;
     private long mLastPlayed;
-    private String mNote;
+    private long mScore;
     private CellCollection mCells;
     private SudokuSolver mSolver;
-    private boolean mUsedSolver = false;
-    private boolean mRemoveNotesOnEntry = false;
+    private boolean mSolved = false;
 
     private OnPuzzleSolvedListener mOnPuzzleSolvedListener;
-    private CommandStack mCommandStack;
-    // Time when current activity has become active.
-    private long mActiveFromTime = -1;
+    private ActionStack mStack;
+
+    private long mStartTime = -1;
 
     public static SudokuGame createEmptyGame() {
         SudokuGame game = new SudokuGame();
-        game.setCells(CellCollection.createEmpty());
-        // set creation time
+        game.setCells(CellCollection.initBoardEmpty());
         game.setCreated(System.currentTimeMillis());
         return game;
     }
@@ -49,45 +38,12 @@ public class SudokuGame {
         mTime = 0;
         mLastPlayed = 0;
         mCreated = 0;
-
+        mScore = 0;
         mState = GAME_STATE_NOT_STARTED;
     }
 
-    public void saveState(Bundle outState) {
-        outState.putLong("id", mId);
-        outState.putString("note", mNote);
-        outState.putLong("created", mCreated);
-        outState.putInt("state", mState);
-        outState.putLong("time", mTime);
-        outState.putLong("lastPlayed", mLastPlayed);
-        outState.putString("cells", mCells.serialize());
-        outState.putString("command_stack", mCommandStack.serialize());
-    }
-
-    public void restoreState(Bundle inState) {
-        mId = inState.getLong("id");
-        mNote = inState.getString("note");
-        mCreated = inState.getLong("created");
-        mState = inState.getInt("state");
-        mTime = inState.getLong("time");
-        mLastPlayed = inState.getLong("lastPlayed");
-        mCells = CellCollection.deserialize(inState.getString("cells"));
-        mCommandStack = CommandStack.deserialize(inState.getString("command_stack"), mCells);
-
-        validate();
-    }
-
-
     public void setOnPuzzleSolvedListener(OnPuzzleSolvedListener l) {
         mOnPuzzleSolvedListener = l;
-    }
-
-    public void setNote(String note) {
-        mNote = note;
-    }
-
-    public String getNote() {
-        return mNote;
     }
 
     public void setCreated(long created) {
@@ -106,23 +62,13 @@ public class SudokuGame {
         return mState;
     }
 
-    /**
-     * Sets time of play in milliseconds.
-     *
-     * @param time
-     */
     public void setTime(long time) {
         mTime = time;
     }
 
-    /**
-     * Gets time of game-play in milliseconds.
-     *
-     * @return
-     */
     public long getTime() {
-        if (mActiveFromTime != -1) {
-            return mTime + SystemClock.uptimeMillis() - mActiveFromTime;
+        if (mStartTime != -1) {
+            return mTime + SystemClock.uptimeMillis() - mStartTime;
         } else {
             return mTime;
         }
@@ -139,7 +85,7 @@ public class SudokuGame {
     public void setCells(CellCollection cells) {
         mCells = cells;
         validate();
-        mCommandStack = new CommandStack(mCells);
+        mStack = new ActionStack(mCells);
     }
 
     public CellCollection getCells() {
@@ -154,39 +100,22 @@ public class SudokuGame {
         return mId;
     }
 
-    public void setCommandStack(CommandStack commandStack) {
-        mCommandStack = commandStack;
+    public void setActionStack(ActionStack actionStack) {
+        mStack = actionStack;
     }
 
-    public CommandStack getCommandStack() {
-        return mCommandStack;
+    public ActionStack getActionStack() {
+        return mStack;
     }
 
-    public void setRemoveNotesOnEntry(boolean removeNotesOnEntry) {
-        mRemoveNotesOnEntry = removeNotesOnEntry;
-    }
-
-    /**
-     * Sets value for the given cell. 0 means empty cell.
-     *
-     * @param cell
-     * @param value
-     */
     public void setCellValue(Cell cell, int value) {
-        if (cell == null) {
+        if (cell == null)
             throw new IllegalArgumentException("Cell cannot be null.");
-        }
-        if (value < 0 || value > 9) {
-            throw new IllegalArgumentException("Value must be between 0-9.");
-        }
+        if (value < 0 || value > 9)
+            throw new IllegalArgumentException("Value must be between 0 - 9");
 
         if (cell.isEditable()) {
-            if (mRemoveNotesOnEntry) {
-                executeCommand(new SetCellValueAndRemoveNotesCommand(cell, value));
-            } else {
-                executeCommand(new SetCellValueCommand(cell, value));
-            }
-
+            executeCommand(new SetCellValueAction(cell, value));
             validate();
             if (isCompleted()) {
                 finish();
@@ -197,89 +126,40 @@ public class SudokuGame {
         }
     }
 
-    /**
-     * Sets note attached to the given cell.
-     *
-     * @param cell
-     * @param note
-     */
-    public void setCellNote(Cell cell, CellNote note) {
-        if (cell == null) {
-            throw new IllegalArgumentException("Cell cannot be null.");
-        }
-        if (note == null) {
-            throw new IllegalArgumentException("Note cannot be null.");
-        }
-
-        if (cell.isEditable()) {
-            executeCommand(new EditCellNoteCommand(cell, note));
-        }
+    private void executeCommand(Action action) {
+        mStack.execute(action);
     }
 
-    private void executeCommand(AbstractCommand c) {
-        mCommandStack.execute(c);
+    public void undoAction() {
+        mStack.undo();
     }
 
-    /**
-     * Undo last command.
-     */
-    public void undo() {
-        mCommandStack.undo();
-    }
-
-    public boolean hasSomethingToUndo() {
-        return mCommandStack.hasSomethingToUndo();
-    }
-
-    public void setUndoCheckpoint() {
-        mCommandStack.setCheckpoint();
-    }
-
-    public void undoToCheckpoint() {
-        mCommandStack.undoToCheckpoint();
-    }
-
-    public boolean hasUndoCheckpoint() {
-        return mCommandStack.hasCheckpoint();
-    }
-
-    public void undoToBeforeMistake() {
-        mCommandStack.undoToSolvableState();
+    public void undoPreviousState() {
+        mStack.undoSolvableState();
     }
 
     @Nullable
     public Cell getLastChangedCell() {
-        return mCommandStack.getLastChangedCell();
+        return mStack.getLastChangedCell();
     }
 
-    /**
-     * Start game-play.
-     */
     public void start() {
         mState = GAME_STATE_PLAYING;
         resume();
     }
 
     public void resume() {
-        // reset time we have spent playing so far, so time when activity was not active
-        // will not be part of the game play time
-        mActiveFromTime = SystemClock.uptimeMillis();
+        mStartTime = SystemClock.uptimeMillis();
     }
 
-    /**
-     * Pauses game-play (for example if activity pauses).
-     */
     public void pause() {
         // save time we have spent playing so far - it will be reseted after resuming
-        mTime += SystemClock.uptimeMillis() - mActiveFromTime;
-        mActiveFromTime = -1;
+        mTime += SystemClock.uptimeMillis() - mStartTime;
+        mStartTime = -1;
 
         setLastPlayed(System.currentTimeMillis());
     }
 
-    /**
-     * Checks if a solution to the puzzle exists
-     */
     public boolean isSolvable () {
         mSolver = new SudokuSolver();
         mSolver.setPuzzle(mCells);
@@ -287,11 +167,8 @@ public class SudokuGame {
         return !finalValues.isEmpty();
     }
 
-    /**
-     * Solves puzzle from original state
-     */
     public void solve() {
-        mUsedSolver = true;
+        mSolved = true;
         mSolver = new SudokuSolver();
         mSolver.setPuzzle(mCells);
         ArrayList<int[]> finalValues = mSolver.solve();
@@ -304,20 +181,17 @@ public class SudokuGame {
         }
     }
 
-    public boolean usedSolver() {
-        return mUsedSolver;
+    public boolean isSolved() {
+        return mSolved;
     }
 
-    /**
-     * Solves puzzle and fills in correct value for selected cell
-     */
     public void solveCell(Cell cell) {
         mSolver = new SudokuSolver();
         mSolver.setPuzzle(mCells);
         ArrayList<int[]> finalValues = mSolver.solve();
 
-        int row = cell.getRowIndex();
-        int col = cell.getColumnIndex();
+        int row = cell.getRow();
+        int col = cell.getColumn();
         for (int[] rowColVal : finalValues) {
             if (rowColVal[0] == row && rowColVal[1] == col) {
                 int val = rowColVal[2];
@@ -326,54 +200,30 @@ public class SudokuGame {
         }
     }
 
-    /**
-     * Finishes game-play. Called when puzzle is solved.
-     */
     private void finish() {
         pause();
         mState = GAME_STATE_COMPLETED;
     }
 
-    /**
-     * Resets game.
-     */
     public void reset() {
-        for (int r = 0; r < CellCollection.SUDOKU_SIZE; r++) {
-            for (int c = 0; c < CellCollection.SUDOKU_SIZE; c++) {
+        for (int r = 0; r < CellCollection.SIZE; r++) {
+            for (int c = 0; c < CellCollection.SIZE; c++) {
                 Cell cell = mCells.getCell(r, c);
                 if (cell.isEditable()) {
                     cell.setValue(0);
-                    cell.setNote(new CellNote());
                 }
             }
         }
-        mCommandStack = new CommandStack(mCells);
+        mStack = new ActionStack(mCells);
         validate();
         setTime(0);
         setLastPlayed(0);
         mState = GAME_STATE_NOT_STARTED;
-        mUsedSolver = false;
+        mSolved = false;
     }
 
-    /**
-     * Returns true, if puzzle is solved. In order to know the current state, you have to
-     * call validate first.
-     *
-     * @return
-     */
     public boolean isCompleted() {
         return mCells.isCompleted();
-    }
-
-    public void clearAllNotes() {
-        executeCommand(new ClearAllNotesCommand());
-    }
-
-    /**
-     * Fills in possible values which can be entered in each cell.
-     */
-    public void fillInNotes() {
-        executeCommand(new FillInNotesCommand());
     }
 
     public void validate() {
@@ -381,11 +231,6 @@ public class SudokuGame {
     }
 
     public interface OnPuzzleSolvedListener {
-        /**
-         * Occurs when puzzle is solved.
-         *
-         * @return
-         */
         void onPuzzleSolved();
     }
 }

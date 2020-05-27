@@ -4,7 +4,7 @@ import com.example.project.game.Cell;
 
 import java.util.StringTokenizer;
 
-public class SetCellValueAction extends EditCellAction {
+public class SetCellValueAction extends EditACellAction {
     private int mValue;
     private int mOldValue;
 
@@ -13,20 +13,19 @@ public class SetCellValueAction extends EditCellAction {
         mValue = value;
     }
 
-    SetCellValueCommand() {
-    }
+    SetCellValueAction() { }
 
     @Override
-    public void serialize(StringBuilder data) {
-        super.serialize(data);
+    public void setAction(StringBuilder data) {
+        super.setAction(data);
 
         data.append(mValue).append("|");
         data.append(mOldValue).append("|");
     }
 
     @Override
-    protected void _deserialize(StringTokenizer data) {
-        super._deserialize(data);
+    protected void getAct(StringTokenizer data) {
+        super.getAct(data);
 
         mValue = Integer.parseInt(data.nextToken());
         mOldValue = Integer.parseInt(data.nextToken());
@@ -44,5 +43,4 @@ public class SetCellValueAction extends EditCellAction {
         Cell cell = getCell();
         cell.setValue(mOldValue);
     }
-
 }
