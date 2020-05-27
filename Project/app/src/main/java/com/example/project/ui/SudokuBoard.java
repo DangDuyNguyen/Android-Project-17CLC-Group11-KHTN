@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Menu;
 
 import com.example.project.game.SudokuGame;
 import com.example.project.game.Cell;
@@ -30,6 +31,12 @@ public class SudokuBoard extends View {
     private boolean mHighlightTouchedCell = true;
 
     private SudokuGame mSudokuGame;
+    private String mLevel;
+    private long mScore;
+
+    public static final int MENU_ITEM_RESTART = Menu.FIRST;
+    public static final int MENU_ITEM_TIMER = Menu.FIRST + 1;
+    public static final int MENU_ITEM_LEVEL = Menu.FIRST + 2;
 
     public SudokuBoard(Context context) {
         super(context);
