@@ -1,25 +1,28 @@
 package com.theinterestingrace;
 
+import android.app.Activity;
+import android.content.res.Resources;
 import android.os.CountDownTimer;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.graphics.PorterDuff.Mode;
 
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity {
+import pl.droidsonroids.gif.GifImageView;
+
+public class MainActivity extends Activity {
     CheckBox cb_player1,cb_player2, cb_player3;
-    SeekBar sb_player1,sb_player2, sb_player3;
     ImageView iv_play;
     TextView tv_point;
     Button bt_continue;
+    GifImageView  player1,player2,player3;
 
 
     @Override
@@ -28,52 +31,76 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mapping();// hàm thực hiện ánh xạ
 
-        // cài đặt để không thao tác được với seekbar --> tránh gian lận
-        sb_player1.setEnabled(false);
-        sb_player2.setEnabled(false);
-        sb_player3.setEnabled(false);
-
         ///////////////////////////////
         // ẩn nút Replay trước khi bắt đầu
         bt_continue.setVisibility(View.INVISIBLE);
 
-        final CountDownTimer countDownTimer = new CountDownTimer(60000,300) {
+        final CountDownTimer countDownTimer = new CountDownTimer(60000,50) {
             @Override
             public void onTick(long l) {
-                int goal = sb_player1.getMax();
+                int goal = 750;
 
                 // thuật toán chính của chương trình
                 Random random = new Random();
-                sb_player1.setProgress(sb_player1.getProgress()+random.nextInt(5));
-                sb_player2.setProgress(sb_player2.getProgress()+random.nextInt(5));
-                sb_player3.setProgress(sb_player3.getProgress()+random.nextInt(5));
+                player1.setPadding(player1.getPaddingLeft()+random.nextInt(10+10)-7,0,0,0);
+
+                player2.setPadding(player2.getPaddingLeft()+random.nextInt(10+10)-7,0,0,0);
+
+                player3.setPadding(player2.getPaddingLeft()+random.nextInt(10+10)-7,0,0,0);
 
                 int chosen = isChosen();
-                if(sb_player1.getProgress()>=goal && chosen ==1)
+                if(player1.getPaddingLeft()>=goal && chosen ==1)
                 {
+                    player1.setImageResource(R.drawable.pinkguyidle);
+                    player2.setImageResource(R.drawable.froglose);
+                    player3.setImageResource(R.drawable.blueguylose);
+
                     this.cancel();
                     Toast.makeText(MainActivity.this, "You are winner", Toast.LENGTH_SHORT).show();
                     tv_point.setText(Integer.parseInt(tv_point.getText().toString())+10+"");
                     bt_continue.setVisibility(View.VISIBLE);
                 }
-                if(sb_player2.getProgress()>=goal && chosen ==2)
+                if(player2.getPaddingLeft()>=goal && chosen ==2)
                 {
+                    player2.setImageResource(R.drawable.frogidle);
+                    player3.setImageResource(R.drawable.blueguylose);
+                    player1.setImageResource(R.drawable.pinkguylose);
+
                     this.cancel();
                     Toast.makeText(MainActivity.this, "You are winner ", Toast.LENGTH_SHORT).show();
                     tv_point.setText(Integer.parseInt(tv_point.getText().toString())+10+"");
                     bt_continue.setVisibility(View.VISIBLE);
                 }
-                if(sb_player3.getProgress()>=goal && chosen ==3)
+                if(player3.getPaddingLeft()>=goal && chosen ==3)
                 {
-                    this.cancel();
+                    player3.setImageResource(R.drawable.blueboyidle);
+                    player1.setImageResource(R.drawable.pinkguylose);
+                    player2.setImageResource(R.drawable.froglose);
 
+                    this.cancel();
                     Toast.makeText(MainActivity.this, "You are winner", Toast.LENGTH_SHORT).show();
                     bt_continue.setVisibility(View.VISIBLE);
                     tv_point.setText(Integer.parseInt(tv_point.getText().toString())+10+"");
                 }
-                if((sb_player1.getProgress()>=goal && chosen !=1)||(sb_player2.getProgress()>=goal && chosen !=2)||(sb_player3.getProgress()>=goal && chosen != 3))
+                if((player1.getPaddingLeft()>=goal && chosen !=1)||(player2.getPaddingLeft()>=goal && chosen !=2)||(player3.getPaddingLeft()>=goal && chosen != 3))
                 {
-                    this.cancel();
+                    if(player3.getPaddingLeft()>=goal )
+                    {
+                    player3.setImageResource(R.drawable.blueboyidle);
+                    player1.setImageResource(R.drawable.pinkguylose);
+                    player2.setImageResource(R.drawable.froglose);
+                    }
+                    if(player2.getPaddingLeft()>=goal ) {
+                        player2.setImageResource(R.drawable.frogidle);
+                        player3.setImageResource(R.drawable.blueguylose);
+                        player1.setImageResource(R.drawable.pinkguylose);
+                    }
+                    if(player1.getPaddingLeft()>=goal ) {
+                        player1.setImageResource(R.drawable.pinkguyidle);
+                        player2.setImageResource(R.drawable.froglose);
+                        player3.setImageResource(R.drawable.blueguylose);
+                    }
+                        this.cancel();
                     Toast.makeText(MainActivity.this, "You are loser", Toast.LENGTH_SHORT).show();
                     bt_continue.setVisibility(View.VISIBLE);
                     tv_point.setText(Integer.parseInt(tv_point.getText().toString())-10+"");
@@ -98,10 +125,13 @@ public class MainActivity extends AppCompatActivity {
                     }
                     iv_play.setVisibility(View.INVISIBLE);
                     bt_continue.setVisibility(View.INVISIBLE);
-
                     // khi bắt đầu chơi thì chặn người dùng thao tác checkbox và seekbar --. tránh việc người dùng chọn lại
                     disable();
                     //
+                    player1.setImageResource(R.drawable.pinkguyrun);
+                    player1.setColorFilter(R.color.colorPrimary);
+                    player2.setImageResource(R.drawable.frogrun);
+                    player3.setImageResource(R.drawable.blueboyrun);
 
                     countDownTimer.start();
 
@@ -115,9 +145,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // mỗi khi nhấn button Continue --> đặt các con vật về vị trí xuất phát
-                sb_player1.setProgress(0);
-                sb_player2.setProgress(0);
-                sb_player3.setProgress(0);
+                player1.setPadding(0,0,0,0);
+                player1.setImageResource(R.drawable.pinkguyidle);
+                player2.setPadding(0,0,0,0);
+                player2.setImageResource(R.drawable.frogidle);
+                player3.setPadding(0,0,0,0);
+                player3.setImageResource(R.drawable.blueboyidle);
                 // cho phép thao tác với checkbox để chọn con vật
                 enable();
 
@@ -166,9 +199,9 @@ public class MainActivity extends AppCompatActivity {
         cb_player2 = (CheckBox)findViewById(R.id.CheckBox_player2);
         cb_player3 = (CheckBox)findViewById(R.id.CheckBox_player3);
 
-        sb_player1 = (SeekBar)findViewById(R.id.SeekBar_player1);
-        sb_player2 = (SeekBar)findViewById(R.id.SeekBar_player2);
-        sb_player3 = (SeekBar)findViewById(R.id.SeekBar_player3);
+        player1= (GifImageView) findViewById(R.id.player1);
+        player2= (GifImageView) findViewById(R.id.player2);
+        player3=(GifImageView) findViewById(R.id.player3);
 
         tv_point = (TextView)findViewById(R.id.TextView_point);
         iv_play = (ImageView)findViewById(R.id.ImageView_play);
