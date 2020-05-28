@@ -13,11 +13,10 @@ public class SudokuGame {
     public static final int GAME_STATE_COMPLETED = 2;
 
     private long mId;
-    private long mCreated;
+    private long mLevelId;
     private int mState;
     private long mTime;
-    private long mLastPlayed;
-    private long mScore;
+    private long mLastPlayTime;
     private CellCollection mCells;
     private SudokuSolver mSolver;
     private boolean mSolved = false;
@@ -30,28 +29,18 @@ public class SudokuGame {
     public static SudokuGame createEmptyGame() {
         SudokuGame game = new SudokuGame();
         game.setCells(CellCollection.initBoardEmpty());
-        game.setCreated(System.currentTimeMillis());
         return game;
     }
 
     public SudokuGame() {
         mTime = 0;
-        mLastPlayed = 0;
-        mCreated = 0;
-        mScore = 0;
+        mLastPlayTime = 0;
+        mLevelId = 0;
         mState = GAME_STATE_NOT_STARTED;
     }
 
     public void setOnPuzzleSolvedListener(OnPuzzleSolvedListener l) {
         mOnPuzzleSolvedListener = l;
-    }
-
-    public void setCreated(long created) {
-        mCreated = created;
-    }
-
-    public long getCreated() {
-        return mCreated;
     }
 
     public void setState(int state) {
@@ -60,6 +49,14 @@ public class SudokuGame {
 
     public int getState() {
         return mState;
+    }
+
+    public void setLevelId(long lvId) {
+        mLevelId = lvId;
+    }
+
+    public long getLevelId() {
+        return mLevelId;
     }
 
     public void setTime(long time) {
@@ -74,12 +71,12 @@ public class SudokuGame {
         }
     }
 
-    public void setLastPlayed(long lastPlayed) {
-        mLastPlayed = lastPlayed;
+    public void setLastPlayTime(long lastPlayTime) {
+        mLastPlayTime = lastPlayTime;
     }
 
-    public long getLastPlayed() {
-        return mLastPlayed;
+    public long getLastPlayTime() {
+        return mLastPlayTime;
     }
 
     public void setCells(CellCollection cells) {
@@ -153,11 +150,10 @@ public class SudokuGame {
     }
 
     public void pause() {
-        // save time we have spent playing so far - it will be reseted after resuming
         mTime += SystemClock.uptimeMillis() - mStartTime;
         mStartTime = -1;
 
-        setLastPlayed(System.currentTimeMillis());
+        setLastPlayTime(System.currentTimeMillis());
     }
 
     public boolean isSolvable () {
@@ -214,10 +210,11 @@ public class SudokuGame {
                 }
             }
         }
+
         mStack = new ActionStack(mCells);
         validate();
         setTime(0);
-        setLastPlayed(0);
+        setLastPlayTime(0);
         mState = GAME_STATE_NOT_STARTED;
         mSolved = false;
     }

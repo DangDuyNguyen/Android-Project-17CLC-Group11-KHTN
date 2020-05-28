@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 public class CellCollection {
     public static final int SIZE = 9;
@@ -42,6 +43,31 @@ public class CellCollection {
 
     public Cell[][] getCells() {
         return mCells;
+    }
+
+    public static CellCollection setCells(String data) {
+        Cell[][] cells = new Cell[SIZE][SIZE];
+
+        int pos = 0;
+        for (int i = 0; i < CellCollection.SIZE; i++) {
+            for (int j = 0; j < CellCollection.SIZE; j++) {
+                int value = 0;
+                while (pos < data.length()) {
+                    if (data.charAt(pos) >= '0'
+                            && data.charAt(pos) <= '9') {
+                        value = data.charAt(pos) - '0';
+                        break;
+                    }
+                    pos++;
+                }
+                Cell cell = new Cell();
+                cell.setValue(value);
+                cell.setEditable(value == 0);
+                cells[i][j] = cell;
+            }
+        }
+
+        return new CellCollection(cells);
     }
 
     private void initCollection() {

@@ -89,10 +89,6 @@ abstract class Timer extends Handler {
         outState.putLong("accumTime", mAccumTime);
     }
 
-    boolean restoreState(Bundle map) {
-        return restoreState(map, true);
-    }
-
     boolean restoreState(Bundle map, boolean run) {
         mTickInterval = map.getLong("tickInterval");
         mIsRunning = map.getBoolean("isRunning");
@@ -100,7 +96,6 @@ abstract class Timer extends Handler {
         mAccumTime = map.getLong("accumTime");
         mLastSaveTime = SystemClock.uptimeMillis();
 
-        // If we were running, restart if requested, else stop.
         if (mIsRunning) {
             if (run)
                 start();
