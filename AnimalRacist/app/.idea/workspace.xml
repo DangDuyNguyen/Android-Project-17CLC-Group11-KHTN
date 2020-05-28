@@ -8,14 +8,7 @@
   <component name="ChangeListManager">
     <list default="true" id="79b1a526-0274-4475-931d-edcc5b43c558" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/theinterestingrace/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/theinterestingrace/MainActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/bird.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/buffalo_icon.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/checked.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/checked.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/logo2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/play_icon.jpg" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/turtle.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/unchecked.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/unchecked.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/drawable/track.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/drawable/track.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/res/layout/activity_main.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/activity_main.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -24,7 +17,7 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="66512207" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="Pixel_2_API_28" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />

@@ -7,6 +7,13 @@
     android:background="@drawable/track"
     tools:context=".MainActivity">
 
+    <pl.droidsonroids.gif.GifImageView
+        android:id="@+id/cloud"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/cloud"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/TextView_point"
