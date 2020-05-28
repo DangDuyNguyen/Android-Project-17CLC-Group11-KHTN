@@ -3,15 +3,13 @@
     <item>
         <shape android:shape="oval">
             <stroke android:color="#000" android:width="2dp" />
-            <solid android:color="@color/green"/>
+            <solid android:color="@color/lightpink"/>
             <size android:width="70dp" android:height="70dp"/>
         </shape>
     </item>
-
-    <item android:drawable="@drawable/bathroom_icon"
+    <item android:drawable="@drawable/setting_icon"
         android:gravity="center"
         android:width="40dp"
         android:height="40dp">
     </item>
-
 </layer-list>

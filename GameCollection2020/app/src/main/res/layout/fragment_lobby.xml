@@ -33,9 +33,9 @@
         android:layout_marginLeft="5dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/name_status"
-        android:editable="true"
         android:ems="8"
         android:fontFamily="@font/bubblebobble"
+        android:focusable="false"
         android:paddingLeft="40dp"
         android:paddingRight="12dp"
         android:singleLine="true"
@@ -52,7 +52,6 @@
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:background="@drawable/coin_status"
-        android:editable="false"
         android:ems="6"
         android:fontFamily="@font/bubblebobble"
         android:paddingLeft="12dp"
@@ -65,8 +64,8 @@
 
     <Button
         android:id="@+id/inventory_btn"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:background="@drawable/inventory_icon"
         app:layout_constraintTop_toBottomOf="@id/coin"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -75,9 +74,9 @@
 
     <Button
         android:id="@+id/setting_btn"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:background="@drawable/setting_icon"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/setting_button"
         app:layout_constraintTop_toBottomOf="@id/coin"
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="10dp"
