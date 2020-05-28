@@ -1,7 +1,6 @@
 package com.theinterestingrace;
 
 import android.app.Activity;
-import android.content.res.Resources;
 import android.os.CountDownTimer;
 import android.os.Bundle;
 import android.view.View;
@@ -9,9 +8,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.graphics.PorterDuff.Mode;
 
 import java.util.Random;
 
@@ -19,9 +19,12 @@ import pl.droidsonroids.gif.GifImageView;
 
 public class MainActivity extends Activity {
     CheckBox cb_player1,cb_player2, cb_player3;
+    RadioButton breezeBtn,windyBtn,stormBtn;
     ImageView iv_play;
     TextView tv_point;
     Button bt_continue;
+    RadioGroup group_btn;
+    int windPower;
     GifImageView  player1,player2,player3;
 
 
@@ -34,7 +37,7 @@ public class MainActivity extends Activity {
         ///////////////////////////////
         // ẩn nút Replay trước khi bắt đầu
         bt_continue.setVisibility(View.INVISIBLE);
-
+        //thời gian tối đa để chơi 1 game là 1 phút, mỗi lần nhảy số là 50 mili
         final CountDownTimer countDownTimer = new CountDownTimer(60000,50) {
             @Override
             public void onTick(long l) {
@@ -42,11 +45,11 @@ public class MainActivity extends Activity {
 
                 // thuật toán chính của chương trình
                 Random random = new Random();
-                player1.setPadding(player1.getPaddingLeft()+random.nextInt(10+10)-7,0,0,0);
+                player1.setPadding(player1.getPaddingLeft()+random.nextInt(10+10)-windPower,0,0,0);
 
-                player2.setPadding(player2.getPaddingLeft()+random.nextInt(10+10)-7,0,0,0);
+                player2.setPadding(player2.getPaddingLeft()+random.nextInt(10+10)-windPower,0,0,0);
 
-                player3.setPadding(player2.getPaddingLeft()+random.nextInt(10+10)-7,0,0,0);
+                player3.setPadding(player2.getPaddingLeft()+random.nextInt(10+10)-windPower,0,0,0);
 
                 int chosen = isChosen();
                 if(player1.getPaddingLeft()>=goal && chosen ==1)
@@ -56,29 +59,29 @@ public class MainActivity extends Activity {
                     player3.setImageResource(R.drawable.blueguylose);
 
                     this.cancel();
-                    Toast.makeText(MainActivity.this, "You are winner", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "You win", Toast.LENGTH_SHORT).show();
                     tv_point.setText(Integer.parseInt(tv_point.getText().toString())+10+"");
                     bt_continue.setVisibility(View.VISIBLE);
                 }
-                if(player2.getPaddingLeft()>=goal && chosen ==2)
+                else if(player2.getPaddingLeft()>=goal && chosen ==2)
                 {
                     player2.setImageResource(R.drawable.frogidle);
                     player3.setImageResource(R.drawable.blueguylose);
                     player1.setImageResource(R.drawable.pinkguylose);
 
                     this.cancel();
-                    Toast.makeText(MainActivity.this, "You are winner ", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "You win ", Toast.LENGTH_SHORT).show();
                     tv_point.setText(Integer.parseInt(tv_point.getText().toString())+10+"");
                     bt_continue.setVisibility(View.VISIBLE);
                 }
-                if(player3.getPaddingLeft()>=goal && chosen ==3)
+                else if(player3.getPaddingLeft()>=goal && chosen ==3)
                 {
                     player3.setImageResource(R.drawable.blueboyidle);
                     player1.setImageResource(R.drawable.pinkguylose);
                     player2.setImageResource(R.drawable.froglose);
 
                     this.cancel();
-                    Toast.makeText(MainActivity.this, "You are winner", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "You win", Toast.LENGTH_SHORT).show();
                     bt_continue.setVisibility(View.VISIBLE);
                     tv_point.setText(Integer.parseInt(tv_point.getText().toString())+10+"");
                 }
@@ -90,18 +93,18 @@ public class MainActivity extends Activity {
                     player1.setImageResource(R.drawable.pinkguylose);
                     player2.setImageResource(R.drawable.froglose);
                     }
-                    if(player2.getPaddingLeft()>=goal ) {
+                    else if(player2.getPaddingLeft()>=goal ) {
                         player2.setImageResource(R.drawable.frogidle);
                         player3.setImageResource(R.drawable.blueguylose);
                         player1.setImageResource(R.drawable.pinkguylose);
                     }
-                    if(player1.getPaddingLeft()>=goal ) {
+                    else if(player1.getPaddingLeft()>=goal ) {
                         player1.setImageResource(R.drawable.pinkguyidle);
                         player2.setImageResource(R.drawable.froglose);
                         player3.setImageResource(R.drawable.blueguylose);
                     }
                         this.cancel();
-                    Toast.makeText(MainActivity.this, "You are loser", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "You lose", Toast.LENGTH_SHORT).show();
                     bt_continue.setVisibility(View.VISIBLE);
                     tv_point.setText(Integer.parseInt(tv_point.getText().toString())-10+"");
                 }
@@ -116,28 +119,35 @@ public class MainActivity extends Activity {
         iv_play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (isChosen() != 0) {
+                if (isChosen() == 0) {
+                    Toast.makeText(MainActivity.this, "Please choose your character", Toast.LENGTH_SHORT).show();
+                }
+                if (isWindChosen()==0){
+                    Toast.makeText(MainActivity.this, "Please choose wind power", Toast.LENGTH_SHORT).show();
+                }
+                if (isChosen()!=0 && isWindChosen()!=0)// nếu như chưa chọn con vật nào để đua
+                {
                     if(Integer.parseInt(tv_point.getText().toString())<=0)
                     {
                         // nếu điểm âm thì đặt lại như ban đầu
-                        Toast.makeText(MainActivity.this, "You lost all of your point\n This is new game", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "You lost all of your point", Toast.LENGTH_SHORT).show();
+                        //=============== nếu sửa để thoát thì ở đây====================
                         tv_point.setText("100");
                     }
                     iv_play.setVisibility(View.INVISIBLE);
                     bt_continue.setVisibility(View.INVISIBLE);
-                    // khi bắt đầu chơi thì chặn người dùng thao tác checkbox và seekbar --. tránh việc người dùng chọn lại
+                    group_btn.setVisibility(View.INVISIBLE);
+
+                    // khi bắt đầu chơi thì chặn người dùng thao tác checkbox --. tránh việc người dùng chọn lại
                     disable();
                     //
                     player1.setImageResource(R.drawable.pinkguyrun);
-                    player1.setColorFilter(R.color.colorPrimary);
                     player2.setImageResource(R.drawable.frogrun);
                     player3.setImageResource(R.drawable.blueboyrun);
+                    windPower=isWindChosen();
 
                     countDownTimer.start();
-
                 }
-                else// nếu như chưa chọn con vật nào để đua
-                    Toast.makeText(MainActivity.this, "Please choose a animal", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -156,6 +166,7 @@ public class MainActivity extends Activity {
 
                 // hiện button play và ẩn button Continue
                 iv_play.setVisibility(View.VISIBLE);
+                group_btn.setVisibility(View.VISIBLE);
                 bt_continue.setVisibility(View.INVISIBLE);
             }
         });
@@ -203,9 +214,13 @@ public class MainActivity extends Activity {
         player2= (GifImageView) findViewById(R.id.player2);
         player3=(GifImageView) findViewById(R.id.player3);
 
+        breezeBtn= (RadioButton) findViewById(R.id.breezeBtn);
+        windyBtn=(RadioButton)findViewById(R.id.windyBtn);
+        stormBtn=(RadioButton)findViewById(R.id.stormBtn);
+
         tv_point = (TextView)findViewById(R.id.TextView_point);
         iv_play = (ImageView)findViewById(R.id.ImageView_play);
-
+        group_btn= (RadioGroup)findViewById(R.id.group_Btn);
         bt_continue = (Button)findViewById(R.id.Button_replay);
     }
     // trả về lựa chọn của người chơi
@@ -217,6 +232,16 @@ public class MainActivity extends Activity {
             return 2;
         if(cb_player3.isChecked())
             return 3;
+        return 0;
+    }
+    private int isWindChosen()
+    {
+        if(breezeBtn.isChecked())
+            return 2;
+        if(windyBtn.isChecked())
+            return 5;
+        if(stormBtn.isChecked())
+            return 7;
         return 0;
     }
     //hàm chặn thao tác
