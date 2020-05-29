@@ -116,7 +116,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     private void insertSudoku(SQLiteDatabase db, long id, long lvId, String data) {
-        String sql = "INSERT INTO Sudoku VALUES (" + id + ", " + lvId + ", " + data + ");";
+        String sql = "INSERT INTO Sudoku VALUES (" + id + ", " + lvId + ", '" + data + "');";
         db.execSQL(sql);
     }
 
