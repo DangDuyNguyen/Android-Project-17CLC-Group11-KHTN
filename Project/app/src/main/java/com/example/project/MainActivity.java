@@ -1,11 +1,6 @@
 package com.example.project;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-
-import com.example.project.ui.SudokuActivity;
-import com.example.project.ui.SudokuBoard;
+import com.example.project.UI.SudokuActivity;
 
 public class MainActivity extends SudokuActivity {
 }

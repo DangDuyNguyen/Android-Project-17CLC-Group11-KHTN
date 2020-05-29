@@ -2,8 +2,8 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/main_layout"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -39,7 +39,7 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <com.example.project.ui.SudokuBoard
+        <com.example.project.UI.SudokuBoard
             android:id="@+id/sudoku_board"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -78,7 +78,7 @@
                 android:drawableTop="@drawable/ic_action_name_hint_icon"
                 android:text="Hint"/>
             <Button
-                android:id="@+id/numpadBtn"
+                android:id="@+id/switchInputTypeBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableTop="@drawable/ic_action_name_numpad_icon"
@@ -86,7 +86,7 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <RelativeLayout
+    <com.example.project.UI.InputControl
         android:id="@+id/numpadLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -153,6 +153,6 @@
                 android:textSize="30sp" />
         </LinearLayout>
 
-    </RelativeLayout>
+    </com.example.project.UI.InputControl>
 
 </LinearLayout>

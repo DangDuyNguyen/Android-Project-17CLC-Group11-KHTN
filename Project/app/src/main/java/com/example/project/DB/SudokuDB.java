@@ -75,6 +75,10 @@ public class SudokuDB {
         return game;
     }
 
+    public void close() {
+        mHelper.close();
+    }
+
     public void beginTransaction() {
         mHelper.getWritableDatabase().beginTransaction();
     }

@@ -1,4 +1,4 @@
-package com.example.project.ui;
+package com.example.project.UI;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -29,6 +29,7 @@ public class SudokuBoard extends View {
     private boolean mReadOnly = false;
     private boolean mHighlightWrongVals = true;
     private boolean mHighlightTouchedCell = true;
+    private boolean mAutoHideTouchedCellHint = true;
 
     private SudokuGame mSudokuGame;
     private String mLevel;
@@ -104,6 +105,34 @@ public class SudokuBoard extends View {
         setColorHighlighted(a.getColor(R.styleable.SudokuBoard_colorHighlighted, Color.GREEN));
 
         a.recycle();
+    }
+
+    public void setGame(SudokuGame game) {
+        mSudokuGame = game;
+        setCells(game.getCells());
+    }
+
+    public void setCells(CellCollection cells) {
+        mCells = cells;
+
+        if (mCells != null) {
+            if (!mReadOnly) {
+                mSelectedCell = mCells.getCell(0, 0);
+                onSelectedCell(mSelectedCell);
+            }
+
+            mCells.addOnChangeListener(this::postInvalidate);
+        }
+
+        postInvalidate();
+    }
+
+    public void setAutoHideTouchedCellHint(boolean autoHideTouchedCellHint) {
+        mAutoHideTouchedCellHint = autoHideTouchedCellHint;
+    }
+
+    public boolean getAutoHideTouchedCellHint() {
+        return mAutoHideTouchedCellHint;
     }
 
     public int getLineColor() {
@@ -236,6 +265,11 @@ public class SudokuBoard extends View {
 
     public void setOnCellSelectedListener(OnCellSelectedListener listener) {
         mOnCellSelectedListener = listener;
+    }
+
+    public void hideTouchedCellHint() {
+        mTouchedCell = null;
+        postInvalidate();
     }
 
     protected void onSelectedCell(Cell cell) {
@@ -459,6 +493,10 @@ public class SudokuBoard extends View {
                     if (mSelectedCell != null) {
                         onTappedCell(mSelectedCell);
                         onSelectedCell(mSelectedCell);
+                    }
+
+                    if (mAutoHideTouchedCellHint) {
+                        mTouchedCell = null;
                     }
 
                     break;

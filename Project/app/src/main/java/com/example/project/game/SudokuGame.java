@@ -131,6 +131,11 @@ public class SudokuGame {
         mStack.undo();
     }
 
+    public boolean isUndoable()
+    {
+        return !mStack.isEmpty();
+    }
+
     public void undoPreviousState() {
         mStack.undoSolvableState();
     }

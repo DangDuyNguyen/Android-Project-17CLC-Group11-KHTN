@@ -1,4 +1,4 @@
-package com.example.project.ui;
+package com.example.project.UI;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -43,6 +43,8 @@ abstract class Timer extends Handler {
         mTickCount = 0;
         mAccumTime = 0;
     }
+
+    public long getTotalTime() { return mAccumTime; }
 
     public final boolean isRunning() {
         return mIsRunning;

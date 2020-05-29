@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:padding="4dp">
+    <RadioGroup
+        android:id="@+id/difficultyChoices"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content">
+        <RadioButton
+            android:id="@+id/endlessBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Endless Mode" />
+
+        <RadioButton
+            android:id="@+id/easyBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Easy" />
+
+        <RadioButton
+            android:id="@+id/mediumBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Medium" />
+
+        <RadioButton
+            android:id="@+id/hardBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hard" />
+    </RadioGroup>
+</LinearLayout>
