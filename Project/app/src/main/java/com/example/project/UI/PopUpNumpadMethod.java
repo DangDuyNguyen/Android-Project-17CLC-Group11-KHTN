@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.example.project.R;
 import com.example.project.game.Cell;
+import com.example.project.game.CellCollection;
 import com.example.project.UI.PopUpNumpad.OnNumberEditListener;
 
 import java.util.Map;
@@ -60,12 +61,12 @@ public class PopUpNumpadMethod extends InputMethod {
 
             mNumpad.updateNumber(cell.getValue());
 
-            Map<Integer, Integer> countValuesUsed = null;
+            Map<Integer, Integer> valuesUseCount = null;
             if (mHighlightCompletedValues || mShowNumberTotals)
-                countValuesUsed = mGame.getCells().countValuesUsed();
+                valuesUseCount = mGame.getCells().countValuesUsed();
 
             if (mShowNumberTotals) {
-                for (Map.Entry<Integer, Integer> entry : countValuesUsed.entrySet()) {
+                for (Map.Entry<Integer, Integer> entry : valuesUseCount.entrySet()) {
                     mNumpad.setValueCount(entry.getKey(), entry.getValue());
                 }
             }
@@ -88,6 +89,7 @@ public class PopUpNumpadMethod extends InputMethod {
 
     @Override
     protected void onPause() {
+        // release dialog resource (otherwise WindowLeaked exception is logged)
         if (mNumpad != null) {
             mNumpad.cancel();
         }
@@ -96,7 +98,7 @@ public class PopUpNumpadMethod extends InputMethod {
     @Override
     protected View createView() {
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        return inflater.inflate(R.layout.pop_up_numpad, null);
+        return inflater.inflate(R.layout.pop_up_numpad_layout, null);
     }
 
     private OnNumberEditListener mOnNumberEditListener = new OnNumberEditListener() {

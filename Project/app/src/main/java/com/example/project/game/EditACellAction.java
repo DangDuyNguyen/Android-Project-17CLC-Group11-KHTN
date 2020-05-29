@@ -21,7 +21,9 @@ public abstract class EditACellAction extends EditCellAction {
         data.append(mCellColumn).append("|");
     }
 
+    @Override
     protected void getAct(StringTokenizer data) {
+        super.getAct(data);
         mCellRow = Integer.parseInt(data.nextToken());
         mCellColumn = Integer.parseInt(data.nextToken());
     }

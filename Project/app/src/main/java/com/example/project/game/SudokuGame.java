@@ -8,13 +8,8 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 
 public class SudokuGame {
-    public static final int GAME_STATE_PLAYING = 0;
-    public static final int GAME_STATE_NOT_STARTED = 1;
-    public static final int GAME_STATE_COMPLETED = 2;
-
     private long mId;
     private long mLevelId;
-    private int mState;
     private long mTime;
     private long mLastPlayTime;
     private CellCollection mCells;
@@ -36,19 +31,10 @@ public class SudokuGame {
         mTime = 0;
         mLastPlayTime = 0;
         mLevelId = 0;
-        mState = GAME_STATE_NOT_STARTED;
     }
 
     public void setOnPuzzleSolvedListener(OnPuzzleSolvedListener l) {
         mOnPuzzleSolvedListener = l;
-    }
-
-    public void setState(int state) {
-        mState = state;
-    }
-
-    public int getState() {
-        return mState;
     }
 
     public void setLevelId(long lvId) {
@@ -146,7 +132,6 @@ public class SudokuGame {
     }
 
     public void start() {
-        mState = GAME_STATE_PLAYING;
         resume();
     }
 
@@ -203,7 +188,6 @@ public class SudokuGame {
 
     private void finish() {
         pause();
-        mState = GAME_STATE_COMPLETED;
     }
 
     public void reset() {
@@ -220,7 +204,6 @@ public class SudokuGame {
         validate();
         setTime(0);
         setLastPlayTime(0);
-        mState = GAME_STATE_NOT_STARTED;
         mSolved = false;
     }
 

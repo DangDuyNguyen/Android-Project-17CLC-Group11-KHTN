@@ -48,6 +48,10 @@ public abstract class Action {
         throw new IllegalArgumentException(String.format("Invalid action name: '%s'.", actionShortName));
     }
 
+    protected void getAct(StringTokenizer data) {
+
+    }
+
     public void setAction(StringBuilder data) {
         String actionLongName = getActionClass();
         for (ActionDefine actDef : actions) {

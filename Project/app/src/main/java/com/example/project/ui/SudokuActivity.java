@@ -41,10 +41,6 @@ public class SudokuActivity extends Activity {
     private TextView mLevelInfo;
     private TextView mScoreInfo;
     private TextView mTimeInfo;
-    private Button mUndoBtn;
-    private Button mResetBtn;
-    private Button mHintBtn;
-    private Button mInputMethodBtn;
 
     private Menu mMenu;
 
@@ -66,9 +62,6 @@ public class SudokuActivity extends Activity {
     public static final int MENU_ITEM_SHOWTIME = Menu.FIRST + 2;
 
     private static AlertDialog restartDialog;
-    private static AlertDialog puzzleCannotSolveDialog;
-    private static AlertDialog cannotGiveHintDialog;
-    private static AlertDialog noHintLeftDialog;
 
     private static final int REQUEST_SETTINGS = 1;
 
@@ -83,33 +76,28 @@ public class SudokuActivity extends Activity {
         mScoreInfo = findViewById(R.id.scoreInfo);
         mTimeInfo = findViewById(R.id.timeInfo);
 
-        mUndoBtn = findViewById(R.id.undoBtn);
-        mResetBtn = findViewById(R.id.resetBtn);
-        mHintBtn = findViewById(R.id.hintBtn);
-        mInputMethodBtn = findViewById(R.id.switchInputTypeBtn);
+        mDB = new SudokuDB(getApplicationContext());
 
-        View numpad = findViewById(R.id.numpadLayout);
-        numpad.setVisibility(View.GONE);
+        mHandler = new Handler();
+
+        mGameTimer = new GameTimer();
+
+        mSudokuList = mDB.getSudokuId(mLevel);
+        if(!mSudokuList.isEmpty())
+        {
+            mCurrentSudokuIndex = 0;
+            loadGame(mCurrentSudokuIndex);
+        }
 
         numOfHints = 3;
 
-        puzzleCannotSolveDialog = new AlertDialog.Builder(SudokuActivity.this)
-                .setTitle(R.string.app_name)
-                .setMessage("This sudoku cannot be solved")
-                .setPositiveButton(android.R.string.ok, null)
-                .create();
+        mControl = new InputControl(this);
+        mControl = findViewById(R.id.inputMethods);
+        mControl.init(mSudokuBoard, mCurrentSudokuGame, numOfHints);
 
-        cannotGiveHintDialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.app_name)
-                .setMessage("Please select a cell to get hint!")
-                .setPositiveButton(android.R.string.ok, null)
-                .create();
-
-        noHintLeftDialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.app_name)
-                .setMessage("You have no hint left!")
-                .setPositiveButton(android.R.string.ok, null)
-                .create();
+        mControlState = new InputControlState(this);
+        mPopupNumpad = mControl.getInputMethod(InputControl.INPUT_METHOD_POPUP);
+        mNumpad = mControl.getInputMethod(InputControl.INPUT_METHOD_NUMPAD);
 
         restartDialog = new AlertDialog.Builder(this)
                 .setIcon(R.drawable.ic_restart_icon)
@@ -124,77 +112,6 @@ public class SudokuActivity extends Activity {
                 })
                 .setNegativeButton(android.R.string.no, null)
                 .create();
-
-        mUndoBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mCurrentSudokuGame.isUndoable()) {
-                    mCurrentSudokuGame.undoAction();
-                    selectLastChangedCell();
-                }
-            }
-        });
-
-        mResetBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadGame(mCurrentSudokuIndex);
-            }
-        });
-
-        mHintBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(numOfHints > 0)
-                {
-                    Cell cell = mSudokuBoard.getSelectedCell();
-                    if (cell != null && cell.isEditable()) {
-                        if (mCurrentSudokuGame.isSolvable()) {
-                            mCurrentSudokuGame.solveCell(cell);
-                        }
-                        else {
-                            puzzleCannotSolveDialog.show();
-                        }
-                    }
-                    else {
-                        cannotGiveHintDialog.show();
-                    }
-                }
-                else noHintLeftDialog.show();
-            }
-        });
-
-        mInputMethodBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mControl.activateNextInputMethod();
-                View numpad = findViewById(R.id.numpadLayout);
-                if(numpad.getVisibility() == View.VISIBLE)
-                    numpad.setVisibility(View.GONE);
-                else numpad.setVisibility(View.VISIBLE);
-            }
-        });
-
-        mDB = new SudokuDB(getApplicationContext());
-
-        mHandler = new Handler();
-
-        mGameTimer = new GameTimer();
-
-        mSudokuList = mDB.getSudokuId(mLevel);
-        if(!mSudokuList.isEmpty())
-        {
-            mCurrentSudokuIndex = 0;
-            loadGame(mCurrentSudokuIndex);
-        }
-
-        mControl = findViewById(R.id.numpadLayout);
-        mControl.init(mSudokuBoard, mCurrentSudokuGame);
-
-        mControlState = new InputControlState(this);
-
-        mPopupNumpad = mControl.getInputMethod(InputControl.INPUT_METHOD_POPUP);
-        mNumpad = mControl.getInputMethod(InputControl.INPUT_METHOD_NUMPAD);
     }
 
     public void loadGame(int index)
@@ -238,7 +155,7 @@ public class SudokuActivity extends Activity {
         mTimeInfo.setVisibility(mShowTime ? View.VISIBLE : View.GONE);
 
         mPopupNumpad.setEnabled(true);
-        mNumpad.setEnabled(false);
+        mNumpad.setEnabled(true);
         mNumpad.setMoveCellSelectionOnPress(false);
         mPopupNumpad.setHighlightCompletedValues(true);
         mPopupNumpad.setShowNumberTotals(false);
@@ -284,10 +201,6 @@ public class SudokuActivity extends Activity {
         super.onSaveInstanceState(outState);
 
         mGameTimer.stop();
-
-        if (mCurrentSudokuGame.getState() == SudokuGame.GAME_STATE_PLAYING) {
-            mCurrentSudokuGame.pause();
-        }
 
         mGameTimer.saveState(outState);
     }
@@ -359,11 +272,11 @@ public class SudokuActivity extends Activity {
         finish();
     }
 
-    private void selectLastChangedCell() {
-        Cell cell = mCurrentSudokuGame.getLastChangedCell();
-        if (cell != null)
-            mSudokuBoard.moveCellSelectionTo(cell.getRow(), cell.getColumn());
-    }
+    //private void selectLastChangedCell() {
+        //Cell cell = mCurrentSudokuGame.getLastChangedCell();
+        //if (cell != null)
+            //mSudokuBoard.moveCellSelectionTo(cell.getRow(), cell.getColumn());
+    //}
 
     private OnPuzzleSolvedListener onSolvedListener = new OnPuzzleSolvedListener() {
         @Override

@@ -4,14 +4,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.example.project.R;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class DifficultyChoices extends Dialog {
     private Context mContext;
