@@ -48,7 +48,7 @@ public class AnimalRacingActivity extends Activity {
         final CountDownTimer countDownTimer = new CountDownTimer(60000,50) {
             @Override
             public void onTick(long l) {
-                int goal = 800;
+                int goal = 860;
 
                 // thuật toán chính của chương trình
                 Random random = new Random();
@@ -66,9 +66,7 @@ public class AnimalRacingActivity extends Activity {
                     player3.setImageResource(R.drawable.blueguylose);
 
                     this.cancel();
-                    Toast.makeText(AnimalRacingActivity.this, "You win", Toast.LENGTH_SHORT).show();
-                    tv_point.setText(Integer.parseInt(tv_point.getText().toString())+10+"");
-                    bt_continue.setVisibility(View.VISIBLE);
+                    win();
                 }
                 else if(player2.getPaddingLeft()>=goal && chosen ==2)
                 {
@@ -77,9 +75,7 @@ public class AnimalRacingActivity extends Activity {
                     player1.setImageResource(R.drawable.pinkguylose);
 
                     this.cancel();
-                    Toast.makeText(AnimalRacingActivity.this, "You win ", Toast.LENGTH_SHORT).show();
-                    tv_point.setText(Integer.parseInt(tv_point.getText().toString())+10+"");
-                    bt_continue.setVisibility(View.VISIBLE);
+                    win();
                 }
                 else if(player3.getPaddingLeft()>=goal && chosen ==3)
                 {
@@ -88,9 +84,7 @@ public class AnimalRacingActivity extends Activity {
                     player2.setImageResource(R.drawable.froglose);
 
                     this.cancel();
-                    Toast.makeText(AnimalRacingActivity.this, "You win", Toast.LENGTH_SHORT).show();
-                    bt_continue.setVisibility(View.VISIBLE);
-                    tv_point.setText(Integer.parseInt(tv_point.getText().toString())+10+"");
+                    win();
                 }
                 if((player1.getPaddingLeft()>=goal && chosen !=1)||(player2.getPaddingLeft()>=goal && chosen !=2)||(player3.getPaddingLeft()>=goal && chosen != 3))
                 {
@@ -111,9 +105,7 @@ public class AnimalRacingActivity extends Activity {
                         player3.setImageResource(R.drawable.blueguylose);
                     }
                     this.cancel();
-                    Toast.makeText(AnimalRacingActivity.this, "You lose", Toast.LENGTH_SHORT).show();
-                    bt_continue.setVisibility(View.VISIBLE);
-                    tv_point.setText(Integer.parseInt(tv_point.getText().toString())-10+"");
+                    lose();
                 }
 
             }
@@ -341,4 +333,17 @@ public class AnimalRacingActivity extends Activity {
         player3.setVisibility(View.VISIBLE);
     }
 
+    private void win()
+    {
+        Toast.makeText(AnimalRacingActivity.this, "You win", Toast.LENGTH_SHORT).show();
+        tv_point.setText(Integer.parseInt(tv_point.getText().toString())+10+"");
+        bt_continue.setVisibility(View.VISIBLE);
+    }
+
+    private void lose()
+    {
+        Toast.makeText(AnimalRacingActivity.this, "You lose", Toast.LENGTH_SHORT).show();
+        bt_continue.setVisibility(View.VISIBLE);
+        tv_point.setText(Integer.parseInt(tv_point.getText().toString())-10+"");
+    }
 }
