@@ -24,5 +24,4 @@ Nguyễn Lê Hoàng Dũng
 
 ## References
 **Google Drive**: https://drive.google.com/drive/folders/1MCruJ0AJ3s0htM3Miq_5BW-hYEPLSB4Y
-
 **Trello**: https://trello.com/b/NKBZXKJp
