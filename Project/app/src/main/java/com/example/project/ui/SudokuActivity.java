@@ -217,9 +217,9 @@ public class SudokuActivity extends Activity {
 
         Cell cell = mCurrentSudokuGame.getLastChangedCell();
         if (cell != null && !mSudokuBoard.isReadOnly())
-            mSudokuBoard.moveSelectionTo(cell.getRow(), cell.getColumn());
+            mSudokuBoard.moveCellSelectionTo(cell.getRow(), cell.getColumn());
         else
-            mSudokuBoard.moveSelectionTo(0, 0);
+            mSudokuBoard.moveCellSelectionTo(0, 0);
     }
 
     @Override
@@ -249,7 +249,7 @@ public class SudokuActivity extends Activity {
         mControlState.restoreState(mControl);
 
         if (!mSudokuBoard.isReadOnly()) {
-            mSudokuBoard.invokeOnSelectedCell();
+            mSudokuBoard.invokeOnCellSelected();
         }
 
         if(mShowTime)
@@ -362,7 +362,7 @@ public class SudokuActivity extends Activity {
     private void selectLastChangedCell() {
         Cell cell = mCurrentSudokuGame.getLastChangedCell();
         if (cell != null)
-            mSudokuBoard.moveSelectionTo(cell.getRow(), cell.getColumn());
+            mSudokuBoard.moveCellSelectionTo(cell.getRow(), cell.getColumn());
     }
 
     private OnPuzzleSolvedListener onSolvedListener = new OnPuzzleSolvedListener() {
@@ -413,7 +413,7 @@ public class SudokuActivity extends Activity {
                 Cell cell = mCurrentSudokuGame.getCells().findCellByValue(number);
                 mSudokuBoard.setHighlightedValue(number);
                 if (cell != null) {
-                    mSudokuBoard.moveSelectionTo(cell.getRow(), cell.getColumn());
+                    mSudokuBoard.moveCellSelectionTo(cell.getRow(), cell.getColumn());
                 }
             } else {
                 mSudokuBoard.clearCellSelection();

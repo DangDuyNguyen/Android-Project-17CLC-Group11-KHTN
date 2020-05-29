@@ -85,11 +85,7 @@ public class PopUpNumpad extends Dialog {
             if (mOnNumberEditListener != null) {
                 mOnNumberEditListener.onNumberEdit(number);
             }
-            try
-            {
-                dismiss();
-            }
-            catch (Exception e) {}
+            dismiss();
         }
     };
 

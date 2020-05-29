@@ -9,15 +9,15 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Menu;
 
-import com.example.project.game.SudokuGame;
+import com.example.project.R;
 import com.example.project.game.Cell;
 import com.example.project.game.CellCollection;
-import com.example.project.R;
+import com.example.project.game.SudokuGame;
 
 public class SudokuBoard extends View {
-    public static final int DEFAULT_BOARD_SIZE = 100;
+    public static final int DEFAULT_SIZE = 100;
+
     private static final int NONE_COLOR = 0;
 
     private float mCellWidth;
@@ -26,48 +26,41 @@ public class SudokuBoard extends View {
     private Cell mTouchedCell;
     private Cell mSelectedCell;
     private int mHighlightedValue = 0;
-    private boolean mReadOnly = false;
+    private boolean mReadonly = false;
     private boolean mHighlightWrongVals = true;
     private boolean mHighlightTouchedCell = true;
     private boolean mAutoHideTouchedCellHint = true;
-
-    private SudokuGame mSudokuGame;
-    private String mLevel;
-    private long mScore;
-
-    public static final int MENU_ITEM_RESTART = Menu.FIRST;
-    public static final int MENU_ITEM_TIMER = Menu.FIRST + 1;
-
-    public SudokuBoard(Context context) {
-        super(context);
-    }
-
     public enum HighlightMode {
         NONE,
-        NUMBERS,
+        NUMBERS
     };
-
     private HighlightMode mHighlightSimilarCells = HighlightMode.NONE;
 
+    private SudokuGame mGame;
     private CellCollection mCells;
 
     private OnCellTappedListener mOnCellTappedListener;
     private OnCellSelectedListener mOnCellSelectedListener;
 
     private Paint mLinePaint;
-    private Paint mBoxLinePaint;
-    private Paint mValuePaint;
-    private Paint mGeneratedValuePaint;
+    private Paint mSectorLinePaint;
+    private Paint mCellValuePaint;
+    private Paint mCellValueReadonlyPaint;
     private int mNumberLeft;
     private int mNumberTop;
-    private int mBoxLineWidth;
+    private float mNoteTop;
+    private int mSectorLineWidth;
     private Paint mColorSecondary;
     private Paint mColorReadOnly;
     private Paint mColorTouched;
     private Paint mColorSelected;
     private Paint mColorHighlighted;
 
-    private Paint mInvalidValuePaint;
+    private Paint mCellValueInvalidPaint;
+
+    public SudokuBoard(Context context) {
+        this(context, null);
+    }
 
     public SudokuBoard(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -76,63 +69,35 @@ public class SudokuBoard extends View {
         setFocusableInTouchMode(true);
 
         mLinePaint = new Paint();
-        mBoxLinePaint = new Paint();
-        mValuePaint = new Paint();
-        mGeneratedValuePaint = new Paint();
-        mInvalidValuePaint = new Paint();
+        mSectorLinePaint = new Paint();
+        mCellValuePaint = new Paint();
+        mCellValueReadonlyPaint = new Paint();
+        mCellValueInvalidPaint = new Paint();
         mColorSecondary = new Paint();
         mColorReadOnly = new Paint();
         mColorTouched = new Paint();
         mColorSelected = new Paint();
         mColorHighlighted = new Paint();
 
-        mValuePaint.setAntiAlias(true);
-        mGeneratedValuePaint.setAntiAlias(true);
-        mInvalidValuePaint.setAntiAlias(true);
-        mInvalidValuePaint.setColor(Color.RED);
+        mCellValuePaint.setAntiAlias(true);
+        mCellValueReadonlyPaint.setAntiAlias(true);
+        mCellValueInvalidPaint.setAntiAlias(true);
+        mCellValueInvalidPaint.setColor(Color.RED);
 
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.SudokuBoard);
 
         setLineColor(a.getColor(R.styleable.SudokuBoard_lineColor, Color.BLACK));
-        setBoxLineColor(a.getColor(R.styleable.SudokuBoard_boxLineColor, Color.BLACK));
+        setSectorLineColor(a.getColor(R.styleable.SudokuBoard_lineColor, Color.BLACK));
         setTextColor(a.getColor(R.styleable.SudokuBoard_textColor, Color.BLACK));
-        setGeneratedTextColor(a.getColor(R.styleable.SudokuBoard_textColorReadOnly, Color.BLACK));
+        setTextColorReadOnly(a.getColor(R.styleable.SudokuBoard_textColorReadOnly, Color.BLACK));
         setBackgroundColor(a.getColor(R.styleable.SudokuBoard_color, Color.WHITE));
-        setColorSecondary(a.getColor(R.styleable.SudokuBoard_colorSecondary, NONE_COLOR));
-        setColorReadOnly(a.getColor(R.styleable.SudokuBoard_colorReadOnly, NONE_COLOR));
-        setColorTouched(a.getColor(R.styleable.SudokuBoard_colorTouched, Color.rgb(50, 50, 255)));
-        setColorSelected(a.getColor(R.styleable.SudokuBoard_colorSelected, Color.YELLOW));
-        setColorHighlighted(a.getColor(R.styleable.SudokuBoard_colorHighlighted, Color.GREEN));
+        setBackgroundColorSecondary(a.getColor(R.styleable.SudokuBoard_colorSecondary, NONE_COLOR));
+        setBackgroundColorReadOnly(a.getColor(R.styleable.SudokuBoard_colorReadOnly, NONE_COLOR));
+        setBackgroundColorTouched(a.getColor(R.styleable.SudokuBoard_colorTouched, Color.rgb(50, 50, 255)));
+        setBackgroundColorSelected(a.getColor(R.styleable.SudokuBoard_colorSelected, Color.YELLOW));
+        setBackgroundColorHighlighted(a.getColor(R.styleable.SudokuBoard_colorHighlighted, Color.GREEN));
 
         a.recycle();
-    }
-
-    public void setGame(SudokuGame game) {
-        mSudokuGame = game;
-        setCells(game.getCells());
-    }
-
-    public void setCells(CellCollection cells) {
-        mCells = cells;
-
-        if (mCells != null) {
-            if (!mReadOnly) {
-                mSelectedCell = mCells.getCell(0, 0);
-                onSelectedCell(mSelectedCell);
-            }
-
-            mCells.addOnChangeListener(this::postInvalidate);
-        }
-
-        postInvalidate();
-    }
-
-    public void setAutoHideTouchedCellHint(boolean autoHideTouchedCellHint) {
-        mAutoHideTouchedCellHint = autoHideTouchedCellHint;
-    }
-
-    public boolean getAutoHideTouchedCellHint() {
-        return mAutoHideTouchedCellHint;
     }
 
     public int getLineColor() {
@@ -143,68 +108,88 @@ public class SudokuBoard extends View {
         mLinePaint.setColor(color);
     }
 
-    public int getBoxLineColor() {
-        return mBoxLinePaint.getColor();
+    public int getSectorLineColor() {
+        return mSectorLinePaint.getColor();
     }
 
-    public void setBoxLineColor(int color) {
-        mBoxLinePaint.setColor(color);
+    public void setSectorLineColor(int color) {
+        mSectorLinePaint.setColor(color);
     }
 
     public int getTextColor() {
-        return mValuePaint.getColor();
+        return mCellValuePaint.getColor();
     }
 
     public void setTextColor(int color) {
-        mValuePaint.setColor(color);
+        mCellValuePaint.setColor(color);
     }
 
-    public int getGeneratedTextColor() {
-        return mGeneratedValuePaint.getColor();
+    public int getTextColorReadOnly() {
+        return mCellValueReadonlyPaint.getColor();
     }
 
-    public void setGeneratedTextColor(int color) {
-        mGeneratedValuePaint.setColor(color);
+    public void setTextColorReadOnly(int color) {
+        mCellValueReadonlyPaint.setColor(color);
     }
 
-    public int getColorSecondary() {
+    public int getBackgroundColorSecondary() {
         return mColorSecondary.getColor();
     }
 
-    public void setColorSecondary(int color) {
+    public void setBackgroundColorSecondary(int color) {
         mColorSecondary.setColor(color);
     }
 
-    public int getColorReadOnly() {
+    public int getBackgroundColorReadOnly() {
         return mColorReadOnly.getColor();
     }
 
-    public void setColorReadOnly(int color) {
+    public void setBackgroundColorReadOnly(int color) {
         mColorReadOnly.setColor(color);
     }
 
-    public int getColorTouched() {
+    public int getBackgroundColorTouched() {
         return mColorTouched.getColor();
     }
 
-    public void setColorTouched(int color) {
+    public void setBackgroundColorTouched(int color) {
         mColorTouched.setColor(color);
     }
 
-    public int getColorSelected() {
+    public int getBackgroundColorSelected() {
         return mColorSelected.getColor();
     }
 
-    public void setColorSelected(int color) {
+    public void setBackgroundColorSelected(int color) {
         mColorSelected.setColor(color);
     }
 
-    public int getColorHighlighted() {
+    public int getBackgroundColorHighlighted() {
         return mColorHighlighted.getColor();
     }
 
-    public void setColorHighlighted(int color) {
+    public void setBackgroundColorHighlighted(int color) {
         mColorHighlighted.setColor(color);
+    }
+
+    public void setGame(SudokuGame game) {
+        mGame = game;
+        setCells(game.getCells());
+    }
+
+    public void setCells(CellCollection cells) {
+        mCells = cells;
+
+        if (mCells != null) {
+            if (!mReadonly) {
+                mSelectedCell = mCells.getCell(0, 0);
+                onCellSelected(mSelectedCell);
+            }
+
+            mCells.addOnChangeListener(this::postInvalidate);
+        }
+
+        postInvalidate();
     }
 
     public CellCollection getCells() {
@@ -215,17 +200,17 @@ public class SudokuBoard extends View {
         return mSelectedCell;
     }
 
-    public void setReadOnly(boolean readOnly) {
-        mReadOnly = readOnly;
+    public void setReadOnly(boolean readonly) {
+        mReadonly = readonly;
         postInvalidate();
     }
 
     public boolean isReadOnly() {
-        return mReadOnly;
+        return mReadonly;
     }
 
-    public void setHighlightWrongVals(boolean highlight) {
-        mHighlightWrongVals = highlight;
+    public void setHighlightWrongVals(boolean highlightWrongVals) {
+        mHighlightWrongVals = highlightWrongVals;
         postInvalidate();
     }
 
@@ -233,38 +218,46 @@ public class SudokuBoard extends View {
         return mHighlightWrongVals;
     }
 
-    public void setHighlightTouchedCell(boolean highlight) {
-        mHighlightTouchedCell = highlight;
+    public void setHighlightTouchedCell(boolean highlightTouchedCell) {
+        mHighlightTouchedCell = highlightTouchedCell;
     }
 
     public boolean getHighlightTouchedCell() {
         return mHighlightTouchedCell;
     }
 
-    public void setHighlightSimilarCell(HighlightMode highlight) {
-        mHighlightSimilarCells = highlight;
+    public void setAutoHideTouchedCellHint(boolean autoHideTouchedCellHint) {
+        mAutoHideTouchedCellHint = autoHideTouchedCellHint;
     }
 
-    public void setHighlightedValue(int val) {
-        mHighlightedValue = val;
+    public boolean getAutoHideTouchedCellHint() {
+        return mAutoHideTouchedCellHint;
+    }
+
+    public void setHighlightSimilarCell(HighlightMode highlightSimilarCell) {
+        mHighlightSimilarCells = highlightSimilarCell;
+    }
+
+    public void setHighlightedValue(int value) {
+        mHighlightedValue = value;
     }
 
     public int getHighlightedValue() {
         return mHighlightedValue;
     }
 
-    public void setOnCellTappedListener(OnCellTappedListener listener) {
-        mOnCellTappedListener = listener;
+    public void setOnCellTappedListener(OnCellTappedListener l) {
+        mOnCellTappedListener = l;
     }
 
-    protected void onTappedCell(Cell cell) {
+    protected void onCellTapped(Cell cell) {
         if (mOnCellTappedListener != null) {
             mOnCellTappedListener.onCellTapped(cell);
         }
     }
 
-    public void setOnCellSelectedListener(OnCellSelectedListener listener) {
-        mOnCellSelectedListener = listener;
+    public void setOnCellSelectedListener(OnCellSelectedListener l) {
+        mOnCellSelectedListener = l;
     }
 
     public void hideTouchedCellHint() {
@@ -272,14 +265,14 @@ public class SudokuBoard extends View {
         postInvalidate();
     }
 
-    protected void onSelectedCell(Cell cell) {
+    protected void onCellSelected(Cell cell) {
         if (mOnCellSelectedListener != null) {
             mOnCellSelectedListener.onCellSelected(cell);
         }
     }
 
-    public void invokeOnSelectedCell() {
-        onSelectedCell(mSelectedCell);
+    public void invokeOnCellSelected() {
+        onCellSelected(mSelectedCell);
     }
 
     @Override
@@ -290,21 +283,18 @@ public class SudokuBoard extends View {
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
         int width, height;
-
         if (widthMode == MeasureSpec.EXACTLY) {
             width = widthSize;
-        }
-        else {
-            width = DEFAULT_BOARD_SIZE;
+        } else {
+            width = DEFAULT_SIZE;
             if (widthMode == MeasureSpec.AT_MOST && width > widthSize) {
                 width = widthSize;
             }
         }
-
         if (heightMode == MeasureSpec.EXACTLY) {
             height = heightSize;
         } else {
-            height = DEFAULT_BOARD_SIZE;
+            height = DEFAULT_SIZE;
             if (heightMode == MeasureSpec.AT_MOST && height > heightSize) {
                 height = heightSize;
             }
@@ -330,29 +320,32 @@ public class SudokuBoard extends View {
 
         setMeasuredDimension(width, height);
 
-        float textSize = mCellHeight * 0.6f;
-        mValuePaint.setTextSize(textSize);
-        mGeneratedValuePaint.setTextSize(textSize);
-        mInvalidValuePaint.setTextSize(textSize);
+        float cellTextSize = mCellHeight * 0.75f;
+        mCellValuePaint.setTextSize(cellTextSize);
+        mCellValueReadonlyPaint.setTextSize(cellTextSize);
+        mCellValueInvalidPaint.setTextSize(cellTextSize);
+        // compute offsets in each cell to center the rendered number
+        mNumberLeft = (int) ((mCellWidth - mCellValuePaint.measureText("9")) / 2);
+        mNumberTop = (int) ((mCellHeight - mCellValuePaint.getTextSize()) / 2);
 
-        mNumberLeft = (int) ((mCellWidth - mValuePaint.measureText("0")) / 2);
-        mNumberTop = (int) ((mCellHeight - mValuePaint.getTextSize()) / 2);
+        // add some offset because in some resolutions notes are cut-off in the top
+        mNoteTop = mCellHeight / 50.0f;
 
-        computeBoxLineWidth(width, height);
+        computeSectorLineWidth(width, height);
     }
 
-    private void computeBoxLineWidth(int widthPixel, int heightPixel) {
-        int sizeInPixel = widthPixel < heightPixel ? widthPixel : heightPixel;
+    private void computeSectorLineWidth(int widthInPx, int heightInPx) {
+        int sizeInPx = widthInPx < heightInPx ? widthInPx : heightInPx;
         float dipScale = getContext().getResources().getDisplayMetrics().density;
-        float sizeInDip = sizeInPixel / dipScale;
+        float sizeInDip = sizeInPx / dipScale;
 
-        float boxLineWidthDip = 2.0f;
+        float sectorLineWidthInDip = 2.0f;
 
         if (sizeInDip > 150) {
-            boxLineWidthDip = 3.0f;
+            sectorLineWidthInDip = 3.0f;
         }
 
-        mBoxLineWidth = (int) (boxLineWidthDip * dipScale);
+        mSectorLineWidth = (int) (sectorLineWidthInDip * dipScale);
     }
 
     @Override
@@ -373,11 +366,11 @@ public class SudokuBoard extends View {
         }
 
         int cellLeft, cellTop;
-
         if (mCells != null) {
-            boolean hasColorReadOnly = mColorReadOnly.getColor() != NONE_COLOR;
 
-            float numberAscent = mValuePaint.ascent();
+            boolean hasBackgroundColorReadOnly = mColorReadOnly.getColor() != NONE_COLOR;
+
+            float numberAscent = mCellValuePaint.ascent();
 
             for (int row = 0; row < CellCollection.SIZE; row++) {
                 for (int col = 0; col < CellCollection.SIZE; col++) {
@@ -386,32 +379,46 @@ public class SudokuBoard extends View {
                     cellLeft = Math.round((col * mCellWidth) + paddingLeft);
                     cellTop = Math.round((row * mCellHeight) + paddingTop);
 
-                    if (!cell.isEditable() && hasColorReadOnly && (mSelectedCell == null || mSelectedCell != cell)) {
+                    if (!cell.isEditable() && hasBackgroundColorReadOnly &&
+                            (mSelectedCell == null || mSelectedCell != cell)) {
                         if (mColorReadOnly.getColor() != NONE_COLOR) {
-                            canvas.drawRect(cellLeft, cellTop, cellLeft + mCellWidth, cellTop + mCellHeight, mColorReadOnly);
+                            canvas.drawRect(
+                                    cellLeft, cellTop,
+                                    cellLeft + mCellWidth, cellTop + mCellHeight,
+                                    mColorReadOnly);
                         }
                     }
 
-                    boolean notSelectedCell = (mSelectedCell == null || mSelectedCell != cell);
-                    boolean validHighlightedValue = (mHighlightedValue != 0);
-                    boolean highlightCell = false;
+                    // highlight similar cells
+                    boolean cellIsNotAlreadySelected = (mSelectedCell == null || mSelectedCell != cell);
+                    boolean highlightedValueIsValid = mHighlightedValue != 0;
+                    boolean shouldHighlightCell = false;
 
                     switch (mHighlightSimilarCells) {
                         default:
                         case NONE: {
-                            highlightCell = false;
+                            shouldHighlightCell = false;
                             break;
                         }
 
                         case NUMBERS: {
-                            highlightCell = notSelectedCell && validHighlightedValue && mHighlightedValue == cell.getValue();
+                            shouldHighlightCell =
+                                    cellIsNotAlreadySelected &&
+                                            highlightedValueIsValid &&
+                                            mHighlightedValue == cell.getValue();
                             break;
+                        }
+                    }
+
+                    if (shouldHighlightCell) {
+                        if (mColorHighlighted.getColor() != NONE_COLOR) {
+                            canvas.drawRect(cellLeft, cellTop, cellLeft + mCellWidth, cellTop + mCellHeight, mColorHighlighted);
                         }
                     }
                 }
             }
 
-            if (!mReadOnly && mSelectedCell != null) {
+            if (!mReadonly && mSelectedCell != null) {
                 cellLeft = Math.round(mSelectedCell.getColumn() * mCellWidth) + paddingLeft;
                 cellTop = Math.round(mSelectedCell.getRow() * mCellHeight) + paddingTop;
                 canvas.drawRect(cellLeft, cellTop, cellLeft + mCellWidth, cellTop + mCellHeight, mColorSelected);
@@ -433,51 +440,46 @@ public class SudokuBoard extends View {
 
                     int value = cell.getValue();
                     if (value != 0) {
-                        Paint valuePaint = cell.isEditable() ? mValuePaint : mGeneratedValuePaint;
+                        Paint cellValuePaint = cell.isEditable() ? mCellValuePaint : mCellValueReadonlyPaint;
 
                         if (mHighlightWrongVals && !cell.isValid()) {
-                            valuePaint = mInvalidValuePaint;
+                            cellValuePaint = mCellValueInvalidPaint;
                         }
 
-                        canvas.drawText(Integer.toString(value), cellLeft + mNumberLeft, cellTop + mNumberTop - numberAscent, valuePaint);
+                        canvas.drawText(Integer.toString(value), cellLeft + mNumberLeft, cellTop + mNumberTop - numberAscent, cellValuePaint);
                     }
                 }
             }
         }
 
-        for (int i = 0; i <= CellCollection.SIZE; i++) {
-            float x = (i * mCellWidth) + paddingLeft;
+        for (int c = 0; c <= CellCollection.SIZE; c++) {
+            float x = (c * mCellWidth) + paddingLeft;
             canvas.drawLine(x, paddingTop, x, height, mLinePaint);
         }
 
-        for (int i = 0; i <= CellCollection.SIZE; i++) {
-            float y = i * mCellHeight + paddingTop;
+        for (int r = 0; r <= CellCollection.SIZE; r++) {
+            float y = r * mCellHeight + paddingTop;
             canvas.drawLine(paddingLeft, y, width, y, mLinePaint);
         }
 
-        int boxLineWidth1 = mBoxLineWidth / 2;
-        int boxLineWidth2 = boxLineWidth1 + (mBoxLineWidth % 2);
+        int sectorLineWidth1 = mSectorLineWidth / 2;
+        int sectorLineWidth2 = sectorLineWidth1 + (mSectorLineWidth % 2);
 
-        for (int i = 0; i <= CellCollection.SIZE; i = i + 3) {
-            float x = (i * mCellWidth) + paddingLeft;
-            canvas.drawRect(x - boxLineWidth1, paddingTop, x + boxLineWidth2, height, mBoxLinePaint);
+        for (int c = 0; c <= CellCollection.SIZE; c = c + 3) {
+            float x = (c * mCellWidth) + paddingLeft;
+            canvas.drawRect(x - sectorLineWidth1, paddingTop, x + sectorLineWidth2, height, mSectorLinePaint);
         }
 
-        for (int i = 0; i <= CellCollection.SIZE; i = i + 3) {
-            float y = (i * mCellHeight) + paddingTop;
-            canvas.drawRect(paddingLeft, y - boxLineWidth1, width, y + boxLineWidth2, mBoxLinePaint);
+        for (int r = 0; r <= CellCollection.SIZE; r = r + 3) {
+            float y = r * mCellHeight + paddingTop;
+            canvas.drawRect(paddingLeft, y - sectorLineWidth1, width, y + sectorLineWidth2, mSectorLinePaint);
         }
-    }
 
-    private void setCellValue(Cell cell, int value) {
-        if (cell.isEditable()) {
-            cell.setValue(value);
-        }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!mReadOnly) {
+        if (!mReadonly) {
             int x = (int) event.getX();
             int y = (int) event.getY();
 
@@ -491,14 +493,13 @@ public class SudokuBoard extends View {
                     invalidate();
 
                     if (mSelectedCell != null) {
-                        onTappedCell(mSelectedCell);
-                        onSelectedCell(mSelectedCell);
+                        onCellTapped(mSelectedCell);
+                        onCellSelected(mSelectedCell);
                     }
 
                     if (mAutoHideTouchedCellHint) {
                         mTouchedCell = null;
                     }
-
                     break;
                 case MotionEvent.ACTION_CANCEL:
                     mTouchedCell = null;
@@ -507,12 +508,12 @@ public class SudokuBoard extends View {
             postInvalidate();
         }
 
-        return !mReadOnly;
+        return !mReadonly;
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (!mReadOnly) {
+        if (!mReadonly) {
             switch (keyCode) {
                 case KeyEvent.KEYCODE_DPAD_UP:
                     return moveCellSelection(0, -1);
@@ -526,13 +527,13 @@ public class SudokuBoard extends View {
                 case KeyEvent.KEYCODE_SPACE:
                 case KeyEvent.KEYCODE_DEL:
                     if (mSelectedCell != null) {
-                        setCellValue(mSelectedCell, 0);
-                        moveCellSelectionRight();
+                            setCellValue(mSelectedCell, 0);
+                            moveCellSelectionRight();
                     }
                     return true;
                 case KeyEvent.KEYCODE_DPAD_CENTER:
                     if (mSelectedCell != null) {
-                        onTappedCell(mSelectedCell);
+                        onCellTapped(mSelectedCell);
                     }
                     return true;
             }
@@ -554,32 +555,42 @@ public class SudokuBoard extends View {
 
     public void moveCellSelectionRight() {
         if (!moveCellSelection(1, 0)) {
-            int selectedRow = mSelectedCell.getRow();
-            selectedRow++;
-            if (!moveSelectionTo(selectedRow, 0)) {
-                moveSelectionTo(0, 0);
+            int selRow = mSelectedCell.getRow();
+            selRow++;
+            if (!moveCellSelectionTo(selRow, 0)) {
+                moveCellSelectionTo(0, 0);
             }
         }
         postInvalidate();
     }
 
-    private boolean moveCellSelection(int x, int y) {
+    private void setCellValue(Cell cell, int value) {
+        if (cell.isEditable()) {
+            if (mGame != null) {
+                mGame.setCellValue(cell, value);
+            } else {
+                cell.setValue(value);
+            }
+        }
+    }
+
+    private boolean moveCellSelection(int vx, int vy) {
         int newRow = 0;
         int newCol = 0;
 
         if (mSelectedCell != null) {
-            newRow = mSelectedCell.getRow() + y;
-            newCol = mSelectedCell.getColumn() + x;
+            newRow = mSelectedCell.getRow() + vy;
+            newCol = mSelectedCell.getColumn() + vx;
         }
 
-        return moveSelectionTo(newRow, newCol);
+        return moveCellSelectionTo(newRow, newCol);
     }
 
-    public boolean moveSelectionTo(int row, int col) {
+    public boolean moveCellSelectionTo(int row, int col) {
         if (col >= 0 && col < CellCollection.SIZE
                 && row >= 0 && row < CellCollection.SIZE) {
             mSelectedCell = mCells.getCell(row, col);
-            onSelectedCell(mSelectedCell);
+            onCellSelected(mSelectedCell);
 
             postInvalidate();
             return true;
@@ -590,22 +601,23 @@ public class SudokuBoard extends View {
 
     public void clearCellSelection() {
         mSelectedCell = null;
-        onSelectedCell(mSelectedCell);
+        onCellSelected(mSelectedCell);
         postInvalidate();
     }
 
     private Cell getCellAtPoint(int x, int y) {
-        // take into account padding
-        int posX = x - getPaddingLeft();
-        int posY = y - getPaddingTop();
+        int lx = x - getPaddingLeft();
+        int ly = y - getPaddingTop();
 
-        int row = (int) (posX / mCellHeight);
-        int col = (int) (posY / mCellWidth);
+        int row = (int) (ly / mCellHeight);
+        int col = (int) (lx / mCellWidth);
 
-        if (col >= 0 && col < CellCollection.SIZE && row >= 0 && row < CellCollection.SIZE)
+        if (col >= 0 && col < CellCollection.SIZE
+                && row >= 0 && row < CellCollection.SIZE) {
             return mCells.getCell(row, col);
-        else
+        } else {
             return null;
+        }
     }
 
     public interface OnCellTappedListener {

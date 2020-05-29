@@ -20,9 +20,9 @@ public class CellCollection {
     public static CellCollection initBoardEmpty() {
         Cell[][] arrCells = new Cell[SIZE][SIZE];
 
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                arrCells[i][j] = new Cell();
+        for (int r = 0; r < SIZE; r++) {
+            for (int c = 0; c < SIZE; c++) {
+                arrCells[r][c] = new Cell();
             }
         }
 
@@ -30,9 +30,9 @@ public class CellCollection {
     }
 
     public boolean isEmpty() {
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                Cell cell = mCells[i][j];
+        for (int r = 0; r < SIZE; r++) {
+            for (int c = 0; c < SIZE; c++) {
+                Cell cell = mCells[r][c];
                 if (cell.getValue() != 0)
                     return false;
             }
@@ -48,8 +48,8 @@ public class CellCollection {
         Cell[][] cells = new Cell[SIZE][SIZE];
 
         int pos = 0;
-        for (int i = 0; i < CellCollection.SIZE; i++) {
-            for (int j = 0; j < CellCollection.SIZE; j++) {
+        for (int r = 0; r < CellCollection.SIZE; r++) {
+            for (int c = 0; c < CellCollection.SIZE; c++) {
                 int value = 0;
                 while (pos < data.length()) {
                     pos++;
@@ -62,7 +62,7 @@ public class CellCollection {
                 Cell cell = new Cell();
                 cell.setValue(value);
                 cell.setEditable(value == 0);
-                cells[i][j] = cell;
+                cells[r][c] = cell;
             }
         }
 
@@ -80,10 +80,10 @@ public class CellCollection {
             mBoxes[i] = new CellGroup();
         }
 
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                Cell cell = mCells[i][j];
-                cell.initCollection(this, i, j, mBoxes[((j / 3) * 3) + (i / 3)], mRows[j], mCols[i]);
+        for (int r = 0; r < SIZE; r++) {
+            for (int c = 0; c < SIZE; c++) {
+                Cell cell = mCells[r][c];
+                cell.initCollection(this, r, c, mBoxes[((c / 3) * 3) + (r / 3)], mRows[c], mCols[r]);
             }
         }
     }
@@ -99,9 +99,9 @@ public class CellCollection {
 
 
     public Cell findCellByValue(int value) {
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                Cell cell = mCells[i][j];
+        for (int r = 0; r < SIZE; r++) {
+            for (int c = 0; c < SIZE; c++) {
+                Cell cell = mCells[r][c];
                 if (cell.getValue() == value)
                     return cell;
             }
@@ -113,9 +113,9 @@ public class CellCollection {
 
     public void markAllCellsValid() {
         changeEnabled = false;
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                mCells[i][j].setValid(true);
+        for (int r = 0; r < SIZE; r++) {
+            for (int c = 0; c < SIZE; c++) {
+                mCells[r][c].setValid(true);
             }
         }
         changeEnabled = true;
@@ -154,9 +154,9 @@ public class CellCollection {
     }
 
     public boolean isCompleted() {
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                Cell cell = mCells[i][j];
+        for (int r = 0; r < SIZE; r++) {
+            for (int c = 0; c < SIZE; c++) {
+                Cell cell = mCells[r][c];
                 if (cell.getValue() == 0 || !cell.isValid()) {
                     return false;
                 }
@@ -167,18 +167,18 @@ public class CellCollection {
     }
 
     public void markAllCellsEditable() {
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                Cell cell = mCells[i][j];
+        for (int r = 0; r < SIZE; r++) {
+            for (int c = 0; c < SIZE; c++) {
+                Cell cell = mCells[r][c];
                 cell.setEditable(true);
             }
         }
     }
 
     public void markGeneratedCellsNotEditable() {
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                Cell cell = mCells[i][j];
+        for (int r = 0; r < SIZE; r++) {
+            for (int c = 0; c < SIZE; c++) {
+                Cell cell = mCells[r][c];
                 if(cell.getValue() != 0)
                     cell.setEditable(false);
             }
@@ -191,9 +191,9 @@ public class CellCollection {
             valsUsed.put(val, 0);
         }
 
-        for (int i = 0; i < CellCollection.SIZE; i++) {
-            for (int j = 0; j < CellCollection.SIZE; j++) {
-                int val = this.getCell(i, j).getValue();
+        for (int r = 0; r < CellCollection.SIZE; r++) {
+            for (int c = 0; c < CellCollection.SIZE; c++) {
+                int val = this.getCell(r, c).getValue();
                 if (val != 0) {
                     valsUsed.put(val, valsUsed.get(val) + 1);
                 }
