@@ -52,13 +52,13 @@ public class CellCollection {
             for (int j = 0; j < CellCollection.SIZE; j++) {
                 int value = 0;
                 while (pos < data.length()) {
-                    if (data.charAt(pos) >= '0'
-                            && data.charAt(pos) <= '9') {
-                        value = data.charAt(pos) - '0';
+                    pos++;
+                    if (data.charAt(pos - 1) >= '0' && data.charAt(pos - 1) <= '9') {
+                        value = data.charAt(pos - 1) - '0';
                         break;
                     }
-                    pos++;
                 }
+
                 Cell cell = new Cell();
                 cell.setValue(value);
                 cell.setEditable(value == 0);

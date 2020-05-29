@@ -44,6 +44,7 @@ public class SudokuActivity extends Activity {
     private Button mUndoBtn;
     private Button mResetBtn;
     private Button mHintBtn;
+    private Button mInputMethodBtn;
 
     private Menu mMenu;
 
@@ -85,6 +86,10 @@ public class SudokuActivity extends Activity {
         mUndoBtn = findViewById(R.id.undoBtn);
         mResetBtn = findViewById(R.id.resetBtn);
         mHintBtn = findViewById(R.id.hintBtn);
+        mInputMethodBtn = findViewById(R.id.switchInputTypeBtn);
+
+        View numpad = findViewById(R.id.numpadLayout);
+        numpad.setVisibility(View.GONE);
 
         numOfHints = 3;
 
@@ -156,6 +161,17 @@ public class SudokuActivity extends Activity {
                     }
                 }
                 else noHintLeftDialog.show();
+            }
+        });
+
+        mInputMethodBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mControl.activateNextInputMethod();
+                View numpad = findViewById(R.id.numpadLayout);
+                if(numpad.getVisibility() == View.VISIBLE)
+                    numpad.setVisibility(View.GONE);
+                else numpad.setVisibility(View.VISIBLE);
             }
         });
 
@@ -302,6 +318,9 @@ public class SudokuActivity extends Activity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
+        menu.findItem(MENU_ITEM_RESTART).setEnabled(true);
+        menu.findItem(MENU_ITEM_DIFFICULTY).setEnabled(true);
+        menu.findItem(MENU_ITEM_SHOWTIME).setEnabled(true);
         return true;
     }
 

@@ -73,7 +73,6 @@ public class InputControl extends RelativeLayout {
         if (id != -1) {
             while (numOfCycles <= mInputMethods.size()) {
                 if (mInputMethods.get(id).isEnabled()) {
-                    ensureControl(id);
                     idIsFound = true;
                     break;
                 }
@@ -153,16 +152,6 @@ public class InputControl extends RelativeLayout {
         mInputMethods.add(methodIndex, method);
     }
 
-    private void ensureControl(int methodID) {
-        InputMethod method = mInputMethods.get(methodID);
-        if (!method.haveInputMethodView()) {
-            View controlPanel = method.getInputMethodView();
-            Button switchModeButton = controlPanel.findViewById(R.id.switchInputTypeBtn);
-            switchModeButton.setOnClickListener(mSwitchModeListener);
-            this.addView(controlPanel, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-        }
-    }
-
     private OnCellTappedListener mOnCellTapListener = cell -> {
         if (mActiveMethodIndex != -1 && mInputMethods != null) {
             mInputMethods.get(mActiveMethodIndex).onCellTapped(cell);
@@ -174,6 +163,4 @@ public class InputControl extends RelativeLayout {
             mInputMethods.get(mActiveMethodIndex).onCellSelected(cell);
         }
     };
-
-    private OnClickListener mSwitchModeListener = v -> activateNextInputMethod();
 }
