@@ -147,10 +147,10 @@ public class InputControl extends LinearLayout {
     }
 
     private void createInputMethods() {
-        if (mInputMethods.size() == 0) {
-            addInputMethod(INPUT_METHOD_POPUP, new PopUpNumpadMethod());
-            addInputMethod(INPUT_METHOD_NUMPAD, new NumpadMethod());
-        }
+        if(mInputMethods.size() != 0)
+            mInputMethods.clear();
+        addInputMethod(INPUT_METHOD_POPUP, new PopUpNumpadMethod());
+        addInputMethod(INPUT_METHOD_NUMPAD, new NumpadMethod());
     }
 
     private void addInputMethod(int methodIndex, InputMethod method) {

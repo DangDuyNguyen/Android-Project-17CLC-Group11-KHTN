@@ -74,9 +74,23 @@ public class PopUpNumpad extends Dialog {
         }
 
         Button closeButton = v.findViewById(R.id.closeBtn);
-        closeButton.setOnClickListener(closeButtonListener);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
         Button clearButton = v.findViewById(R.id.clearBtn);
-        clearButton.setOnClickListener(clearButtonListener);
+        clearButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnNumberEditListener != null) {
+                    mOnNumberEditListener.onNumberEdit(0);
+                }
+                dismiss();
+            }
+        });
 
         return v;
     }
@@ -89,24 +103,6 @@ public class PopUpNumpad extends Dialog {
             if (mOnNumberEditListener != null) {
                 mOnNumberEditListener.onNumberEdit(number);
             }
-            dismiss();
-        }
-    };
-
-    private View.OnClickListener clearButtonListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (mOnNumberEditListener != null) {
-                mOnNumberEditListener.onNumberEdit(0);
-            }
-            dismiss();
-        }
-    };
-
-    private View.OnClickListener closeButtonListener = new View.OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
             dismiss();
         }
     };

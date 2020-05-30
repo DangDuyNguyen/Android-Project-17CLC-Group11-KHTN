@@ -91,14 +91,14 @@ public class SudokuActivity extends AppCompatActivity {
 
         mNumOfHints = 3;
 
+        mControlState = new InputControlState(this);
+
         mSudokuList = mDB.getSudokuId(mLevel);
         if(!mSudokuList.isEmpty())
         {
             mCurrentSudokuIndex = 0;
             loadGame(mCurrentSudokuIndex);
         }
-
-        mControlState = new InputControlState(this);
 
         restartDialog = new AlertDialog.Builder(this)
                 .setIcon(R.drawable.ic_restart_icon)
@@ -151,14 +151,17 @@ public class SudokuActivity extends AppCompatActivity {
         if(!mShowTime)
             setTitle(R.string.app_name);
 
+        mControl.init(mSudokuBoard, mCurrentSudokuGame, mNumOfHints);
+        mPopupNumpad = mControl.getInputMethod(InputControl.INPUT_METHOD_POPUP);
+        mNumpad = mControl.getInputMethod(InputControl.INPUT_METHOD_NUMPAD);
+        mControl.activate1stInputMethod();
+        mControlState.restoreState(mControl);
+
         Cell cell = mCurrentSudokuGame.getLastChangedCell();
         if (cell != null && !mSudokuBoard.isReadOnly())
             mSudokuBoard.moveCellSelectionTo(cell.getRow(), cell.getColumn());
         else
             mSudokuBoard.moveCellSelectionTo(0, 0);
-        mControl.init(mSudokuBoard, mCurrentSudokuGame, mNumOfHints);
-        mPopupNumpad = mControl.getInputMethod(InputControl.INPUT_METHOD_POPUP);
-        mNumpad = mControl.getInputMethod(InputControl.INPUT_METHOD_NUMPAD);
     }
 
     @Override
@@ -181,9 +184,6 @@ public class SudokuActivity extends AppCompatActivity {
         mPopupNumpad.setShowNumberTotals(false);
         mNumpad.setHighlightCompletedValues(true);
         mNumpad.setShowNumberTotals(false);
-
-        mControl.activate1stInputMethod();
-        mControlState.restoreState(mControl);
 
         if (!mSudokuBoard.isReadOnly()) {
             mSudokuBoard.invokeOnCellSelected();

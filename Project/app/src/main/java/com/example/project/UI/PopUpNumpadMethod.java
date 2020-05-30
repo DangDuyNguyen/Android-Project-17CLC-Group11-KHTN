@@ -89,7 +89,6 @@ public class PopUpNumpadMethod extends InputMethod {
 
     @Override
     protected void onPause() {
-        // release dialog resource (otherwise WindowLeaked exception is logged)
         if (mNumpad != null) {
             mNumpad.cancel();
         }

@@ -48,7 +48,6 @@ public class SudokuBoard extends View {
     private Paint mCellValueReadonlyPaint;
     private int mNumberLeft;
     private int mNumberTop;
-    private float mNoteTop;
     private int mSectorLineWidth;
     private Paint mColorSecondary;
     private Paint mColorReadOnly;
@@ -246,8 +245,8 @@ public class SudokuBoard extends View {
         return mHighlightedValue;
     }
 
-    public void setOnCellTappedListener(OnCellTappedListener l) {
-        mOnCellTappedListener = l;
+    public void setOnCellTappedListener(OnCellTappedListener listener) {
+        mOnCellTappedListener = listener;
     }
 
     protected void onCellTapped(Cell cell) {
@@ -256,8 +255,8 @@ public class SudokuBoard extends View {
         }
     }
 
-    public void setOnCellSelectedListener(OnCellSelectedListener l) {
-        mOnCellSelectedListener = l;
+    public void setOnCellSelectedListener(OnCellSelectedListener listener) {
+        mOnCellSelectedListener = listener;
     }
 
     public void hideTouchedCellHint() {
@@ -324,12 +323,9 @@ public class SudokuBoard extends View {
         mCellValuePaint.setTextSize(cellTextSize);
         mCellValueReadonlyPaint.setTextSize(cellTextSize);
         mCellValueInvalidPaint.setTextSize(cellTextSize);
-        // compute offsets in each cell to center the rendered number
+
         mNumberLeft = (int) ((mCellWidth - mCellValuePaint.measureText("9")) / 2);
         mNumberTop = (int) ((mCellHeight - mCellValuePaint.getTextSize()) / 2);
-
-        // add some offset because in some resolutions notes are cut-off in the top
-        mNoteTop = mCellHeight / 50.0f;
 
         computeSectorLineWidth(width, height);
     }
@@ -389,7 +385,6 @@ public class SudokuBoard extends View {
                         }
                     }
 
-                    // highlight similar cells
                     boolean cellIsNotAlreadySelected = (mSelectedCell == null || mSelectedCell != cell);
                     boolean highlightedValueIsValid = mHighlightedValue != 0;
                     boolean shouldHighlightCell = false;
