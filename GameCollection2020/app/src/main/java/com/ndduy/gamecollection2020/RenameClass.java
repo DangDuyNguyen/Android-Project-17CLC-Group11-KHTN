@@ -34,7 +34,7 @@ class RenameClass {
 
         //Specify the length and width through constants
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
-        int height = 400;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
 
         //Make Inactive Items Outside Of PopupWindow
         boolean focusable = true;

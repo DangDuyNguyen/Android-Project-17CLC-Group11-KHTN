@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -49,7 +50,10 @@ public class AnimalRacingActivity extends Activity {
         final CountDownTimer countDownTimer = new CountDownTimer(60000,50) {
             @Override
             public void onTick(long l) {
-                int goal = 860;
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                int device_width = displayMetrics.widthPixels;
+                int goal = device_width*80/100;
 
                 // thuật toán chính của chương trình
                 Random random = new Random();

@@ -23,6 +23,7 @@
             android:name=".AnimalRacingActivity"
             android:label="Game Collection 2020!" >
         </activity>
+
     </application>
 
 </manifest>

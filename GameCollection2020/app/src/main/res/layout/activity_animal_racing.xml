@@ -58,7 +58,6 @@
         android:layout_marginTop="325dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="26dp"
-
         android:adjustViewBounds="false"
         android:paddingLeft="0dp"
         android:scaleType="fitStart"
@@ -77,7 +76,6 @@
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="26dp"
         android:adjustViewBounds="false"
-
         android:paddingLeft="0dp"
         android:scaleType="fitStart"
         android:src="@drawable/frogidle"
@@ -94,7 +92,6 @@
         android:layout_marginTop="476dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="205dp"
-
         android:adjustViewBounds="false"
         android:paddingLeft="0dp"
         android:scaleType="fitStart"
@@ -270,8 +267,6 @@
                     android:id="@+id/pictureplayer2"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-
-
                     android:layout_weight="1"
                     android:src="@drawable/frogidle"
                     tools:ignore="MissingConstraints" />

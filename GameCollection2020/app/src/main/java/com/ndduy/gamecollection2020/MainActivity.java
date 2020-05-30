@@ -1,17 +1,26 @@
 package com.ndduy.gamecollection2020;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.ActivityManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.List;
 //import com.google.android.gms.games.snapshot;
 
 
@@ -26,7 +35,19 @@ public class MainActivity extends FragmentActivity {
     LobbyFragment lobbyFrag = new LobbyFragment();
     StoreFragment storeFrag = new StoreFragment();
 
+    MediaPlayer backgroundMusic;
+    @Override
+    protected void onPause() {
+        super.onPause();
+        backgroundMusic.pause();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        backgroundMusic.seekTo(0);
+        backgroundMusic.start();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +61,12 @@ public class MainActivity extends FragmentActivity {
         final Button setting_btn = (Button) findViewById(R.id.setting_btn);
         final EditText nameChange = (EditText) findViewById(R.id.name);
 
+        /*set background music for the game*/
+        backgroundMusic = MediaPlayer.create(this, R.raw.maintheme);
+        backgroundMusic.setLooping(true); // Set looping
+        backgroundMusic.setVolume(100, 100);
+
+        /*get adapter for viewpager for the tablayout*/
         final PageAdapter adapter = new PageAdapter(getSupportFragmentManager(), 1);
 
         adapter.addFragment(gameFrag, "Game");
@@ -80,5 +107,20 @@ public class MainActivity extends FragmentActivity {
         Intent receiver = getIntent();
         int extraCoin = receiver.getIntExtra("coin", 0);
 
+
+        //receive data with key "volume"
+        getSupportFragmentManager().setFragmentResultListener("volume", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                int vol_request = result.getInt("volume");
+                if (vol_request == 0)
+                    backgroundMusic.pause();
+                else if (vol_request == 1) {
+                    backgroundMusic.seekTo(0);
+                    backgroundMusic.start();
+                }
+            }
+        });
     }
+
 }

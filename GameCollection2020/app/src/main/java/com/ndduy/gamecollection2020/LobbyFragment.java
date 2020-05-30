@@ -22,6 +22,8 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -85,7 +87,7 @@ public class LobbyFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 SettingClass editClass = new SettingClass();
-                editClass.showPopupWindow(v);
+                editClass.showPopupWindow(v, getParentFragmentManager());
             }
         });
 
