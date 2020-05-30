@@ -1,35 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/difficulty_choices"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:padding="4dp">
+    android:padding="20dp" >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:text="Select Difficulty"
+        android:textStyle="bold"
+        android:id="@+id/titleTxt"/>
     <RadioGroup
-        android:id="@+id/difficultyChoices"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/choices" >
         <RadioButton
-            android:id="@+id/endlessBtn"
-            android:layout_width="match_parent"
+            android:id="@+id/endlessMode"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Endless Mode" />
-
+            android:text="Endless Mode"
+            android:textSize="25dp" />
         <RadioButton
-            android:id="@+id/easyBtn"
-            android:layout_width="match_parent"
+            android:id="@+id/easyMode"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Easy" />
-
+            android:text="Easy Mode"
+            android:textSize="25dp" />
         <RadioButton
-            android:id="@+id/mediumBtn"
-            android:layout_width="match_parent"
+            android:id="@+id/mediumMode"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Medium" />
-
+            android:text="Medium Mode"
+            android:textSize="25dp" />
         <RadioButton
-            android:id="@+id/hardBtn"
-            android:layout_width="match_parent"
+            android:id="@+id/hardMode"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hard" />
+            android:text="Hard Mode"
+            android:textSize="25dp" />
     </RadioGroup>
 </LinearLayout>

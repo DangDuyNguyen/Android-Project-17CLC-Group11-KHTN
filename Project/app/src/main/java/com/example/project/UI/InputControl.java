@@ -211,6 +211,7 @@ public class InputControl extends LinearLayout {
                         if (cell != null && cell.isEditable()) {
                             if (mGame.isSolvable()) {
                                 mGame.solveCell(cell);
+                                //mNumOfHints--;
                             }
                             else {
                                 puzzleCannotSolveDialog.show();
@@ -244,6 +245,8 @@ public class InputControl extends LinearLayout {
             mInputMethods.get(mActiveMethodIndex).onCellSelected(cell);
         }
     };
+
+    public int getNumOfHints() { return mNumOfHints; }
 
     private OnClickListener mSwitchModeListener = v -> activateNextInputMethod();
 }

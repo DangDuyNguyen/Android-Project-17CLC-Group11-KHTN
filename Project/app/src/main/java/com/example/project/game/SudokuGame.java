@@ -33,8 +33,8 @@ public class SudokuGame {
         mLevelId = 0;
     }
 
-    public void setOnPuzzleSolvedListener(OnPuzzleSolvedListener l) {
-        mOnPuzzleSolvedListener = l;
+    public void setOnPuzzleSolvedListener(OnPuzzleSolvedListener listener) {
+        mOnPuzzleSolvedListener = listener;
     }
 
     public void setLevelId(long lvId) {
