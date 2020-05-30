@@ -8,11 +8,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.Random;
 
@@ -22,20 +25,23 @@ import pl.droidsonroids.gif.GifImageView;
 public class AnimalRacingActivity extends Activity {
     CheckBox cb_player1,cb_player2, cb_player3;
     RadioButton breezeBtn,windyBtn,stormBtn;
-    ImageView iv_play;
+    ImageView iv_play,weather;
     TextView tv_point;
     Button bt_continue;
-    RadioGroup group_btn;
+    FrameLayout choosing;
+    RadioGroup group;
     int windPower;
-    GifImageView  player1,player2,player3;
+    GifImageView  player1,player2,player3,cloud,pictureplayer1,pictureplayer2,pictureplayer3;
+    ConstraintLayout layout;
+    Button AR_close_btn;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_animal_racing);
         mapping();// hàm thực hiện ánh xạ
-
+        hidden();
         ///////////////////////////////
         // ẩn nút Replay trước khi bắt đầu
         bt_continue.setVisibility(View.INVISIBLE);
@@ -43,7 +49,7 @@ public class AnimalRacingActivity extends Activity {
         final CountDownTimer countDownTimer = new CountDownTimer(60000,50) {
             @Override
             public void onTick(long l) {
-                int goal = 750;
+                int goal = 860;
 
                 // thuật toán chính của chương trình
                 Random random = new Random();
@@ -51,7 +57,7 @@ public class AnimalRacingActivity extends Activity {
 
                 player2.setPadding(player2.getPaddingLeft()+random.nextInt(10+10)-windPower,0,0,0);
 
-                player3.setPadding(player2.getPaddingLeft()+random.nextInt(10+10)-windPower,0,0,0);
+                player3.setPadding(player3.getPaddingLeft()+random.nextInt(10+10)-windPower,0,0,0);
 
                 int chosen = isChosen();
                 if(player1.getPaddingLeft()>=goal && chosen ==1)
@@ -61,9 +67,7 @@ public class AnimalRacingActivity extends Activity {
                     player3.setImageResource(R.drawable.blueguylose);
 
                     this.cancel();
-                    Toast.makeText(AnimalRacingActivity.this, "You win", Toast.LENGTH_SHORT).show();
-                    tv_point.setText(Integer.parseInt(tv_point.getText().toString())+10+"");
-                    bt_continue.setVisibility(View.VISIBLE);
+                    win();
                 }
                 else if(player2.getPaddingLeft()>=goal && chosen ==2)
                 {
@@ -72,9 +76,7 @@ public class AnimalRacingActivity extends Activity {
                     player1.setImageResource(R.drawable.pinkguylose);
 
                     this.cancel();
-                    Toast.makeText(AnimalRacingActivity.this, "You win ", Toast.LENGTH_SHORT).show();
-                    tv_point.setText(Integer.parseInt(tv_point.getText().toString())+10+"");
-                    bt_continue.setVisibility(View.VISIBLE);
+                    win();
                 }
                 else if(player3.getPaddingLeft()>=goal && chosen ==3)
                 {
@@ -83,9 +85,7 @@ public class AnimalRacingActivity extends Activity {
                     player2.setImageResource(R.drawable.froglose);
 
                     this.cancel();
-                    Toast.makeText(AnimalRacingActivity.this, "You win", Toast.LENGTH_SHORT).show();
-                    bt_continue.setVisibility(View.VISIBLE);
-                    tv_point.setText(Integer.parseInt(tv_point.getText().toString())+10+"");
+                    win();
                 }
                 if((player1.getPaddingLeft()>=goal && chosen !=1)||(player2.getPaddingLeft()>=goal && chosen !=2)||(player3.getPaddingLeft()>=goal && chosen != 3))
                 {
@@ -106,9 +106,7 @@ public class AnimalRacingActivity extends Activity {
                         player3.setImageResource(R.drawable.blueguylose);
                     }
                     this.cancel();
-                    Toast.makeText(AnimalRacingActivity.this, "You lose", Toast.LENGTH_SHORT).show();
-                    bt_continue.setVisibility(View.VISIBLE);
-                    tv_point.setText(Integer.parseInt(tv_point.getText().toString())-10+"");
+                    lose();
                 }
 
             }
@@ -136,9 +134,10 @@ public class AnimalRacingActivity extends Activity {
                         //=============== nếu sửa để thoát thì ở đây====================
                         tv_point.setText("100");
                     }
+                    reveal();
                     iv_play.setVisibility(View.INVISIBLE);
                     bt_continue.setVisibility(View.INVISIBLE);
-                    group_btn.setVisibility(View.INVISIBLE);
+                    choosing.setVisibility(View.INVISIBLE);
 
                     // khi bắt đầu chơi thì chặn người dùng thao tác checkbox --. tránh việc người dùng chọn lại
                     disable();
@@ -147,6 +146,21 @@ public class AnimalRacingActivity extends Activity {
                     player2.setImageResource(R.drawable.frogrun);
                     player3.setImageResource(R.drawable.blueboyrun);
                     windPower=isWindChosen();
+
+                    switch (windPower){
+                        case 3:
+                            cloud.setImageResource(R.drawable.cloud);
+                            layout.setBackgroundResource(R.drawable.track);
+                            break;
+                        case 5:
+                            cloud.setImageResource(R.drawable.cloud);
+                            layout.setBackgroundResource(R.drawable.stormtrack);
+                            break;
+                        case 7:
+                            cloud.setImageResource(R.drawable.stormcloud);
+                            layout.setBackgroundResource(R.drawable.stormtrack);
+                            break;
+                    }
 
                     countDownTimer.start();
                 }
@@ -165,10 +179,10 @@ public class AnimalRacingActivity extends Activity {
                 player3.setImageResource(R.drawable.blueboyidle);
                 // cho phép thao tác với checkbox để chọn con vật
                 enable();
-
+                hidden();
                 // hiện button play và ẩn button Continue
                 iv_play.setVisibility(View.VISIBLE);
-                group_btn.setVisibility(View.VISIBLE);
+                choosing.setVisibility(View.VISIBLE);
                 bt_continue.setVisibility(View.INVISIBLE);
             }
         });
@@ -179,8 +193,13 @@ public class AnimalRacingActivity extends Activity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b)
                 {
+                    enable();
+                    cb_player1.setEnabled(false);
                     cb_player2.setChecked(false);
                     cb_player3.setChecked(false);
+                    pictureplayer1.setImageResource(R.drawable.pinkguyrun);
+                    pictureplayer2.setImageResource(R.drawable.frogidle);
+                    pictureplayer3.setImageResource(R.drawable.blueboyidle);
                 }
             }
         });
@@ -189,8 +208,13 @@ public class AnimalRacingActivity extends Activity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b)
                 {
+                    enable();
+                    cb_player2.setEnabled(false);
                     cb_player3.setChecked(false);
                     cb_player1.setChecked(false);
+                    pictureplayer1.setImageResource(R.drawable.pinkguyidle);
+                    pictureplayer2.setImageResource(R.drawable.frogrun);
+                    pictureplayer3.setImageResource(R.drawable.blueboyidle);
                 }
             }
         });
@@ -199,17 +223,45 @@ public class AnimalRacingActivity extends Activity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b)
                 {
+                    enable();
+                    cb_player3.setEnabled(false);
                     cb_player2.setChecked(false);
                     cb_player1.setChecked(false);
+                    pictureplayer1.setImageResource(R.drawable.pinkguyidle);
+                    pictureplayer2.setImageResource(R.drawable.frogidle);
+                    pictureplayer3.setImageResource(R.drawable.blueboyrun);
                 }
             }
         });
 
+        group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (isWindChosen()){
+                    case 2:
+                        weather.setImageResource(R.drawable.breeze);
+                        break;
+                    case 5:
+                        weather.setImageResource(R.drawable.windy);
+                        break;
+                    case 7:
+                        weather.setImageResource(R.drawable.storm);
+                        break;
+                }
+            }
+        });
 
-        /*Intent intent = new Intent();
-        intent.putExtra("coin", convertToCoin(Integer.parseInt(tv_point.getText().toString())));
-        setResult(RESULT_OK, intent);
-        finish();*/
+        //this button will send score to main lobby and close this activity
+        AR_close_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("coin", convertToCoin(Integer.parseInt(tv_point.getText().toString())));
+                setResult(Activity.RESULT_OK,returnIntent);
+                finish();
+            }
+        });
+
     }
     private void mapping()
     {
@@ -221,14 +273,26 @@ public class AnimalRacingActivity extends Activity {
         player2= (GifImageView) findViewById(R.id.player2);
         player3=(GifImageView) findViewById(R.id.player3);
 
+        pictureplayer1=findViewById(R.id.pictureplayer1);
+        pictureplayer2=findViewById(R.id.pictureplayer2);
+        pictureplayer3=findViewById(R.id.pictureplayer3);
+
         breezeBtn= (RadioButton) findViewById(R.id.breezeBtn);
         windyBtn=(RadioButton)findViewById(R.id.windyBtn);
         stormBtn=(RadioButton)findViewById(R.id.stormBtn);
 
+        cloud = (GifImageView)findViewById(R.id.cloud) ;
+        layout= (ConstraintLayout)findViewById(R.id.background);
+
         tv_point = (TextView)findViewById(R.id.TextView_point);
         iv_play = (ImageView)findViewById(R.id.ImageView_play);
-        group_btn= (RadioGroup)findViewById(R.id.group_Btn);
+        weather = findViewById(R.id.weather);
+        choosing=findViewById(R.id.choosing);
+        group=findViewById(R.id.group);
+
         bt_continue = (Button)findViewById(R.id.Button_replay);
+
+        AR_close_btn = (Button)findViewById(R.id.AR_close_button);
     }
     // trả về lựa chọn của người chơi
     private int isChosen()
@@ -241,6 +305,7 @@ public class AnimalRacingActivity extends Activity {
             return 3;
         return 0;
     }
+
     private int isWindChosen()
     {
         if(breezeBtn.isChecked())
@@ -268,7 +333,36 @@ public class AnimalRacingActivity extends Activity {
 
     }
 
-    /*private int convertToCoin(int score){
+    private void hidden()
+    {
+        player1.setVisibility(View.INVISIBLE);
+        player2.setVisibility(View.INVISIBLE);
+        player3.setVisibility(View.INVISIBLE);
+    }
+
+    private void reveal()
+    {
+        player1.setVisibility(View.VISIBLE);
+        player2.setVisibility(View.VISIBLE);
+        player3.setVisibility(View.VISIBLE);
+    }
+
+    private void win()
+    {
+        Toast.makeText(AnimalRacingActivity.this, "You win", Toast.LENGTH_SHORT).show();
+        tv_point.setText(Integer.parseInt(tv_point.getText().toString())+10+"");
+        bt_continue.setVisibility(View.VISIBLE);
+    }
+
+    private void lose()
+    {
+        Toast.makeText(AnimalRacingActivity.this, "You lose", Toast.LENGTH_SHORT).show();
+        bt_continue.setVisibility(View.VISIBLE);
+        tv_point.setText(Integer.parseInt(tv_point.getText().toString())-10+"");
+    }
+
+    //convert from score to coin
+    private int convertToCoin(int score){
         return score*20/100;
-    }*/
+    }
 }

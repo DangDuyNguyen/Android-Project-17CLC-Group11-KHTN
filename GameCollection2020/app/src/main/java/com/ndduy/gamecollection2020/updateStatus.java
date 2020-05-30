@@ -27,7 +27,7 @@ public class updateStatus extends Service {
         new Thread(new Runnable(){
             public void run() {
                 while (true) {
-                    statuses.get(0).decrease();
+                //    statuses.get(0).decrease();
                 }
             }
         }).start();

@@ -11,6 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Handler;
 import android.text.InputType;
@@ -26,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class LobbyFragment extends Fragment {
 
@@ -86,7 +89,27 @@ public class LobbyFragment extends Fragment {
             }
         });
 
+        hungriness.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getParentFragmentManager().setFragmentResultListener("coin", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                int extraCoin = result.getInt("coin");
+                coin.setText(Integer.toString(Integer.parseInt(coin.getText().toString()) + extraCoin));
+            }
+        });
+
     }
 
     public void readVarUI (View rootView)
