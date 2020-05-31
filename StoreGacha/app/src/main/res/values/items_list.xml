@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="item01" type="string">
+        <name>"pikachu"</name>
+        <image>"pikachu"</image>
+    </item>
+</resources>
