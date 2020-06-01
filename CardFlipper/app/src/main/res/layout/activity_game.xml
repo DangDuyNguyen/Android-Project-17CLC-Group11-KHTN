@@ -43,8 +43,9 @@
             android:numColumns="4"
             android:layout_columnWeight="1"
             android:stretchMode="columnWidth"
-            android:horizontalSpacing = "10dp"
-            android:verticalSpacing   = "10dp"/>
+            android:padding="5dp"
+            android:horizontalSpacing = "15dp"
+            android:verticalSpacing   = "15dp"/>
     </LinearLayout>
 
 </FrameLayout>

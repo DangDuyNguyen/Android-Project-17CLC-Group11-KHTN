@@ -15,12 +15,15 @@ public class GameSystem  {
     public Dialog diff;
     public Button sound;
     public Audio audio;
+    Boolean soundOn;
     ArrayList<Integer>deck = new ArrayList<>();
 
-    public GameSystem(Context context,Audio audio) {
+    public GameSystem(Context context,Audio audio,Boolean soundOn) {
         this.context = context;
         this.audio = audio;
-        audio.TurnOnSound();
+        this.soundOn = soundOn;
+        if (soundOn)
+            audio.TurnOnSound();
         deck.add(R.drawable.card_apple);
         deck.add(R.drawable.card_grape);
         deck.add(R.drawable.card_carrot);
@@ -43,12 +46,14 @@ public class GameSystem  {
         normal = diff.findViewById(R.id.normalButton);
         hard = diff.findViewById(R.id.hardButton);
         this.diff.setCanceledOnTouchOutside(true);
+        final Intent intent = new Intent(context, GameActivity.class);
+        intent.putIntegerArrayListExtra("deck",deck);
+        intent.putExtra("sound",soundOn);
         easy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context,GameActivity.class);
+
                 intent.putExtra("difficult",4);
-                intent.putIntegerArrayListExtra("deck",deck);
                 audio.TurnOffSound();
                 context.startActivity(intent);
             }
@@ -57,10 +62,7 @@ public class GameSystem  {
         normal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context,GameActivity.class);
                 intent.putExtra("difficult",6);
-                intent.putIntegerArrayListExtra("deck",deck);
-
                 audio.TurnOffSound();
                 context.startActivity(intent);
             }
@@ -69,9 +71,7 @@ public class GameSystem  {
         hard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context,GameActivity.class);
                 intent.putExtra("difficult",8);
-                intent.putIntegerArrayListExtra("deck",deck);
                 audio.TurnOffSound();
                 context.startActivity(intent);
             }

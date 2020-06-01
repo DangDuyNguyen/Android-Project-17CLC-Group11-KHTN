@@ -20,7 +20,8 @@ public class Audio extends AsyncTask<Void,Void,Void> {
     }
 
     public void TurnOffSound() {
-            media.pause();
+            if (media.isPlaying())
+                media.pause();
     }
 
     public void TurnOnSound() {

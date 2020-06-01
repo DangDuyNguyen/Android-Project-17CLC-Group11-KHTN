@@ -51,6 +51,7 @@ public class GameActivity extends AppCompatActivity {
         diff = new ArrayList<>();
         diff.add(intent.getIntExtra("difficult", 8)); //lấy độ khó của game
         Deck = intent.getIntegerArrayListExtra("deck");             // lấy set hình của game
+        sound = intent.getBooleanExtra("sound",true);
         setUpComponent();
         setUpComponentListener();
         new BackgroundJob().execute(diff, Deck);
@@ -60,6 +61,7 @@ public class GameActivity extends AppCompatActivity {
     // hàm trở về menu chính
     private void ReturntoMainMenu() {
         Intent intent = new Intent(GameActivity.this, MainActivity.class);
+        intent.putExtra("sound",sound);
         startActivity(intent);
     }
 
@@ -185,17 +187,15 @@ public class GameActivity extends AppCompatActivity {
                 if (first == null) {
                     first = (ImageView) view.findViewById(R.id.card);
                     first.setImageResource(deck.get(position).FlipCard());
-                    first.setEnabled(false);
                     prevPos = position;
                 } else if (second == null) {
                     second = (ImageView) view.findViewById(R.id.card);
                     second.setImageResource(deck.get(position).FlipCard());
-                    second.setEnabled(false);
                     curPos = position;
                 }
-                if (first != null && second != null) {
+                if (curPos != -1 && prevPos != curPos) {
                     BackGroundCheckingState bg = new BackGroundCheckingState();
-                    bg.execute(deck.get(prevPos), deck.get(position));
+                    bg.execute(deck.get(prevPos), deck.get(curPos));
                 }
             }
         });
@@ -225,22 +225,22 @@ public class GameActivity extends AppCompatActivity {
         protected void onPostExecute(Boolean aBoolean) {
             super.onPostExecute(aBoolean);
             try {
-                Thread.sleep(5000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             if (aBoolean == null) return;
             else if (aBoolean == true) {
 
-                first.startAnimation(anim);
-                second.startAnimation(anim);
+                table.getChildAt(prevPos).setVisibility(View.INVISIBLE);
+                table.getChildAt(curPos).setVisibility(View.INVISIBLE);
                 adapter.setItemClickable(prevPos, false);
                 adapter.setItemClickable(curPos, false);
                 player_score += 10;
                 scores.setText("Scores: " + player_score);
                 checkState();
             }
-            else if (aBoolean == false) {
+            else  {
                 first.setImageResource(R.drawable.card_down);
                 second.setImageResource(R.drawable.card_down);
             }

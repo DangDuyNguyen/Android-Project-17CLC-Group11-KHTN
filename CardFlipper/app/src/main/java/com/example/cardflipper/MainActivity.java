@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     GameSystem sys;
     Button playButton;
     ImageButton soundButton;
-    Boolean isSaved;
+    Boolean soundOn;
 
 
     @Override
@@ -30,7 +30,13 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().hide(); //hide the title bar
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        sys = new GameSystem(MainActivity.this,new Audio(getApplicationContext(),R.raw.background));
+        Intent intent = getIntent();
+        soundOn = true;
+        if (intent != null) {
+           soundOn = intent.getBooleanExtra("sound",true);
+
+        }
+        sys = new GameSystem(MainActivity.this,new Audio(getApplicationContext(),R.raw.background),soundOn);
         setupComponent();
     }
 
@@ -46,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         soundButton = (ImageButton) findViewById(R.id.SoundButton);
+        if (soundOn)
+            soundButton.setImageResource(R.drawable.sound_on);
+        else  soundButton.setImageResource(R.drawable.sound_off);
         soundButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,11 +62,13 @@ public class MainActivity extends AppCompatActivity {
                 {
                     soundButton.setImageResource(R.drawable.sound_off);
                     sys.audio.TurnOffSound();
+                    sys.soundOn = false;
                 }
                 else
                 {
                     soundButton.setImageResource(R.drawable.sound_on);
                     sys.audio.TurnOnSound();
+                    sys.soundOn = true;
                 }
             }
         });
