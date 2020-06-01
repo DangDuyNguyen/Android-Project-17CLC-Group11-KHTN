@@ -24,6 +24,13 @@
             android:label="Game Collection 2020!" >
         </activity>
 
+
+        <receiver android:name=".LobbyFragment$StatusUpdateReceiver">
+            <intent-filter>
+                <action android:name="status.action.UpdateStatus" />
+            </intent-filter>
+        </receiver>
+        <service android:name=".UpdateStatus"/>
     </application>
 
 </manifest>

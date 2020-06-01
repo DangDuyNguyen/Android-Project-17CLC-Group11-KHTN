@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "490814675940",
+    "firebase_url": "https://game-collection-2020.firebaseio.com",
+    "project_id": "game-collection-2020",
+    "storage_bucket": "game-collection-2020.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:490814675940:android:dcbd20c54904424d4c85f1",
+        "android_client_info": {
+          "package_name": "com.ndduy.gamecollection2020"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "490814675940-cgp85kclsi5oevhlns4l0sj7k5oqq6c0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2TyKJvfBcWYGoo30Y4yKimrOhS49cLtA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "490814675940-cgp85kclsi5oevhlns4l0sj7k5oqq6c0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
