@@ -28,7 +28,6 @@ public class GameActivity extends AppCompatActivity {
     int prevPos = -1,curPos = -1;
     int player_score = 0;
     Boolean sound = true;
-    Boolean result;
     ImageView first, second, settingButton;
     GridView table;
     Animation anim;
@@ -40,37 +39,31 @@ public class GameActivity extends AppCompatActivity {
     CardAdapter adapter;
     Intent intent;
 
-    public static int getStatusBarHeight(Context context) {
-        int result = 0;
-        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        if (resourceId > 0) {
-            result = context.getResources().getDimensionPixelSize(resourceId);
-        }
-        return result;
-    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        requestWindowFeature(Window.FEATURE_NO_TITLE);//will hide the title
-        getSupportActionBar().hide(); //hide the title bar
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_game);
         intent = getIntent();
         diff = new ArrayList<>();
-        diff.add(intent.getIntExtra("difficult", 8));
-        Deck = intent.getIntegerArrayListExtra("deck");
+        diff.add(intent.getIntExtra("difficult", 8)); //lấy độ khó của game
+        Deck = intent.getIntegerArrayListExtra("deck");             // lấy set hình của game
         setUpComponent();
         setUpComponentListener();
         new BackgroundJob().execute(diff, Deck);
     }
 
 
+    // hàm trở về menu chính
     private void ReturntoMainMenu() {
         Intent intent = new Intent(GameActivity.this, MainActivity.class);
         startActivity(intent);
     }
 
+    //hàm chuẩn bị bộ bài
     class BackgroundJob extends AsyncTask<ArrayList<Integer>, ArrayList<Card>, ArrayList<Card>> {
         @Override
         protected ArrayList<Card> doInBackground(ArrayList<Integer>... arrayLists) {
@@ -97,10 +90,12 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    private Boolean checkChoice(ImageView first, ImageView second) {
-        return first.getDrawable().getConstantState().equals(second.getDrawable().getConstantState());
+    private Boolean checkChoice(Card item1, Card item2) {
+        return item1.ImgUp == item2.ImgUp;
     }
 
+
+    //Hàm set up component
     private void setUpComponent() {
         scores = (TextView) findViewById(R.id.scores);
         table = findViewById(R.id.card_table);
@@ -108,10 +103,9 @@ public class GameActivity extends AppCompatActivity {
         settingButton = (ImageView) findViewById(R.id.settingButton);
         correct = new Audio(GameActivity.this, R.raw.correct);
         wrong = new Audio(GameActivity.this, R.raw.wrong);
-
     }
 
-
+    //Hàm kiểm tra hết bài
     private void checkState() {
         if (adapter.areAllItemsEnabled()) {
 
@@ -122,8 +116,6 @@ public class GameActivity extends AppCompatActivity {
             TextView result = win.findViewById(R.id.result);
             Button retunMenu = win.findViewById(R.id.returnToMenuButton);
             Button playAgain = win.findViewById(R.id.PlayagainButton);
-
-
             retunMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -136,7 +128,6 @@ public class GameActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     new BackgroundJob().execute(diff,Deck);
-                    player_score = 0;
                     scores.setText("Scores: "+ player_score);
                     win.dismiss();
                 }
@@ -147,6 +138,8 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+
+    //Hàm setUpListener cho các component
     private void setUpComponentListener() {
         settingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -188,61 +181,33 @@ public class GameActivity extends AppCompatActivity {
         table.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-                if (prevPos != position) {
-                    if (first == null) {
-                        first = (ImageView) view.findViewById(R.id.card);
-                        first.setImageResource(deck.get(position).FlipCard());
-                        first.setTag(deck.get(position).FlipCard());
-                        first.setEnabled(false);
-                        prevPos = position;
-                    } else if (second == null) {
-                        second = (ImageView) view.findViewById(R.id.card);
-                        second.setImageResource(deck.get(position).FlipCard());
-                        second.setTag(deck.get(position).FlipCard());
-                        curPos = position;
-                    }
+
+                if (first == null) {
+                    first = (ImageView) view.findViewById(R.id.card);
+                    first.setImageResource(deck.get(position).FlipCard());
+                    first.setEnabled(false);
+                    prevPos = position;
+                } else if (second == null) {
+                    second = (ImageView) view.findViewById(R.id.card);
+                    second.setImageResource(deck.get(position).FlipCard());
+                    second.setEnabled(false);
+                    curPos = position;
+                }
+                if (first != null && second != null) {
                     BackGroundCheckingState bg = new BackGroundCheckingState();
-                    bg.execute(first, second);
-                    try {
-                        if (bg.get() == null) return;
-                        if (bg.get() == true)
-                        {
-                            Thread.sleep(5000);
-                            first.startAnimation(anim);
-                            second.startAnimation(anim);
-                            adapter.setItemClickable(prevPos,false);
-                            adapter.setItemClickable(curPos,false);
-                            player_score+=10;
-                            scores.setText("Scores: "+player_score);
-                            checkState();
-                        }
-                        if (bg.get() == false)
-                        {
-                            Thread.sleep(5000);
-                            first.setImageResource(R.drawable.card_down);
-                            second.setImageResource(R.drawable.card_down);
-                        }
-                        first = null;
-                        second = null;
-                        prevPos= -1;
-                        curPos = -1;
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    bg.execute(deck.get(prevPos), deck.get(position));
                 }
             }
         });
     }
 
-    private class BackGroundCheckingState extends AsyncTask<ImageView, Void, Boolean> {
+
+
+    private class BackGroundCheckingState extends AsyncTask<Card, Void, Boolean> {
 
         @Override
-        protected Boolean doInBackground(ImageView... imageViews) {
+        protected Boolean doInBackground(Card... imageViews) {
             if (imageViews[0] != null && imageViews[1] != null) {
-                Log.d("Choice", checkChoice(imageViews[0],imageViews[1]).toString());
-
                 if (checkChoice(imageViews[0],imageViews[1])) {
                     if (sound)
                         correct.TurnOnSound();
@@ -254,6 +219,36 @@ public class GameActivity extends AppCompatActivity {
                 }
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (aBoolean == null) return;
+            else if (aBoolean == true) {
+
+                first.startAnimation(anim);
+                second.startAnimation(anim);
+                adapter.setItemClickable(prevPos, false);
+                adapter.setItemClickable(curPos, false);
+                player_score += 10;
+                scores.setText("Scores: " + player_score);
+                checkState();
+            }
+            else if (aBoolean == false) {
+                first.setImageResource(R.drawable.card_down);
+                second.setImageResource(R.drawable.card_down);
+            }
+
+            first = null;
+            second = null;
+            prevPos = -1;
+            curPos = -1;
         }
     }
 }

@@ -9,6 +9,7 @@ public class Card {
     int ImgUp;
 
 
+
     public Card(int imgDown,int imgUp) {
         ImgDown = R.drawable.card_down;
         ImgUp = imgUp;

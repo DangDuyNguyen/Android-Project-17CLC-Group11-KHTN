@@ -19,7 +19,6 @@ public class GameSystem  {
 
     public GameSystem(Context context,Audio audio) {
         this.context = context;
-        this.diff = new Dialog(context);
         this.audio = audio;
         audio.TurnOnSound();
         deck.add(R.drawable.card_apple);
@@ -30,6 +29,7 @@ public class GameSystem  {
 
     public void showDifficultyDialog()
     {
+        this.diff = new Dialog(context);
         this.diff.requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.diff.setContentView(R.layout.custom_dialog);
         setUpdiffDialog();
@@ -42,14 +42,13 @@ public class GameSystem  {
         easy = diff.findViewById(R.id.easyButton);
         normal = diff.findViewById(R.id.normalButton);
         hard = diff.findViewById(R.id.hardButton);
-
+        this.diff.setCanceledOnTouchOutside(true);
         easy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context,GameActivity.class);
                 intent.putExtra("difficult",4);
                 intent.putIntegerArrayListExtra("deck",deck);
-                intent.putExtra("new_game",true);
                 audio.TurnOffSound();
                 context.startActivity(intent);
             }
@@ -61,7 +60,7 @@ public class GameSystem  {
                 Intent intent = new Intent(context,GameActivity.class);
                 intent.putExtra("difficult",6);
                 intent.putIntegerArrayListExtra("deck",deck);
-                intent.putExtra("new_game",true);
+
                 audio.TurnOffSound();
                 context.startActivity(intent);
             }
@@ -73,7 +72,6 @@ public class GameSystem  {
                 Intent intent = new Intent(context,GameActivity.class);
                 intent.putExtra("difficult",8);
                 intent.putIntegerArrayListExtra("deck",deck);
-                intent.putExtra("new_game",true);
                 audio.TurnOffSound();
                 context.startActivity(intent);
             }
