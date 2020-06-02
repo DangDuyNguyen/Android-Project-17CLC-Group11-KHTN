@@ -1,8 +1,10 @@
 package com.ndduy.gamecollection2020;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.CountDownTimer;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -32,7 +34,7 @@ public class AnimalRacingActivity extends Activity {
     int windPower;
     GifImageView  player1,player2,player3,cloud,pictureplayer1,pictureplayer2,pictureplayer3;
     ConstraintLayout layout;
-
+    Button AR_close_btn;
 
 
     @Override
@@ -48,7 +50,10 @@ public class AnimalRacingActivity extends Activity {
         final CountDownTimer countDownTimer = new CountDownTimer(60000,50) {
             @Override
             public void onTick(long l) {
-                int goal = 860;
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                int device_width = displayMetrics.widthPixels;
+                int goal = device_width*80/100;
 
                 // thuật toán chính của chương trình
                 Random random = new Random();
@@ -250,6 +255,17 @@ public class AnimalRacingActivity extends Activity {
             }
         });
 
+        //this button will send score to main lobby and close this activity
+        AR_close_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("coin", convertToCoin(Integer.parseInt(tv_point.getText().toString())));
+                setResult(Activity.RESULT_OK,returnIntent);
+                finish();
+            }
+        });
+
     }
     private void mapping()
     {
@@ -279,6 +295,8 @@ public class AnimalRacingActivity extends Activity {
         group=findViewById(R.id.group);
 
         bt_continue = (Button)findViewById(R.id.Button_replay);
+
+        AR_close_btn = (Button)findViewById(R.id.AR_close_button);
     }
     // trả về lựa chọn của người chơi
     private int isChosen()
@@ -345,5 +363,10 @@ public class AnimalRacingActivity extends Activity {
         Toast.makeText(AnimalRacingActivity.this, "You lose", Toast.LENGTH_SHORT).show();
         bt_continue.setVisibility(View.VISIBLE);
         tv_point.setText(Integer.parseInt(tv_point.getText().toString())-10+"");
+    }
+
+    //convert from score to coin
+    private int convertToCoin(int score){
+        return score*20/100;
     }
 }

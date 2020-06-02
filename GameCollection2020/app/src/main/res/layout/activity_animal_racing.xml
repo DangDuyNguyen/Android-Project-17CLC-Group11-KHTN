@@ -21,6 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="100"
+        android:fontFamily="@font/bubblebobble"
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.21"
@@ -57,7 +58,6 @@
         android:layout_marginTop="325dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="26dp"
-
         android:adjustViewBounds="false"
         android:paddingLeft="0dp"
         android:scaleType="fitStart"
@@ -76,7 +76,6 @@
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="26dp"
         android:adjustViewBounds="false"
-
         android:paddingLeft="0dp"
         android:scaleType="fitStart"
         android:src="@drawable/frogidle"
@@ -93,7 +92,6 @@
         android:layout_marginTop="476dp"
         android:layout_marginEnd="5dp"
         android:layout_marginBottom="205dp"
-
         android:adjustViewBounds="false"
         android:paddingLeft="0dp"
         android:scaleType="fitStart"
@@ -153,6 +151,7 @@
                 android:layout_height="45dp"
                 android:layout_marginTop="10dp"
                 android:text="Choose Your Weather"
+                android:fontFamily="@font/bubblebobble"
                 android:textAlignment="center"
                 android:textSize="30sp"
                 android:textStyle="bold" />
@@ -169,6 +168,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Storm"
+                    android:fontFamily="@font/bubblebobble"
                     android:textSize="20sp" />
 
                 <RadioButton
@@ -177,6 +177,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Windy"
+                    android:fontFamily="@font/bubblebobble"
                     android:textSize="20sp" />
 
                 <RadioButton
@@ -186,6 +187,7 @@
                     android:layout_weight="1"
                     android:checked="true"
                     android:text="Breeze"
+                    android:fontFamily="@font/bubblebobble"
                     android:textSize="20sp" />
 
 
@@ -201,6 +203,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:text="Choose Your Character"
+                android:fontFamily="@font/bubblebobble"
                 android:textAlignment="center"
                 android:textSize="30sp"
                 android:textStyle="bold" />
@@ -264,8 +267,6 @@
                     android:id="@+id/pictureplayer2"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
-
-
                     android:layout_weight="1"
                     android:src="@drawable/frogidle"
                     tools:ignore="MissingConstraints" />
@@ -295,5 +296,16 @@
         app:layout_constraintEnd_toStartOf="@+id/TextView_point"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/AR_close_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/close_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="5dp"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
