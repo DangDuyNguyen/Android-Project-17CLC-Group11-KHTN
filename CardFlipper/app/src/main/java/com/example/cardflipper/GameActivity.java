@@ -184,18 +184,20 @@ public class GameActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
 
-                if (first == null) {
-                    first = (ImageView) view.findViewById(R.id.card);
-                    first.setImageResource(deck.get(position).FlipCard());
-                    prevPos = position;
-                } else if (second == null) {
-                    second = (ImageView) view.findViewById(R.id.card);
-                    second.setImageResource(deck.get(position).FlipCard());
-                    curPos = position;
-                }
-                if (curPos != -1 && prevPos != curPos) {
-                    BackGroundCheckingState bg = new BackGroundCheckingState();
-                    bg.execute(deck.get(prevPos), deck.get(curPos));
+                if (prevPos != position) {
+                    if (first == null) {
+                        first = (ImageView) view.findViewById(R.id.card);
+                        first.setImageResource(deck.get(position).FlipCard());
+                        prevPos = position;
+                    } else if (second == null) {
+                        second = (ImageView) view.findViewById(R.id.card);
+                        second.setImageResource(deck.get(position).FlipCard());
+                        curPos = position;
+                    }
+                    if (curPos != -1){
+                        BackGroundCheckingState bg = new BackGroundCheckingState();
+                        bg.execute(deck.get(prevPos), deck.get(curPos));
+                    }
                 }
             }
         });
