@@ -64,6 +64,9 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*File delete = new File(getFilesDir(), "gamedata.txt");
+                delete.delete();*/
+
         tabs = (TabLayout) findViewById(R.id.tabs);
         viewPager = (MyViewPager) findViewById(R.id.viewpager);
         EditText coin = (EditText) findViewById(R.id.coin);
@@ -76,7 +79,8 @@ public class MainActivity extends FragmentActivity {
         backgroundMusic.setLooping(true); // Set looping
         backgroundMusic.setVolume(100, 100);
         backgroundMusic.start();
-        readData();
+
+        //readData();
 
         /*get adapter for viewpager for the tablayout*/
         final PageAdapter adapter = new PageAdapter(getSupportFragmentManager(), 1);
@@ -125,19 +129,16 @@ public class MainActivity extends FragmentActivity {
                 }
             }
         });
-
-
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    /*@Override
+    protected void onStop() {
+        super.onStop();
+        Bundle saverequest = new Bundle();
+        saverequest.putBoolean("request", true);
+        getSupportFragmentManager().setFragmentResult("request_save_data", saverequest);
 
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+        //retrieve game data from fragment after request
         getSupportFragmentManager().setFragmentResultListener("savedata", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
@@ -149,10 +150,10 @@ public class MainActivity extends FragmentActivity {
                 int user_sleepy_status = result.getInt("user_sleep_status");
                 int user_mood_status = result.getInt("user_mood_status");
 
-                File save = new File(getFilesDir(), "data");
-                if(!save.exists()){
-                    save.mkdir();
-                }
+                File delete = new File(getFilesDir(), "gamedata.txt");
+                delete.delete();
+
+                File savefile = new File(getFilesDir() + "/gamedata.txt");
                 try {
                     FileOutputStream fout = openFileOutput("gamedata.txt",Context.MODE_PRIVATE);
                     OutputStreamWriter outputWriter=new OutputStreamWriter(fout);
@@ -160,13 +161,13 @@ public class MainActivity extends FragmentActivity {
                     outputWriter.write("\n");
                     outputWriter.write(user_coin);
                     outputWriter.write("\n");
-                    outputWriter.write(user_hungry_status);
+                    outputWriter.write(Integer.toString(user_hungry_status));
                     outputWriter.write("\n");
-                    outputWriter.write(user_flatter_status);
+                    outputWriter.write(Integer.toString(user_flatter_status));
                     outputWriter.write("\n");
-                    outputWriter.write(user_sleepy_status);
+                    outputWriter.write(Integer.toString(user_sleepy_status));
                     outputWriter.write("\n");
-                    outputWriter.write(user_mood_status);
+                    outputWriter.write(Integer.toString(user_mood_status));
 
                     outputWriter.close();
 
@@ -175,11 +176,13 @@ public class MainActivity extends FragmentActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-
             }
         });
+
+
     }
 
+*/
     public void readData() {
         String name = "";
         String coin = "";
@@ -210,7 +213,6 @@ public class MainActivity extends FragmentActivity {
             in.close();
             fin.close();
 
-            Toast.makeText(this, name, Toast.LENGTH_LONG);
             Bundle loaduserbundle = new Bundle();
             loaduserbundle.putString("user_name", name);
             loaduserbundle.putString("user_coin", coin);
