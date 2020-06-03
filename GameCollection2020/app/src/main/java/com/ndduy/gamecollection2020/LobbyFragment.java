@@ -80,6 +80,23 @@ public class LobbyFragment extends Fragment {
                 currentUser.setCoin(coin.getText().toString());
             }
         });
+
+        getParentFragmentManager().setFragmentResultListener("request_save_data", getActivity(), new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                if (result.getBoolean("request")){
+                    Bundle savedata = new Bundle();
+                    savedata.putString("user_name", name.getText().toString());
+                    savedata.putString("user_coin", coin.getText().toString());
+                    savedata.putInt("user_hungry_status", Integer.parseInt(hungry_text.getText().toString().substring(0, hungry_text.getText().toString().indexOf('%'))));
+                    savedata.putInt("user_flatter_status", Integer.parseInt(flatter_text.getText().toString().substring(0, flatter_text.getText().toString().indexOf('%'))));
+                    savedata.putInt("user_sleep_status", Integer.parseInt(sleepy_text.getText().toString().substring(0, sleepy_text.getText().toString().indexOf('%'))));
+                    savedata.putInt("user_mood_status", Integer.parseInt(mood_text.getText().toString().substring(0, mood_text.getText().toString().indexOf('%'))));
+
+                    getParentFragmentManager().setFragmentResult("savedata", savedata);
+                }
+            }
+        });
     }
 
     @Override
@@ -108,12 +125,10 @@ public class LobbyFragment extends Fragment {
         name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String oldName = name.getText().toString();
                 RenameClass editName = new RenameClass();
                 editName.showPopupWindow(v);
             }
         });
-
 
         setting_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,44 +140,15 @@ public class LobbyFragment extends Fragment {
         hungriness.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                increaseHungryStatus(20);
             }
         });
+
 
         return rootView;
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        getParentFragmentManager().setFragmentResultListener("request_save_data", getActivity(), new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                if (result.getBoolean("request")){
-                    Bundle savedata = new Bundle();
-                    savedata.putString("user_name", name.getText().toString());
-                    savedata.putString("user_coin", currentUser.getCoin());
-                    savedata.putInt("user_hungry_status", Integer.parseInt(hungry_text.getText().toString()));
-                    Toast.makeText(getActivity(), hungry_text.getText(), Toast.LENGTH_LONG);
-                    savedata.putInt("user_flatter_status", Integer.parseInt(flatter_text.getText().toString()));
-                    savedata.putInt("user_sleep_status", Integer.parseInt(sleepy_text.getText().toString()));
-                    savedata.putInt("user_mood_status", Integer.parseInt(mood_text.getText().toString()));
-
-                    getParentFragmentManager().setFragmentResult("savedata", savedata);
-
-                }
-            }
-        });
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        //send save data to main activity
-    }
-
-    public void readVarUI (View rootView)
-    {
+    public void readVarUI (View rootView) {
         hungriness = (Button) rootView.findViewById(R.id.hungry_status);
         flattering = (Button) rootView.findViewById(R.id.bathroom_status);
         sleepiness = (Button) rootView.findViewById(R.id.sleepy_status);
@@ -240,8 +226,7 @@ public class LobbyFragment extends Fragment {
         mood.setBackgroundResource(user.getMood().getImage());
     }
 
-    public void updateStatus()
-    {
+    public void updateStatus() {
         final Handler hungry_update = new Handler();
         hungry_update.postDelayed(new Runnable() {
             @Override
@@ -328,7 +313,34 @@ public class LobbyFragment extends Fragment {
 
     }
 
+    public void increaseHungryStatus(int range){
 
+        int new_status = Integer.parseInt(hungry_text.getText().toString().substring(0, hungry_text.getText().toString().indexOf('%'))) + range;
+        if (new_status < 100) {
+            hungry_text.setText(Integer.toString(new_status) + "%");
+            currentUser.getHungriness().setPercentage(new_status);
+        }
+
+        else {
+            hungry_text.setText("100%");
+            currentUser.getHungriness().setPercentage(100);
+        }
+        if (new_status < 120) {
+            int new_coin = Integer.parseInt(currentUser.getCoin().toString()) - 5;
+            currentUser.setCoin(Integer.toString(new_coin));
+            coin.setText(Integer.toString(new_coin));
+        }
+
+        if (currentUser.getHungriness().getPercentage() > 70)
+            currentUser.getHungriness().setImage(R.drawable.green_hungry_status_button);
+        else if (currentUser.getHungriness().getPercentage() > 40)
+            currentUser.getHungriness().setImage(R.drawable.yellow_hungry_status_button);
+        else
+            currentUser.getHungriness().setImage(R.drawable.red_hungry_status_button);
+
+        hungriness.setBackgroundResource(currentUser.getHungriness().getImage());
+
+    }
 }
 
 

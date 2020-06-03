@@ -14,13 +14,16 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.ndduy.gamecollection2020.CardFlipper.CardFlipperActivity;
+
 public class GameFragment extends Fragment {
 
-    //LinearLayout AnimalRacing, Snake, CardFlipper, Sudoku;
     private ImageButton AnimalRacing, Snake, CardFlipper, Sudoku;
 
     private int AR_REQUEST_CODE = 69;
     private int SNAKE_REQUEST_CODE = 12;
+    private int CARDFLIPPER_REQUEST_CODE = 78;
+    private int SUDOKU_REQUEST_CODE = 49;
 
     public GameFragment() {
         // Required empty public constructor
@@ -35,6 +38,7 @@ public class GameFragment extends Fragment {
 
         AnimalRacing = (ImageButton)  rootView.findViewById(R.id.animalcrossbtn);
         Snake = (ImageButton) rootView.findViewById(R.id.snakebtn);
+        CardFlipper = (ImageButton) rootView.findViewById(R.id.cardflipbtn);
 
         AnimalRacing.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,10 +53,16 @@ public class GameFragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), SnakeActivity.class);
                 startActivityForResult(intent, SNAKE_REQUEST_CODE);
-                //startActivity(intent);
             }
         });
 
+        CardFlipper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), CardFlipperActivity.class);
+                startActivityForResult(intent, CARDFLIPPER_REQUEST_CODE);
+            }
+        });
         return rootView;
     }
 
@@ -80,6 +90,19 @@ public class GameFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt("coin", result);
                 getParentFragmentManager().setFragmentResult("Snake_coin", bundle);
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+
+        if (requestCode == CARDFLIPPER_REQUEST_CODE) {
+            if(resultCode == Activity.RESULT_OK){
+                int result = data.getIntExtra("Card_Flipper_coin", 0);
+
+                Bundle bundle = new Bundle();
+                bundle.putInt("coin", result);
+                getParentFragmentManager().setFragmentResult("coin", bundle);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result

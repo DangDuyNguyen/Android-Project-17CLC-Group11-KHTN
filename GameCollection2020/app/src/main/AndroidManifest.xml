@@ -27,7 +27,12 @@
         <activity android:name=".SnakeActivity">
 
         </activity>
+        <activity android:name=".CardFlipper.CardFlipperActivity">
 
+        </activity>
+        <activity android:name=".CardFlipper.GameActivity">
+
+        </activity>
 
         <!--<receiver android:name=".LobbyFragment$StatusUpdateReceiver">
             <intent-filter>
