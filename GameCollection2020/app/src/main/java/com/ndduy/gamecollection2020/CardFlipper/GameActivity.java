@@ -31,7 +31,8 @@ public class GameActivity extends Activity {
     int prevPos = -1,curPos = -1;
     int player_score = 0;
     Boolean sound = true;
-    ImageView first, second, settingButton;
+    ImageView first, second;
+    Button settingButton;
     GridView table;
     Animation anim;
     TextView scores;
@@ -61,6 +62,10 @@ public class GameActivity extends Activity {
 
     // hàm trở về menu chính
     private void ReturntoMainMenu() {
+        Intent intent = new Intent();
+        intent.putExtra("scores",player_score);
+        intent.putExtra("sound",sound);
+        setResult(RESULT_OK,intent);
         finish();
     }
 
@@ -101,7 +106,7 @@ public class GameActivity extends Activity {
         scores = (TextView) findViewById(R.id.scores);
         table = findViewById(R.id.card_table);
         anim = AnimationUtils.loadAnimation(this, R.anim.anim_disappear);
-        settingButton = (ImageView) findViewById(R.id.settingButton);
+        settingButton = (Button) findViewById(R.id.settingButton);
         correct = new Audio(GameActivity.this, R.raw.correct);
         wrong = new Audio(GameActivity.this, R.raw.wrong);
     }
@@ -120,7 +125,8 @@ public class GameActivity extends Activity {
             retunMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    finish();
+                    win.dismiss();
+                    ReturntoMainMenu();
                 }
             });
 
@@ -144,7 +150,7 @@ public class GameActivity extends Activity {
         settingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Dialog sett = new Dialog(GameActivity.this);
+                final Dialog sett = new Dialog(GameActivity.this);
                 sett.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 sett.setContentView(R.layout.custom_setting_dialog);
 
@@ -172,6 +178,7 @@ public class GameActivity extends Activity {
                 returntoMenu.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        sett.dismiss();
                         ReturntoMainMenu();
                     }
                 });

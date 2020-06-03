@@ -24,14 +24,13 @@
         android:id="@+id/scores"
         android:padding="20dp" android:layout_weight="7">
         </TextView>
-        <ImageButton
-            android:layout_width="0dp"
+        <Button
             android:id="@+id/settingButton"
-            android:layout_height="match_parent"
-            android:background="@null"
-            android:scaleType="centerInside"
-            android:src="@drawable/setting_icon"
-            android:layout_weight="1"/>
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:background="@drawable/setting_button"
+             />
     </LinearLayout>
         <GridView
             android:id="@+id/card_table"

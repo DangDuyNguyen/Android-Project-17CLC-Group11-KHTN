@@ -5,22 +5,14 @@
     android:id="@+id/fragmentLobby"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg1"
     tools:context=".LobbyFragment">
 
     <ImageView
-        android:id="@+id/imageView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clickable="true"
-        android:scaleType="centerCrop"
-        android:src="@drawable/room1"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp" />
-
-    <ImageView
-        android:layout_width="400dp"
         android:layout_height="400dp"
-        android:src="@drawable/chicken_char"
+        android:src="@drawable/char_chicken"
+        android:layout_marginTop="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,14 +22,14 @@
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/name_status"
         android:ems="8"
         android:fontFamily="@font/bubblebobble"
         android:focusable="false"
-        android:paddingLeft="40dp"
-        android:paddingRight="12dp"
+        android:paddingStart="40dp"
+        android:paddingEnd="12dp"
         android:singleLine="true"
         android:text="My name is..."
         android:textAlignment="center"
@@ -50,12 +42,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/coin_status"
         android:ems="6"
         android:fontFamily="@font/bubblebobble"
-        android:paddingLeft="12dp"
-        android:paddingRight="40dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="40dp"
         android:singleLine="true"
         android:text="1000"
         android:textAlignment="center"
@@ -70,17 +62,17 @@
         app:layout_constraintTop_toBottomOf="@id/coin"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginStart="10dp"/>
 
     <Button
         android:id="@+id/setting_btn"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:background="@drawable/setting_button"
-        app:layout_constraintTop_toBottomOf="@id/coin"
-        app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="10dp"/>
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/setting_button"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/coin" />
 
     <Button
         android:id="@+id/hungry_status"
@@ -90,7 +82,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginBottom="10dp"
-        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
         />
 
     <Button
@@ -101,7 +93,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/hungry_status"
         android:layout_marginBottom="10dp"
-        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
         />
 
     <Button
@@ -112,7 +104,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/bathroom_status"
         android:layout_marginBottom="10dp"
-        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
         />
 
     <Button
@@ -123,7 +115,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/sleepy_status"
         android:layout_marginBottom="10dp"
-        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
         />
 
     <TextView
@@ -131,27 +123,28 @@
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:text="100%"
+        android:fontFamily="@font/bubblebobble"
         android:textSize="18sp"
-        android:textStyle="bold"
-        android:textAlignment="center"
+        android:gravity="center"
         android:background="@drawable/custom_status"
         app:layout_constraintBottom_toTopOf="@id/hungry_status"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginLeft="25dp"
-        android:layout_marginBottom="10dp"/>
+        android:layout_marginStart="25dp"
+        android:layout_marginBottom="10dp"
+        />
 
     <TextView
         android:id="@+id/flatter_stat"
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:text="100%"
-        android:textStyle="bold"
+        android:fontFamily="@font/bubblebobble"
         android:textSize="18sp"
-        android:textAlignment="center"
+        android:gravity="center"
         android:background="@drawable/custom_status"
         app:layout_constraintBottom_toTopOf="@id/bathroom_status"
         app:layout_constraintLeft_toRightOf="@id/hungry_stat"
-        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
         android:layout_marginBottom="10dp"
         />
 
@@ -160,13 +153,13 @@
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:text="100%"
-        android:textStyle="bold"
+        android:fontFamily="@font/bubblebobble"
         android:textSize="18sp"
-        android:textAlignment="center"
+        android:gravity="center"
         android:background="@drawable/custom_status"
         app:layout_constraintBottom_toTopOf="@id/sleepy_status"
         app:layout_constraintLeft_toRightOf="@id/flatter_stat"
-        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
         android:layout_marginBottom="10dp"
         />
 
@@ -175,13 +168,13 @@
         android:layout_width="70dp"
         android:layout_height="wrap_content"
         android:text="100%"
-        android:textStyle="bold"
+        android:fontFamily="@font/bubblebobble"
         android:textSize="18sp"
-        android:textAlignment="center"
+        android:gravity="center"
         android:background="@drawable/custom_status"
         app:layout_constraintBottom_toTopOf="@id/mood_status"
         app:layout_constraintLeft_toRightOf="@id/sleepy_stat"
-        android:layout_marginLeft="25dp"
+        android:layout_marginStart="25dp"
         android:layout_marginBottom="10dp"
         />
 
