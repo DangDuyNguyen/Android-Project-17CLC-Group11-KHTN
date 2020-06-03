@@ -30,51 +30,13 @@ public class GameSystem  {
         deck.add(R.drawable.card_banana);
     }
 
-    public void showDifficultyDialog()
+    public void TurnOnSound()
     {
-        this.diff = new Dialog(context);
-        this.diff.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.diff.setContentView(R.layout.custom_dialog);
-        setUpdiffDialog();
-        this.diff.show();
+        audio.TurnOnSound();
     }
 
-    private void setUpdiffDialog()
+    public void TurnOffSound()
     {
-        Button easy,normal,hard;
-        easy = diff.findViewById(R.id.easyButton);
-        normal = diff.findViewById(R.id.normalButton);
-        hard = diff.findViewById(R.id.hardButton);
-        this.diff.setCanceledOnTouchOutside(true);
-        final Intent intent = new Intent(context, GameActivity.class);
-        intent.putIntegerArrayListExtra("deck",deck);
-        intent.putExtra("sound",soundOn);
-        easy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                intent.putExtra("difficult",4);
-                audio.TurnOffSound();
-                context.startActivity(intent);
-            }
-        });
-
-        normal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intent.putExtra("difficult",6);
-                audio.TurnOffSound();
-                context.startActivity(intent);
-            }
-        });
-
-        hard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                intent.putExtra("difficult",8);
-                audio.TurnOffSound();
-                context.startActivity(intent);
-            }
-        });
+        audio.TurnOffSound();
     }
 }

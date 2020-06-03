@@ -60,9 +60,11 @@ public class GameActivity extends AppCompatActivity {
 
     // hàm trở về menu chính
     private void ReturntoMainMenu() {
-        Intent intent = new Intent(GameActivity.this, MainActivity.class);
+        Intent intent = new Intent();
+        intent.putExtra("scores",player_score);
         intent.putExtra("sound",sound);
-        startActivity(intent);
+        setResult(RESULT_OK,intent);
+        finish();
     }
 
     //hàm chuẩn bị bộ bài
@@ -121,8 +123,8 @@ public class GameActivity extends AppCompatActivity {
             retunMenu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent inten = new Intent(GameActivity.this, MainActivity.class);
-                    startActivity(inten);
+                    win.dismiss();
+                   ReturntoMainMenu();
                 }
             });
 
@@ -146,7 +148,7 @@ public class GameActivity extends AppCompatActivity {
         settingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Dialog sett = new Dialog(GameActivity.this);
+                final Dialog sett = new Dialog(GameActivity.this);
                 sett.requestWindowFeature(Window.FEATURE_NO_TITLE);
                 sett.setContentView(R.layout.custom_setting_dialog);
 
@@ -174,6 +176,7 @@ public class GameActivity extends AppCompatActivity {
                 returntoMenu.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        sett.dismiss();
                         ReturntoMainMenu();
                     }
                 });

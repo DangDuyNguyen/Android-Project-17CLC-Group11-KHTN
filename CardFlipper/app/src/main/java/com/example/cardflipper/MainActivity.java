@@ -1,5 +1,6 @@
 package com.example.cardflipper;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
@@ -8,6 +9,7 @@ import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -21,8 +23,10 @@ public class MainActivity extends AppCompatActivity {
     GameSystem sys;
     Button playButton;
     ImageButton soundButton;
+    Dialog diff;
     Boolean soundOn;
-
+    int REQUEST_CODE_SCORE = 555;
+    Integer player_score;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +44,15 @@ public class MainActivity extends AppCompatActivity {
         setupComponent();
     }
 
+
+
     private void setupComponent()
     {
         playButton =  (Button) findViewById(R.id.PlayButton);
         playButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sys.showDifficultyDialog();
+               showDifficultyDialog();
             }
         });
 
@@ -73,5 +79,72 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+
+
+    public void showDifficultyDialog()
+    {
+        diff = new Dialog(this);
+        diff.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        diff.setContentView(R.layout.custom_dialog);
+        setUpdiffDialog();
+        diff.show();
+    }
+
+    private Intent SetIntent(int diff)
+    {
+        Intent intent = new Intent(this, GameActivity.class);
+        intent.putIntegerArrayListExtra("deck",sys.deck);
+        intent.putExtra("sound",sys.soundOn);
+        intent.putExtra("difficult",diff);
+        sys.TurnOffSound();
+        return intent;
+    }
+
+
+
+    private void setUpdiffDialog()
+    {
+        Button easy,normal,hard;
+        easy = diff.findViewById(R.id.easyButton);
+        normal = diff.findViewById(R.id.normalButton);
+        hard = diff.findViewById(R.id.hardButton);
+        diff.setCanceledOnTouchOutside(true);
+        easy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               startActivityForResult(SetIntent(4),REQUEST_CODE_SCORE);
+            }
+        });
+
+        normal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(SetIntent(6),REQUEST_CODE_SCORE);
+            }
+        });
+
+        hard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivityForResult(SetIntent(8),REQUEST_CODE_SCORE);
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUEST_CODE_SCORE && resultCode == RESULT_OK && data != null)
+        {
+           player_score = data.getIntExtra("scores",0);
+           soundOn = data.getBooleanExtra("sound",true);
+           if (soundOn)
+               sys.TurnOnSound();
+           else sys.TurnOffSound();
+           diff.dismiss();
+           Log.d("score",player_score.toString());
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
