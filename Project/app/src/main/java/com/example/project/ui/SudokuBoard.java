@@ -506,48 +506,6 @@ public class SudokuBoard extends View {
         return !mReadonly;
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (!mReadonly) {
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_DPAD_UP:
-                    return moveCellSelection(0, -1);
-                case KeyEvent.KEYCODE_DPAD_RIGHT:
-                    return moveCellSelection(1, 0);
-                case KeyEvent.KEYCODE_DPAD_DOWN:
-                    return moveCellSelection(0, 1);
-                case KeyEvent.KEYCODE_DPAD_LEFT:
-                    return moveCellSelection(-1, 0);
-                case KeyEvent.KEYCODE_0:
-                case KeyEvent.KEYCODE_SPACE:
-                case KeyEvent.KEYCODE_DEL:
-                    if (mSelectedCell != null) {
-                            setCellValue(mSelectedCell, 0);
-                            moveCellSelectionRight();
-                    }
-                    return true;
-                case KeyEvent.KEYCODE_DPAD_CENTER:
-                    if (mSelectedCell != null) {
-                        onCellTapped(mSelectedCell);
-                    }
-                    return true;
-            }
-
-            if (keyCode >= KeyEvent.KEYCODE_1 && keyCode <= KeyEvent.KEYCODE_9 && mSelectedCell != null) {
-                int selNumber = keyCode - KeyEvent.KEYCODE_0;
-                Cell cell = mSelectedCell;
-
-                setCellValue(cell, selNumber);
-                moveCellSelectionRight();
-
-                return true;
-            }
-        }
-
-
-        return false;
-    }
-
     public void moveCellSelectionRight() {
         if (!moveCellSelection(1, 0)) {
             int selRow = mSelectedCell.getRow();
