@@ -215,6 +215,22 @@ public class SudokuGame {
         mCells.validate();
     }
 
+    public void saveState(Bundle outState) {
+        outState.putLong("id", mId);
+        outState.putLong("time", mTime);
+        outState.putString("cells", mCells.cellToString());
+        outState.putString("action_stack", mStack.stackToString());
+    }
+
+    public void restoreState(Bundle inState) {
+        mId = inState.getLong("id");
+        mTime = inState.getLong("time");
+        mCells = CellCollection.stringToCell(inState.getString("cells"));
+        mStack = ActionStack.stringToStack(inState.getString("action_stack"), mCells);
+
+        validate();
+    }
+
     public interface OnPuzzleSolvedListener {
         void onPuzzleSolved();
     }

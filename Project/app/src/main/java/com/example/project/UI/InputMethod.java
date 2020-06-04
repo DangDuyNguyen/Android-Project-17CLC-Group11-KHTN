@@ -1,12 +1,8 @@
 package com.example.project.UI;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.LightingColorFilter;
 import android.view.View;
-import android.widget.Button;
 
-import com.example.project.R;
 import com.example.project.game.Cell;
 import com.example.project.game.SudokuGame;
 import com.example.project.UI.InputControlState.StateBundle;

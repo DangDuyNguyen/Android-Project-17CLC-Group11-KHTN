@@ -14,16 +14,16 @@ public abstract class EditACellAction extends EditCellAction {
     EditACellAction() { }
 
     @Override
-    public void setAction(StringBuilder data) {
-        super.setAction(data);
+    public void actionToString(StringBuilder data) {
+        super.actionToString(data);
 
         data.append(mCellRow).append("|");
         data.append(mCellColumn).append("|");
     }
 
     @Override
-    protected void getAct(StringTokenizer data) {
-        super.getAct(data);
+    protected void _stringToAction(StringTokenizer data) {
+        super._stringToAction(data);
         mCellRow = Integer.parseInt(data.nextToken());
         mCellColumn = Integer.parseInt(data.nextToken());
     }

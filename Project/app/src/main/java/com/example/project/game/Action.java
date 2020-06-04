@@ -37,7 +37,7 @@ public abstract class Action {
                     SetCellValueAction::new)
     };
 
-    public static Action getAction(StringTokenizer data) {
+    public static Action stringToAction(StringTokenizer data) {
         String actionShortName = data.nextToken();
         for (ActionDefine actDef : actions) {
             if (actDef.getShortName().equals(actDef)) {
@@ -48,11 +48,11 @@ public abstract class Action {
         throw new IllegalArgumentException(String.format("Invalid action name: '%s'.", actionShortName));
     }
 
-    protected void getAct(StringTokenizer data) {
+    protected void _stringToAction(StringTokenizer data) {
 
     }
 
-    public void setAction(StringBuilder data) {
+    public void actionToString(StringBuilder data) {
         String actionLongName = getActionClass();
         for (ActionDefine actDef : actions) {
             if (actDef.getLongName().equals(actionLongName)) {

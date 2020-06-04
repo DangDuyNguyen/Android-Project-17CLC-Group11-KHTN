@@ -5,13 +5,13 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.project.R;
 import com.example.project.game.Cell;
 import com.example.project.game.SudokuGame;
-import com.example.project.UI.SudokuBoard;
 import com.example.project.UI.SudokuBoard.OnCellSelectedListener;
 import com.example.project.UI.SudokuBoard.OnCellTappedListener;
 
@@ -184,22 +184,25 @@ public class InputControl extends LinearLayout {
             });
 
             AlertDialog puzzleCannotSolveDialog = new AlertDialog.Builder(mContext)
-                    .setTitle(R.string.app_name)
+                    .setTitle(R.string.game_name)
                     .setMessage("This sudoku cannot be solved")
                     .setPositiveButton(android.R.string.ok, null)
                     .create();
 
             AlertDialog cannotGiveHintDialog = new AlertDialog.Builder(mContext)
-                    .setTitle(R.string.app_name)
+                    .setTitle(R.string.game_name)
                     .setMessage("Please select a cell to get hint!")
                     .setPositiveButton(android.R.string.ok, null)
                     .create();
 
             AlertDialog noHintLeftDialog = new AlertDialog.Builder(mContext)
-                    .setTitle(R.string.app_name)
+                    .setTitle(R.string.game_name)
                     .setMessage("You have no hint left!")
                     .setPositiveButton(android.R.string.ok, null)
                     .create();
+
+            TextView numHint = controlPanel.findViewById(R.id.numHint);
+            numHint.setText("" + mNumOfHints);
 
             Button hintButton = controlPanel.findViewById(R.id.hintBtn);
             hintButton.setOnClickListener(new OnClickListener() {
@@ -211,7 +214,8 @@ public class InputControl extends LinearLayout {
                         if (cell != null && cell.isEditable()) {
                             if (mGame.isSolvable()) {
                                 mGame.solveCell(cell);
-                                //mNumOfHints--;
+                                mNumOfHints--;
+                                numHint.setText("" + mNumOfHints);
                             }
                             else {
                                 puzzleCannotSolveDialog.show();

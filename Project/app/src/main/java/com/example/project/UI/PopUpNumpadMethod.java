@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.example.project.R;
 import com.example.project.game.Cell;
-import com.example.project.game.CellCollection;
 import com.example.project.UI.PopUpNumpad.OnNumberEditListener;
 
 import java.util.Map;

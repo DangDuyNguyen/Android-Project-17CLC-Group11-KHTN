@@ -1,7 +1,5 @@
 package com.example.project.game;
 
-import com.example.project.game.Cell;
-
 import java.util.StringTokenizer;
 
 public class SetCellValueAction extends EditACellAction {
@@ -16,16 +14,16 @@ public class SetCellValueAction extends EditACellAction {
     SetCellValueAction() { }
 
     @Override
-    public void setAction(StringBuilder data) {
-        super.setAction(data);
+    public void actionToString(StringBuilder data) {
+        super.actionToString(data);
 
         data.append(mValue).append("|");
         data.append(mOldValue).append("|");
     }
 
     @Override
-    protected void getAct(StringTokenizer data) {
-        super.getAct(data);
+    protected void _stringToAction(StringTokenizer data) {
+        super._stringToAction(data);
 
         mValue = Integer.parseInt(data.nextToken());
         mOldValue = Integer.parseInt(data.nextToken());

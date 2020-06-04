@@ -14,34 +14,34 @@ public class ActionStack {
         mCells = cells;
     }
 
-    public static ActionStack getStack(String data, CellCollection cells) {
-        StringTokenizer st = new StringTokenizer(data, "|");
-        return getStack(st, cells);
-    }
-
-    public static ActionStack getStack(StringTokenizer data, CellCollection cells) {
-        ActionStack actStack = new ActionStack(cells);
-        int size = Integer.parseInt(data.nextToken());
-        for (int i = 0; i < size; i++) {
-            Action action = Action.getAction(data);
-            actStack.push(action);
-        }
-
-        return actStack;
-    }
-
-    public String setStack() {
+    public String stackToString() {
         StringBuilder sb = new StringBuilder();
-        setStack(sb);
+        stackToString(sb);
         return sb.toString();
     }
 
-    public void setStack(StringBuilder data) {
+    public void stackToString(StringBuilder data) {
         data.append(mStack.size()).append("|");
         for (int i = 0; i < mStack.size(); i++) {
             Action action = mStack.get(i);
-            action.setAction(data);
+            action.actionToString(data);
         }
+    }
+
+    public static ActionStack stringToStack(String data, CellCollection cells) {
+        StringTokenizer st = new StringTokenizer(data, "|");
+        return stringToStack(st, cells);
+    }
+
+    public static ActionStack stringToStack(StringTokenizer data, CellCollection cells) {
+        ActionStack stack = new ActionStack(cells);
+        int stackSize = Integer.parseInt(data.nextToken());
+        for (int i = 0; i < stackSize; i++) {
+            Action action = Action.stringToAction(data);
+            stack.push(action);
+        }
+
+        return stack;
     }
 
     public boolean isEmpty() {

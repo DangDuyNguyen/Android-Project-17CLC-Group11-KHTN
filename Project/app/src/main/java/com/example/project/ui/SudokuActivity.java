@@ -1,26 +1,22 @@
 package com.example.project.UI;
 
-import androidx.appcompat.app.AppCompatActivity;
-import android.app.Dialog;
+import android.app.Activity;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.fragment.app.DialogFragment;
 
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.RadioGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.project.R;
@@ -30,9 +26,8 @@ import com.example.project.game.SudokuGame;
 import com.example.project.game.SudokuGame.OnPuzzleSolvedListener;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
-public class SudokuActivity extends AppCompatActivity {
+public class SudokuActivity extends Activity {
     private ArrayList<Long> mSudokuList;
     private int mCurrentSudokuIndex = -1;
     private SudokuGame mCurrentSudokuGame;
@@ -45,8 +40,8 @@ public class SudokuActivity extends AppCompatActivity {
     private SudokuBoard mSudokuBoard;
     private TextView mLevelInfo;
     private TextView mScoreInfo;
-
-    private Menu mMenu;
+    private TextView mTimeInfo;
+    private Spinner mMenuSetting;
 
     private InputControl mControl;
     private InputControlState mControlState;
@@ -79,6 +74,8 @@ public class SudokuActivity extends AppCompatActivity {
         mSudokuBoard = findViewById(R.id.sudoku_board);
         mLevelInfo = findViewById(R.id.levelInfo);
         mScoreInfo = findViewById(R.id.scoreInfo);
+        mTimeInfo = findViewById(R.id.timeInfo);
+        mMenuSetting = findViewById(R.id.ingameSetting);
 
         mDB = new SudokuDB(getApplicationContext());
 
@@ -93,18 +90,25 @@ public class SudokuActivity extends AppCompatActivity {
 
         mControlState = new InputControlState(this);
 
-        mSudokuList = mDB.getSudokuId(mLevel);
-        if(!mSudokuList.isEmpty())
-        {
-            mCurrentSudokuIndex = 0;
-            loadGame(mCurrentSudokuIndex);
+        if (savedInstanceState == null) {
+            mSudokuList = mDB.getSudokuId(mLevel);
+            if(!mSudokuList.isEmpty())
+            {
+                mCurrentSudokuIndex = 0;
+                loadGame(mCurrentSudokuIndex);
+            }
+        } else {
+            mCurrentSudokuGame = new SudokuGame();
+            mCurrentSudokuGame.restoreState(savedInstanceState);
+            mGameTimer.restoreState(savedInstanceState);
         }
 
         restartDialog = new AlertDialog.Builder(this)
                 .setIcon(R.drawable.ic_restart_icon)
-                .setTitle(R.string.app_name)
+                .setTitle(R.string.game_name)
                 .setMessage("Are you sure you want to restart this game?")
                 .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                    mSudokuList = mDB.getSudokuId(mLevel);
                     mGameTimer.reset();
                     mCurrentSudokuIndex = 0;
                     loadGame(mCurrentSudokuIndex);
@@ -115,7 +119,7 @@ public class SudokuActivity extends AppCompatActivity {
                 .create();
         restartTimeModeDialog = new AlertDialog.Builder(this)
                 .setIcon(R.drawable.ic_restart_icon)
-                .setTitle(R.string.app_name)
+                .setTitle(R.string.game_name)
                 .setMessage("Are you sure you want to restart this game?")
                 .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
                     mGameTimer.reset();
@@ -128,6 +132,73 @@ public class SudokuActivity extends AppCompatActivity {
                 })
                 .setNegativeButton(android.R.string.no, null)
                 .create();
+
+        String[] menuItems = new String[]{"Settings", "Restart", "Change Difficulty", "On/Off Time Counting"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item,menuItems) {
+            @Override
+            public boolean isEnabled(int position){
+                if(position == 0)
+                    return false;
+                else
+                    return true;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView,
+                                        ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if(position == 0){
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);
+                }
+                else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mMenuSetting.setAdapter(adapter);
+        mMenuSetting.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 1:
+                        restartDialog.show();
+                        break;
+                    case 2:
+                        CharSequence[] arr = new CharSequence[] {"Endless Mode","Easy Mode", "Medium Mode", "Hard Mode"};
+                        AlertDialog choice = new AlertDialog.Builder(SudokuActivity.this)
+                                .setTitle("Select difficulty:")
+                                .setSingleChoiceItems(arr, -1, null)
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int whichBtn) {
+                                        dialog.dismiss();
+                                        int selection = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+                                        if(selection >= 0 && selection < 4) {
+                                            mLevel = selection;
+                                            restartDialog.show();
+                                        }
+                                    }
+                                })
+                                .create();
+                        choice.show();
+                        break;
+                    case 3:
+                        restartTimeModeDialog.show();
+                        break;
+                }
+                mMenuSetting.setSelection(0);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     public void loadGame(int index)
@@ -146,10 +217,10 @@ public class SudokuActivity extends AppCompatActivity {
             mLevelInfo.setText("Medium");
         else mLevelInfo.setText("Hard");
 
-        mScoreInfo.setText("Score: " + mScore);
+        mScoreInfo.setText("" + mScore);
 
         if(!mShowTime)
-            setTitle(R.string.app_name);
+            mTimeInfo.setText("");
 
         mControl.init(mSudokuBoard, mCurrentSudokuGame, mNumOfHints);
         mPopupNumpad = mControl.getInputMethod(InputControl.INPUT_METHOD_POPUP);
@@ -189,6 +260,8 @@ public class SudokuActivity extends AppCompatActivity {
             mSudokuBoard.invokeOnCellSelected();
         }
 
+        mCurrentSudokuGame.resume();
+
         if(mShowTime)
             mGameTimer.start();
 
@@ -222,78 +295,9 @@ public class SudokuActivity extends AppCompatActivity {
 
         mGameTimer.stop();
 
+        mCurrentSudokuGame.pause();
+        mCurrentSudokuGame.saveState(outState);
         mGameTimer.saveState(outState);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        menu.add(0, MENU_ITEM_RESTART, 0, "Restart")
-                .setIcon(R.drawable.ic_restart_icon);
-
-        menu.add(0, MENU_ITEM_DIFFICULTY, 1, "Change Difficulty")
-                .setIcon(R.drawable.ic_difficulty_icon);
-
-        menu.add(0, MENU_ITEM_SHOWTIME, 2, "On/Off Time Counting")
-                .setIcon(R.drawable.ic_time_icon);
-
-        Intent intent = new Intent(null, getIntent().getData());
-        intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
-        menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
-                new ComponentName(this, SudokuActivity.class), null, intent, 0, null);
-
-        mMenu = menu;
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(MENU_ITEM_RESTART).setEnabled(true);
-        menu.findItem(MENU_ITEM_DIFFICULTY).setEnabled(true);
-        menu.findItem(MENU_ITEM_SHOWTIME).setEnabled(true);
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case MENU_ITEM_RESTART:
-                restartDialog.show();
-                return true;
-            case MENU_ITEM_DIFFICULTY:
-                DifficultyChoices choice = new DifficultyChoices(this);
-                choice.show();
-                choice.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        int selection = choice.getChoice();
-                        if(selection >= 0 && selection < 4) {
-                            mLevel = selection;
-                            mSudokuList = mDB.getSudokuId(mLevel);
-                            restartDialog.show();
-                        }
-                    }
-                });
-                return true;
-            case MENU_ITEM_SHOWTIME:
-                restartTimeModeDialog.show();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REQUEST_SETTINGS:
-                restartActivity();
-                break;
-        }
-    }
-
-    private void restartActivity() {
-        startActivity(getIntent());
-        finish();
     }
 
     private OnPuzzleSolvedListener onSolvedListener = new OnPuzzleSolvedListener() {
@@ -355,9 +359,9 @@ public class SudokuActivity extends AppCompatActivity {
 
     void updateTime() {
         if (mShowTime) {
-            setTitle(mFormat.formatTime(mCurrentSudokuGame.getTime()));
+            mTimeInfo.setText(mFormat.formatTime(mCurrentSudokuGame.getTime()));
         } else {
-            setTitle("Sudoku");
+            mTimeInfo.setText("");
         }
 
     }

@@ -1,23 +1,18 @@
 package com.example.project.UI;
 
 import android.content.Context;
-import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageButton;
 
 import com.example.project.R;
 import com.example.project.game.Cell;
-import com.example.project.game.CellCollection;
 import com.example.project.game.CellCollection.OnChangeListener;
 import com.example.project.game.SudokuGame;
-import com.example.project.UI.SudokuBoard;
 import com.example.project.UI.InputControlState.StateBundle;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class NumpadMethod extends InputMethod {

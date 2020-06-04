@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Sudoku</string>
+    <string name="game_name">Sudoku</string>
+    <string name="ingame_menu_name">Settings</string>
 </resources>

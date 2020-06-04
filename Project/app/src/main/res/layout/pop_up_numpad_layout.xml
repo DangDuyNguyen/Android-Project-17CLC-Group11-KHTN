@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:paddingVertical="20dp"
+        android:paddingVertical="10dp"
         android:paddingHorizontal="20dp">
         <LinearLayout
             android:id="@+id/liBtnLayout"
@@ -26,12 +26,26 @@
                 android:layout_height="wrap_content"
                 android:drawableTop="@drawable/ic_action_name_reset_icon"
                 android:text="Reset"/>
-            <Button
-                android:id="@+id/hintBtn"
+            <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawableTop="@drawable/ic_action_name_hint_icon"
-                android:text="Hint"/>
+                android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/hintBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableTop="@drawable/ic_action_name_hint_icon"
+                    android:text="Hint"/>
+                <TextView
+                    android:id="@+id/numHint"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="right|end|top"
+                    android:gravity="center"
+                    android:padding="3dp"
+                    android:text="0"
+                    android:textSize="20dp"
+                    android:elevation="10dp"/>
+            </FrameLayout>
             <Button
                 android:id="@+id/switchInputBtn"
                 android:layout_width="wrap_content"

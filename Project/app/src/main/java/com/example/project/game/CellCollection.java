@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 public class CellCollection {
     public static final int SIZE = 9;
@@ -213,6 +214,39 @@ public class CellCollection {
             }
             changeListeners.add(listener);
         }
+    }
+
+    public String cellToString() {
+        StringBuilder temp = new StringBuilder();
+        cellToString(temp);
+        return temp.toString();
+    }
+
+    public void cellToString(StringBuilder data) {
+        for (int r = 0; r < SIZE; r++) {
+            for (int c = 0; c < SIZE; c++) {
+                Cell cell = mCells[r][c];
+                cell.cellToString(data);
+            }
+        }
+    }
+
+    public static CellCollection stringToCell(String data) {
+        StringTokenizer temp = new StringTokenizer(data, "|");
+        Cell[][] cells = new Cell[SIZE][SIZE];
+
+        int r = 0, c = 0;
+        while (temp.hasMoreTokens() && r < 9) {
+            cells[r][c] = Cell.stringToCell(temp);
+            c++;
+
+            if (c == 9) {
+                r++;
+                c = 0;
+            }
+        }
+
+        return new CellCollection(cells);
     }
 
     public void removeOnChangeListener(OnChangeListener listener) {
