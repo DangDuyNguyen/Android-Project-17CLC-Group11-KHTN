@@ -51,7 +51,6 @@ public class LobbyFragment extends Fragment {
     //game UI components
     private TextView hungry_text, flatter_text, mood_text, sleepy_text;
     private Button hungriness, flattering, mood, sleepiness;
-
     private EditText name;
     private EditText coin;
     private Button setting_btn;
