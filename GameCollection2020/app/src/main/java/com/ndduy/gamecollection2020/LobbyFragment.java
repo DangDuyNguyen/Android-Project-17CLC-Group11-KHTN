@@ -298,8 +298,8 @@ public class LobbyFragment extends Fragment {
 
                 sleepy_text.setText(String.format("%s%%", Integer.toString(currentUser.getSleepiness().getPercentage())));
                 sleepiness.setBackgroundResource(currentUser.getSleepiness().getImage());
-
-                sleepy_update.postDelayed(this, 30000);
+                if (!isSleeping)
+                    sleepy_update.postDelayed(this, 30000);
             }
         }, 30000); //after 30s
 
