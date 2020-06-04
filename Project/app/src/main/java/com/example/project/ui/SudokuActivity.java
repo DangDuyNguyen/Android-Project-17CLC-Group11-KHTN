@@ -108,6 +108,7 @@ public class SudokuActivity extends Activity {
                 .setTitle(R.string.game_name)
                 .setMessage("Are you sure you want to restart this game?")
                 .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                    mNumOfHints = mControl.getNumOfHints();
                     mSudokuList = mDB.getSudokuId(mLevel);
                     mGameTimer.reset();
                     mCurrentSudokuIndex = 0;
@@ -122,6 +123,7 @@ public class SudokuActivity extends Activity {
                 .setTitle(R.string.game_name)
                 .setMessage("Are you sure you want to restart this game?")
                 .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                    mNumOfHints = mControl.getNumOfHints();
                     mGameTimer.reset();
                     mCurrentSudokuIndex = 0;
                     if(mShowTime) mShowTime = false;
