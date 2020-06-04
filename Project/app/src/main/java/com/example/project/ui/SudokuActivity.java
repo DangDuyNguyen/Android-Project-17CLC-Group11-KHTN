@@ -1,17 +1,13 @@
 package com.example.project.UI;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 
 import androidx.appcompat.app.AlertDialog;
 
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -55,10 +51,6 @@ public class SudokuActivity extends Activity {
     private int mScore = 0;
     private int mLevel = 0;
     private int mNumOfHints;
-
-    public static final int MENU_ITEM_RESTART = Menu.FIRST;
-    public static final int MENU_ITEM_DIFFICULTY = Menu.FIRST + 1;
-    public static final int MENU_ITEM_SHOWTIME = Menu.FIRST + 2;
 
     private static AlertDialog restartDialog;
     private static AlertDialog restartTimeModeDialog;
