@@ -11,7 +11,6 @@ public class SudokuGame {
     private long mId;
     private long mLevelId;
     private long mTime;
-    private long mLastPlayTime;
     private CellCollection mCells;
     private SudokuSolver mSolver;
     private boolean mSolved = false;
@@ -29,7 +28,6 @@ public class SudokuGame {
 
     public SudokuGame() {
         mTime = 0;
-        mLastPlayTime = 0;
         mLevelId = 0;
     }
 
@@ -55,14 +53,6 @@ public class SudokuGame {
         } else {
             return mTime;
         }
-    }
-
-    public void setLastPlayTime(long lastPlayTime) {
-        mLastPlayTime = lastPlayTime;
-    }
-
-    public long getLastPlayTime() {
-        return mLastPlayTime;
     }
 
     public void setCells(CellCollection cells) {
@@ -142,8 +132,6 @@ public class SudokuGame {
     public void pause() {
         mTime += SystemClock.uptimeMillis() - mStartTime;
         mStartTime = -1;
-
-        setLastPlayTime(System.currentTimeMillis());
     }
 
     public boolean isSolvable () {
@@ -203,7 +191,6 @@ public class SudokuGame {
         mStack = new ActionStack(mCells);
         validate();
         setTime(0);
-        setLastPlayTime(0);
         mSolved = false;
     }
 
