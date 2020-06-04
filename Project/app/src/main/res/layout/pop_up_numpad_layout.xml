@@ -8,7 +8,8 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:paddingVertical="20dp"
-        android:paddingHorizontal="20dp">
+        android:paddingHorizontal="20dp"
+        android:background="#ffffff">
         <LinearLayout
             android:id="@+id/liBtnLayout"
             android:layout_width="wrap_content"
@@ -18,12 +19,14 @@
                 android:id="@+id/undoBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="#ffffff"
                 android:drawableTop="@drawable/ic_action_name_undo_icon"
                 android:text="Undo"/>
             <Button
                 android:id="@+id/resetBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="#ffffff"
                 android:drawableTop="@drawable/ic_action_name_reset_icon"
                 android:text="Reset"/>
             <FrameLayout
@@ -33,23 +36,28 @@
                     android:id="@+id/hintBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="#ffffff"
                     android:drawableTop="@drawable/ic_action_name_hint_icon"
                     android:text="Hint"/>
                 <TextView
                     android:id="@+id/numHint"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="right|end|top"
+                    android:background="@drawable/circle_textview"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="3dp"
                     android:gravity="center"
-                    android:padding="3dp"
                     android:text="0"
-                    android:textSize="20dp"
-                    android:elevation="10dp"/>
+                    android:textSize="15dp"
+                    android:elevation="10dp"
+                    android:textColor="#ffffff"/>
             </FrameLayout>
             <Button
                 android:id="@+id/switchInputBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="#ffffff"
                 android:drawableTop="@drawable/ic_action_name_numpad_icon"
                 android:text="Numpad"/>
         </LinearLayout>

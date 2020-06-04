@@ -92,9 +92,9 @@ public class SudokuBoard extends View {
         setBackgroundColor(a.getColor(R.styleable.SudokuBoard_color, Color.WHITE));
         setBackgroundColorSecondary(a.getColor(R.styleable.SudokuBoard_colorSecondary, NONE_COLOR));
         setBackgroundColorReadOnly(a.getColor(R.styleable.SudokuBoard_colorReadOnly, NONE_COLOR));
-        setBackgroundColorTouched(a.getColor(R.styleable.SudokuBoard_colorTouched, Color.rgb(50, 50, 255)));
-        setBackgroundColorSelected(a.getColor(R.styleable.SudokuBoard_colorSelected, Color.YELLOW));
-        setBackgroundColorHighlighted(a.getColor(R.styleable.SudokuBoard_colorHighlighted, Color.GREEN));
+        setBackgroundColorTouched(a.getColor(R.styleable.SudokuBoard_colorTouched, Color.rgb(247, 197, 247)));
+        setBackgroundColorSelected(a.getColor(R.styleable.SudokuBoard_colorSelected, Color.rgb(255, 192, 203)));
+        setBackgroundColorHighlighted(a.getColor(R.styleable.SudokuBoard_colorHighlighted, Color.LTGRAY));
 
         a.recycle();
     }
