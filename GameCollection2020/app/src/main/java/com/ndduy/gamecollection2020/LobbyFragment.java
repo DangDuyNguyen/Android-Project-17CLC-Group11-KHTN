@@ -25,11 +25,15 @@ import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupWindow;
@@ -52,9 +56,10 @@ public class LobbyFragment extends Fragment {
     private TextView hungry_text, flatter_text, mood_text, sleepy_text;
 
     private Button hungriness, flattering, mood, sleepiness;
-
     private EditText name;
     private EditText coin;
+    private ImageView sleep_icon;
+    private Animation sleep1;
     Boolean isSleeping;
     private Button setting_btn;
     Handler sleepingHandler;
@@ -162,11 +167,12 @@ public class LobbyFragment extends Fragment {
     }
 
     public void readVarUI (View rootView) {
+        sleep1 = AnimationUtils.loadAnimation(context,R.anim.anim_sleep);
         hungriness = (Button) rootView.findViewById(R.id.hungry_status);
         flattering = (Button) rootView.findViewById(R.id.bathroom_status);
         sleepiness = (Button) rootView.findViewById(R.id.sleepy_status);
         mood = (Button) rootView.findViewById(R.id.mood_status);
-
+        sleep_icon = (ImageView)rootView.findViewById(R.id.sleep_icon);
         hungry_text = (TextView) rootView.findViewById(R.id.hungry_stat);
         flatter_text = (TextView) rootView.findViewById(R.id.flatter_stat);
         mood_text = (TextView) rootView.findViewById(R.id.mood_stat);
@@ -176,7 +182,6 @@ public class LobbyFragment extends Fragment {
         coin = (EditText) rootView.findViewById(R.id.coin);
 
         setting_btn = (Button) rootView.findViewById(R.id.setting_btn);
-
     }
 
     public void loadUser (final User user){
@@ -227,7 +232,7 @@ public class LobbyFragment extends Fragment {
     public void loadUI (User user){
         name.setText(user.getName());
         coin.setText(user.getCoin());
-
+        sleep_icon.setVisibility(View.INVISIBLE);
         hungry_text.setText(String.format("%s%%", Integer.toString(user.getHungriness().getPercentage())));
         flatter_text.setText(String.format("%s%%", Integer.toString(user.getFlattering().getPercentage())));
         sleepy_text.setText(String.format("%s%%", Integer.toString(user.getSleepiness().getPercentage())));
@@ -237,6 +242,7 @@ public class LobbyFragment extends Fragment {
         flattering.setBackgroundResource(user.getFlattering().getImage());
         sleepiness.setBackgroundResource(user.getSleepiness().getImage());
         mood.setBackgroundResource(user.getMood().getImage());
+
     }
 
     public void updateStatus() {
@@ -360,6 +366,7 @@ public class LobbyFragment extends Fragment {
         Runnable sleep = new Runnable() {
             @Override
             public void run() {
+
                 int new_status = Integer.parseInt(sleepy_text.getText().toString().substring(0, sleepy_text.getText().toString().indexOf('%'))) + 1;
                 if (new_status < 100) {
                     sleepy_text.setText(Integer.toString(new_status) + "%");
@@ -377,8 +384,10 @@ public class LobbyFragment extends Fragment {
                     currentUser.getSleepiness().setImage(R.drawable.red_sleepy_status_button);
 
                 sleepiness.setBackgroundResource(currentUser.getSleepiness().getImage());
-                if (isSleeping)
-                    sleepingHandler.postDelayed(this,10000);
+                if (isSleeping) {
+                    sleepingHandler.postDelayed(this, 10000);
+                    sleep_icon.startAnimation(sleep1);
+                }
             }
         };
 
@@ -389,6 +398,7 @@ public class LobbyFragment extends Fragment {
             mood.setClickable(false);
             flattering.setClickable(false);
             isSleeping = true;
+            sleep_icon.setVisibility(View.VISIBLE);
             if (sleepingHandler == null)
                 sleepingHandler = new Handler();
             sleepingHandler.postDelayed(sleep,10000);
@@ -398,6 +408,7 @@ public class LobbyFragment extends Fragment {
             hungriness.setClickable(true);
             mood.setClickable(true);
             flattering.setClickable(true);
+            sleep_icon.setVisibility(View.INVISIBLE);
             isSleeping = false;
         }
     }
