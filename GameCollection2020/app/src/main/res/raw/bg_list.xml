@@ -1,0 +1,17 @@
+<items>
+    <item
+        name="Garden"
+        image="bg2" />
+    <item
+        name="Park"
+        image="bg3" />
+    <item
+        name="Gym"
+        image="bg4" />
+    <item
+        name="Living room"
+        image="bg5" />
+    <item
+        name="Club"
+        image="bg6" />
+</items>

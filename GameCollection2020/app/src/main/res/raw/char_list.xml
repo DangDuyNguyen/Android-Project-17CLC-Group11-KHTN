@@ -1,0 +1,19 @@
+<items>
+    <item
+        name="Tiger"
+        image="char_tiger" />
+    <item
+        name="Buffalo"
+        image="char_buffalo" />
+    <item
+        name="Cow"
+        image="char_cow" />
+    <item
+        name="Bear"
+        image="char_bear" />
+    <item
+        name="Pig"
+        image="char_pig" />
+
+
+</items>

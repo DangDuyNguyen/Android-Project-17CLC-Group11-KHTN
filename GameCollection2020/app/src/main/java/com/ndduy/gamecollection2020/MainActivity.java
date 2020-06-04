@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -50,6 +51,52 @@ public class MainActivity extends FragmentActivity {
     protected void onPause() {
         super.onPause();
         backgroundMusic.pause();
+
+        Bundle saverequest = new Bundle();
+        saverequest.putBoolean("request", true);
+        getSupportFragmentManager().setFragmentResult("request_save_data", saverequest);
+
+        //retrieve game data from fragment after request
+        getSupportFragmentManager().setFragmentResultListener("savedata", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+
+                String user_name = result.getString("user_name");
+                String user_coin = result.getString("user_coin");
+                int user_hungry_status = result.getInt("user_hungry_status");
+                int user_flatter_status = result.getInt("user_flatter_status");
+                int user_sleepy_status = result.getInt("user_sleep_status");
+                int user_mood_status = result.getInt("user_mood_status");
+
+                File delete = new File(getFilesDir(), "gamedata.txt");
+                delete.delete();
+
+                File savefile = new File(getFilesDir() + "/gamedata.txt");
+                try {
+                    FileOutputStream fout = openFileOutput("gamedata.txt",Context.MODE_PRIVATE);
+                    OutputStreamWriter outputWriter=new OutputStreamWriter(fout);
+                    outputWriter.write(user_name);
+                    outputWriter.write("\n");
+                    outputWriter.write(user_coin);
+                    outputWriter.write("\n");
+                    outputWriter.write(Integer.toString(user_hungry_status));
+                    outputWriter.write("\n");
+                    outputWriter.write(Integer.toString(user_flatter_status));
+                    outputWriter.write("\n");
+                    outputWriter.write(Integer.toString(user_sleepy_status));
+                    outputWriter.write("\n");
+                    outputWriter.write(Integer.toString(user_mood_status));
+
+                    outputWriter.close();
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
     @Override
@@ -64,6 +111,9 @@ public class MainActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /*File delete = new File(getFilesDir(), "gamedata.txt");
+                delete.delete();*/
+
         tabs = (TabLayout) findViewById(R.id.tabs);
         viewPager = (MyViewPager) findViewById(R.id.viewpager);
         EditText coin = (EditText) findViewById(R.id.coin);
@@ -76,6 +126,7 @@ public class MainActivity extends FragmentActivity {
         backgroundMusic.setLooping(true); // Set looping
         backgroundMusic.setVolume(100, 100);
         backgroundMusic.start();
+
         readData();
 
         /*get adapter for viewpager for the tablayout*/
@@ -125,59 +176,18 @@ public class MainActivity extends FragmentActivity {
                 }
             }
         });
-
-
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        getSupportFragmentManager().setFragmentResultListener("savedata", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+        Log.d("TAG", "onDestroy: destroyed");
+    }
 
-                String user_name = result.getString("user_name");
-                String user_coin = result.getString("user_coin");
-                int user_hungry_status = result.getInt("user_hungry_status");
-                int user_flatter_status = result.getInt("user_flatter_status");
-                int user_sleepy_status = result.getInt("user_sleep_status");
-                int user_mood_status = result.getInt("user_mood_status");
-
-                File save = new File(getFilesDir(), "data");
-                if(!save.exists()){
-                    save.mkdir();
-                }
-                try {
-                    FileOutputStream fout = openFileOutput("gamedata.txt",Context.MODE_PRIVATE);
-                    OutputStreamWriter outputWriter=new OutputStreamWriter(fout);
-                    outputWriter.write(user_name);
-                    outputWriter.write("\n");
-                    outputWriter.write(user_coin);
-                    outputWriter.write("\n");
-                    outputWriter.write(user_hungry_status);
-                    outputWriter.write("\n");
-                    outputWriter.write(user_flatter_status);
-                    outputWriter.write("\n");
-                    outputWriter.write(user_sleepy_status);
-                    outputWriter.write("\n");
-                    outputWriter.write(user_mood_status);
-
-                    outputWriter.close();
-
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
     public void readData() {
@@ -210,7 +220,6 @@ public class MainActivity extends FragmentActivity {
             in.close();
             fin.close();
 
-            Toast.makeText(this, name, Toast.LENGTH_LONG);
             Bundle loaduserbundle = new Bundle();
             loaduserbundle.putString("user_name", name);
             loaduserbundle.putString("user_coin", coin);

@@ -78,7 +78,6 @@ public class SettingClass extends PopupWindow{
                 popupWindow.dismiss();
             }
         });
-
     }
 
 }

@@ -21,15 +21,24 @@
 
         <activity
             android:name=".AnimalRacingActivity"
-            android:label="Game Collection 2020!" >
+            >
         </activity>
 
+        <activity android:name=".SnakeActivity">
 
-        <receiver android:name=".LobbyFragment$StatusUpdateReceiver">
+        </activity>
+        <activity android:name=".CardFlipper.CardFlipperActivity">
+
+        </activity>
+        <activity android:name=".CardFlipper.GameActivity">
+
+        </activity>
+
+        <!--<receiver android:name=".LobbyFragment$StatusUpdateReceiver">
             <intent-filter>
                 <action android:name="status.action.UpdateStatus" />
             </intent-filter>
-        </receiver>
+        </receiver>-->
         <service android:name=".UpdateStatus"/>
     </application>
 

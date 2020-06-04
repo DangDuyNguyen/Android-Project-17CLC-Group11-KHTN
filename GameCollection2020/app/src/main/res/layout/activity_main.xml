@@ -6,10 +6,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity">
-
-
-
-
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabs"
         android:layout_width="409dp"
@@ -17,7 +13,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/lightpink"
+        android:background="@color/pink"
         app:tabIndicatorColor="@android:color/darker_gray"
         app:tabIndicatorHeight="3dp"
         app:tabSelectedTextColor="@android:color/background_dark">

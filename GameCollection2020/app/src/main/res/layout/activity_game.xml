@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:layout_width="match_parent" android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/game_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="8">
+        <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/scores_0"
+        android:textStyle="italic"
+        android:textColor="#ffff"
+        android:textSize="30sp"
+        android:id="@+id/scores"
+        android:padding="20dp" android:layout_weight="7">
+        </TextView>
+        <Button
+            android:id="@+id/settingButton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:background="@drawable/setting_button"
+             />
+    </LinearLayout>
+        <GridView
+            android:id="@+id/card_table"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center"
+            android:numColumns="4"
+            android:layout_columnWeight="1"
+            android:stretchMode="columnWidth"
+            android:padding="5dp"
+            android:horizontalSpacing = "15dp"
+            android:verticalSpacing   = "15dp"/>
+    </LinearLayout>
+
+</FrameLayout>
