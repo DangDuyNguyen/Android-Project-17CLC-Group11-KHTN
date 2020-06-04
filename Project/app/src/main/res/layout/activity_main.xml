@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:text="Score"
-            android:textSize="25dp"/>
+            android:textSize="35dp"/>
         <Spinner
             android:id="@+id/ingameSetting"
             android:layout_width="150dp"
@@ -32,7 +32,7 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@id/scoreTitle"
             android:text="0"
-            android:textSize="35dp"/>
+            android:textSize="50dp"/>
         <TextView
             android:id="@+id/levelInfo"
             android:layout_width="wrap_content"
