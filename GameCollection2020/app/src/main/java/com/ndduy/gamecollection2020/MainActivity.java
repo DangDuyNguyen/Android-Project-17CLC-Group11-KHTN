@@ -19,7 +19,12 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -31,7 +36,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 //import com.google.android.gms.games.snapshot;
 
 
@@ -47,6 +55,7 @@ public class MainActivity extends FragmentActivity {
     StoreFragment storeFrag = new StoreFragment();
 
     MediaPlayer backgroundMusic;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     @Override
     protected void onPause() {
@@ -62,6 +71,7 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
 
+                String user_username = result.getString("user_username");
                 String user_name = result.getString("user_name");
                 String user_coin = result.getString("user_coin");
                 int user_hungry_status = result.getInt("user_hungry_status");
@@ -78,6 +88,8 @@ public class MainActivity extends FragmentActivity {
                 try {
                     FileOutputStream fout = openFileOutput("gamedata.txt",Context.MODE_PRIVATE);
                     OutputStreamWriter outputWriter=new OutputStreamWriter(fout);
+                    outputWriter.write(user_username);
+                    outputWriter.write("\n");
                     outputWriter.write(user_name);
                     outputWriter.write("\n");
                     outputWriter.write(user_coin);
@@ -112,14 +124,14 @@ public class MainActivity extends FragmentActivity {
                 }
             }
         });
-
+        syncData();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        backgroundMusic.seekTo(0);
-        backgroundMusic.start();
+        if(lobbyFrag.getSettingClass().isSound())
+            backgroundMusic.start();
     }
 
     @Override
@@ -207,6 +219,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     public void readData() {
+        String account_name = "";
         String name = "";
         String coin = "";
         int hungry_status = 0;
@@ -222,6 +235,8 @@ public class MainActivity extends FragmentActivity {
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
             String line = "";
+            if ((line = br.readLine()) != null)
+                account_name = line;
             if ((line = br.readLine()) != null)
                 name = line;
             if ((line = br.readLine()) != null)
@@ -242,6 +257,7 @@ public class MainActivity extends FragmentActivity {
             fin.close();
 
             Bundle loaduserbundle = new Bundle();
+            loaduserbundle.putString("user_username", account_name);
             loaduserbundle.putString("user_name", name);
             loaduserbundle.putString("user_coin", coin);
             loaduserbundle.putInt("user_hungry_status", hungry_status);
@@ -257,5 +273,52 @@ public class MainActivity extends FragmentActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void syncData(){
+        Bundle syncrequest = new Bundle();
+        syncrequest.putBoolean("request", true);
+        getSupportFragmentManager().setFragmentResult("request_sync_data", syncrequest);
+
+        getSupportFragmentManager().setFragmentResultListener("syncdata", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                if (!result.getString("user_username").equals("")) {
+                    final String user_username = result.getString("user_username");
+                    final String user_name = result.getString("user_name");
+                    final String user_coin = result.getString("user_coin");
+                    final int user_hungry_status = result.getInt("user_hungry_status");
+                    final int user_flatter_status = result.getInt("user_flatter_status");
+                    final int user_sleepy_status = result.getInt("user_sleep_status");
+                    final int user_mood_status = result.getInt("user_mood_status");
+                    final ArrayList<String> char_list = result.getStringArrayList("user_char_list");
+                    final ArrayList<String> bg_list = result.getStringArrayList("user_bg_list");
+
+                    db.collection("user").whereEqualTo("username", user_username).get()
+                            .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                    DocumentSnapshot document = queryDocumentSnapshots.getDocuments().get(0);
+
+                                    db.collection("user").document(document.getId()).update("username", user_username);
+                                    db.collection("user").document(document.getId()).update("name", user_name);
+                                    db.collection("user").document(document.getId()).update("coin", user_coin);
+                                    db.collection("user").document(document.getId()).update("hungriness", user_hungry_status);
+                                    db.collection("user").document(document.getId()).update("flattering", user_flatter_status);
+                                    db.collection("user").document(document.getId()).update("sleepiness", user_sleepy_status);
+                                    db.collection("user").document(document.getId()).update("mood", user_mood_status);
+                                    db.collection("user").document(document.getId()).update("character", char_list);
+                                    db.collection("user").document(document.getId()).update("background", bg_list);                               }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(MainActivity.this, "Error getting data!!!", Toast.LENGTH_LONG).show();
+                                }
+                            });
+                }
+            }
+        });
+
     }
 }

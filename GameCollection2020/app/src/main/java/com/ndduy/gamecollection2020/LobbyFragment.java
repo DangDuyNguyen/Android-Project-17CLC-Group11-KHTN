@@ -75,6 +75,10 @@ public class LobbyFragment extends Fragment {
 
     SettingClass settingClass = new SettingClass();
 
+    public SettingClass getSettingClass() {
+        return settingClass;
+    }
+
     public LobbyFragment() {
         // Required empty public constructor
     }
@@ -131,7 +135,7 @@ public class LobbyFragment extends Fragment {
         flattering.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                increaseFlatterStatus(30);
+                increaseFlatterStatus();
             }
         });
 
@@ -144,6 +148,7 @@ public class LobbyFragment extends Fragment {
         if (requestCode == LOGIN_REQUEST) {
             if (data != null) {
                 String username = data.getStringExtra("username");
+                currentUser.setAccount(username);
                 pullUserFromFirebase(username);
                 settingClass.setOnLogin(setting_btn.getRootView(), username, "LOGOUT");
             }
@@ -251,13 +256,12 @@ public class LobbyFragment extends Fragment {
         getParentFragmentManager().setFragmentResultListener("coin", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                int extraCoin = result.getInt("coin");
-                coin.setText(Integer.toString(Integer.parseInt(coin.getText().toString()) + extraCoin));
+                coin.setText(Integer.toString( result.getInt("coin")));
                 currentUser.setCoin(coin.getText().toString());
             }
         });
 
-        getParentFragmentManager().setFragmentResultListener("Snake_coin", this, new FragmentResultListener() {
+        getParentFragmentManager().setFragmentResultListener("Game_coin", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 int extraCoin = result.getInt("coin");
@@ -271,6 +275,7 @@ public class LobbyFragment extends Fragment {
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 if (result.getBoolean("request")){
                     Bundle savedata = new Bundle();
+                    savedata.putString("user_username", currentUser.getAccount());
                     savedata.putString("user_name", currentUser.getName());
                     savedata.putString("user_coin", currentUser.getCoin());
                     savedata.putInt("user_hungry_status", currentUser.getHungriness().getPercentage());
@@ -283,25 +288,50 @@ public class LobbyFragment extends Fragment {
                 }
             }
         });
+        getParentFragmentManager().setFragmentResultListener("request_sync_data", getActivity(), new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                if (result.getBoolean("request")){
+                    Bundle savedata = new Bundle();
+                    savedata.putString("user_username", currentUser.getAccount());
+                    savedata.putString("user_name", currentUser.getName());
+                    savedata.putString("user_coin", currentUser.getCoin());
+                    savedata.putInt("user_hungry_status", currentUser.getHungriness().getPercentage());
+                    savedata.putInt("user_flatter_status", currentUser.getFlattering().getPercentage());
+                    savedata.putInt("user_sleep_status", currentUser.getSleepiness().getPercentage());
+                    savedata.putInt("user_mood_status", currentUser.getMood().getPercentage());
+                    savedata.putStringArrayList("user_char_list", currentUser.getChar_list());
+                    savedata.putStringArrayList("user_bg_list", currentUser.getBg_list());
+                    getParentFragmentManager().setFragmentResult("syncdata", savedata);
+                }
+            }
+        });
+
+        getParentFragmentManager().setFragmentResultListener("pass_coin_please", getActivity(), new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                Bundle bundle = new Bundle();
+                bundle.putString("currentCoin", currentUser.getCoin());
+                getParentFragmentManager().setFragmentResult("pass_coin",bundle );
+            }
+        });
 
         getParentFragmentManager().setFragmentResultListener("loaduserdata", getActivity(), new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                currentUser.setAccount(result.getString("user_username"));
                 currentUser.setName(result.getString("user_name"));
                 currentUser.setCoin(result.getString("user_coin"));
                 currentUser.getHungriness().setPercentage(result.getInt("user_hungry_status"));
                 currentUser.getFlattering().setPercentage(result.getInt("user_flatter_status"));
                 currentUser.getSleepiness().setPercentage(result.getInt("user_sleep_status"));
                 currentUser.getMood().setPercentage(result.getInt("user_mood_status"));
+                ArrayList<String> temp_char = new ArrayList<>();
+                ArrayList<String> temp_bg = new ArrayList<>();
+                currentUser.setChar_list(temp_char);
+                currentUser.setBg_list(temp_bg);
                 currentUser.getChar_list().addAll(result.getStringArrayList("user_char_list"));
                 currentUser.getBg_list().addAll(result.getStringArrayList("user_bg_list"));
-
-                for(int i = 0; i < currentUser.getChar_list().size();i++){
-                    Toast.makeText(getActivity(), currentUser.getChar_list().get(i), Toast.LENGTH_LONG).show();
-                }
-                for(int i = 0; i < currentUser.getBg_list().size();i++){
-                    Toast.makeText(getActivity(), currentUser.getBg_list().get(i), Toast.LENGTH_LONG).show();
-                }
 
                 if (currentUser.getHungriness().getPercentage() > 70)
                     currentUser.getHungriness().setImage(R.drawable.green_hungry_status_button);
@@ -338,8 +368,15 @@ public class LobbyFragment extends Fragment {
         getParentFragmentManager().setFragmentResultListener("login_request", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
-                startActivityForResult(intent, LOGIN_REQUEST);
+                if (result.getBoolean("islogin")) {
+                    startActivityForResult(intent, LOGIN_REQUEST);
+                }
+                else{
+                    currentUser.setAccount("");
+                    settingClass.setOnLogout(setting_btn.getRootView());
+                }
             }
         });
 
@@ -480,80 +517,83 @@ public class LobbyFragment extends Fragment {
         });
 
     }
+
     public void increaseHungryStatus(int range){
+        int old_status =Integer.parseInt(hungry_text.getText().toString().substring(0, hungry_text.getText().toString().indexOf('%')));
+        int new_coin = Integer.parseInt(currentUser.getCoin()) - 5;
 
-        int new_status = Integer.parseInt(hungry_text.getText().toString().substring(0, hungry_text.getText().toString().indexOf('%'))) + range;
-        if (new_status < 100) {
-            hungry_text.setText(Integer.toString(new_status) + "%");
-            currentUser.getHungriness().setPercentage(new_status);
+        int new_status = old_status + range;
+        if(new_coin<0)
+        {
+            Toast.makeText(getActivity(),"Coin not enough!",Toast.LENGTH_LONG).show();
         }
+        if(old_status<90 && new_coin >= 0) {
+            if (new_status < 100) {
+                hungry_text.setText(Integer.toString(new_status) + "%");
+                currentUser.getHungriness().setPercentage(new_status);
+            } else {
+                hungry_text.setText("100%");
+                currentUser.getHungriness().setPercentage(100);
+            }
+            if (new_status < 100 + range) {
+                currentUser.setCoin(Integer.toString(new_coin));
+                coin.setText(Integer.toString(new_coin));
+            }
 
-        else {
-            hungry_text.setText("100%");
-            currentUser.getHungriness().setPercentage(100);
+            int new_flatter = Integer.parseInt(flatter_text.getText().toString().substring(0, flatter_text.getText().toString().indexOf('%')));
+            if (new_flatter - 5 <= 0) {
+                currentUser.getFlattering().setPercentage(0);
+                flatter_text.setText("0%");
+            } else {
+                currentUser.getFlattering().setPercentage(new_flatter - 5);
+                flatter_text.setText(Integer.toString(new_flatter - 5) + "%");
+            }
+
+            if (currentUser.getHungriness().getPercentage() > 70)
+                currentUser.getHungriness().setImage(R.drawable.green_hungry_status_button);
+            else if (currentUser.getHungriness().getPercentage() > 40)
+                currentUser.getHungriness().setImage(R.drawable.yellow_hungry_status_button);
+            else
+                currentUser.getHungriness().setImage(R.drawable.red_hungry_status_button);
+
+            hungriness.setBackgroundResource(currentUser.getHungriness().getImage());
+
+            if (currentUser.getFlattering().getPercentage() > 70)
+                currentUser.getFlattering().setImage(R.drawable.green_bathroom_status_button);
+            else if (currentUser.getFlattering().getPercentage() > 40)
+                currentUser.getFlattering().setImage(R.drawable.yellow_bathroom_status_button);
+            else
+                currentUser.getFlattering().setImage(R.drawable.red_bathroom_status_button);
+
+            flattering.setBackgroundResource(currentUser.getFlattering().getImage());
         }
-        if (new_status < 100 + range) {
-            int new_coin = Integer.parseInt(currentUser.getCoin().toString()) - 5;
-            currentUser.setCoin(Integer.toString(new_coin));
-            coin.setText(Integer.toString(new_coin));
-        }
-
-        int new_flatter = Integer.parseInt(flatter_text.getText().toString().substring(0, flatter_text.getText().toString().indexOf('%')));
-        if (new_flatter - 10 <= 0){
-            currentUser.getFlattering().setPercentage(0);
-            flatter_text.setText("0%");
-        }
-        else{
-            currentUser.getFlattering().setPercentage(new_flatter - 10);
-            flatter_text.setText(Integer.toString(new_flatter - 10) + "%");
-        }
-
-        if (currentUser.getHungriness().getPercentage() > 70)
-            currentUser.getHungriness().setImage(R.drawable.green_hungry_status_button);
-        else if (currentUser.getHungriness().getPercentage() > 40)
-            currentUser.getHungriness().setImage(R.drawable.yellow_hungry_status_button);
-        else
-            currentUser.getHungriness().setImage(R.drawable.red_hungry_status_button);
-
-        hungriness.setBackgroundResource(currentUser.getHungriness().getImage());
-
-        if (currentUser.getFlattering().getPercentage() > 70)
-            currentUser.getFlattering().setImage(R.drawable.green_bathroom_status_button);
-        else if (currentUser.getFlattering().getPercentage() > 40)
-            currentUser.getFlattering().setImage(R.drawable.yellow_bathroom_status_button);
-        else
-            currentUser.getFlattering().setImage(R.drawable.red_bathroom_status_button);
-
-        flattering.setBackgroundResource(currentUser.getFlattering().getImage());
-
     }
 
-    public void increaseFlatterStatus(int range){
+    public void increaseFlatterStatus(){
 
-        int new_status = Integer.parseInt(flatter_text.getText().toString().substring(0, flatter_text.getText().toString().indexOf('%'))) + range;
-        if (new_status < 100) {
-            flatter_text.setText(Integer.toString(new_status) + "%");
-            currentUser.getFlattering().setPercentage(new_status);
+        int status = Integer.parseInt(flatter_text.getText().toString().substring(0, flatter_text.getText().toString().indexOf('%')));
+        int new_coin = Integer.parseInt(currentUser.getCoin().toString()) - 5;
+        if(new_coin<0)
+        {
+            Toast.makeText(getActivity(),"Coin not enough!",Toast.LENGTH_LONG).show();
         }
-
-        else {
+        if (status < 70 &&new_coin>=0) {
             flatter_text.setText("100%");
             currentUser.getFlattering().setPercentage(100);
-        }
-        if (new_status < 100 + range) {
-            int new_coin = Integer.parseInt(currentUser.getCoin().toString()) - 5;
+
+
             currentUser.setCoin(Integer.toString(new_coin));
             coin.setText(Integer.toString(new_coin));
+
+            if (currentUser.getFlattering().getPercentage() > 70)
+                currentUser.getFlattering().setImage(R.drawable.green_bathroom_status_button);
+            else if (currentUser.getFlattering().getPercentage() > 40)
+                currentUser.getFlattering().setImage(R.drawable.yellow_bathroom_status_button);
+            else
+                currentUser.getFlattering().setImage(R.drawable.red_bathroom_status_button);
+
+            flattering.setBackgroundResource(currentUser.getFlattering().getImage());
         }
-
-        if (currentUser.getFlattering().getPercentage() > 70)
-            currentUser.getFlattering().setImage(R.drawable.green_bathroom_status_button);
-        else if (currentUser.getFlattering().getPercentage() > 40)
-            currentUser.getFlattering().setImage(R.drawable.yellow_bathroom_status_button);
-        else
-            currentUser.getFlattering().setImage(R.drawable.red_bathroom_status_button);
-
-        flattering.setBackgroundResource(currentUser.getFlattering().getImage());
     }
 }
 

@@ -43,6 +43,7 @@ public class AnimalRacingActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_animal_racing);
         mapping();// hàm thực hiện ánh xạ
+        tv_point.setText(getIntent().getStringExtra("currentCoin"));
         hidden();
         ///////////////////////////////
         // ẩn nút Replay trước khi bắt đầu
@@ -246,7 +247,7 @@ public class AnimalRacingActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("coin", convertToCoin(Integer.parseInt(tv_point.getText().toString())));
+                returnIntent.putExtra("coin", Integer.parseInt(tv_point.getText().toString()));
                 setResult(Activity.RESULT_OK,returnIntent);
                 finish();
             }
@@ -433,10 +434,5 @@ public class AnimalRacingActivity extends Activity {
                 break;
         }
 
-    }
-
-    //convert from score to coin
-    private int convertToCoin(int score){
-        return score*20/100;
     }
 }

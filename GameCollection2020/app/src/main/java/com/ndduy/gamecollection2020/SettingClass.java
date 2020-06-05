@@ -70,6 +70,11 @@ public class SettingClass extends PopupWindow{
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
+                if (firebase_signin.getText().equals("LOGIN"))
+                    bundle.putBoolean("islogin", true);
+                else if (firebase_signin.getText().equals("LOGOUT"))
+                    bundle.putBoolean("islogin", false);
+
                 fragmentManager.setFragmentResult("login_request", bundle);
             }
         });
@@ -110,4 +115,21 @@ public class SettingClass extends PopupWindow{
         popupWindow.dismiss();
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
     }
+
+    public void setOnLogout(View view){
+        this.username = "Login now to sync your data!";
+        this.login_state = "LOGIN";
+
+        login_status_msg.setText("Login now to sync your data!");
+        firebase_signin.setText("LOGIN");
+
+        popupWindow.dismiss();
+        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+    }
+
+    public boolean isSound()
+    {
+        return sound;
+    }
+
 }

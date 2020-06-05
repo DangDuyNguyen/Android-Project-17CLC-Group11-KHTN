@@ -3,6 +3,7 @@ package com.ndduy.gamecollection2020;
 import java.util.ArrayList;
 
 public class User {
+    private String account;
     private String username;
     private String name;
     private String Coin;
@@ -14,6 +15,7 @@ public class User {
     private ArrayList<String> bg_list;
 
     public User() {
+        account = "";
         name = "My name is...";
         Coin = "0";
         Hungriness = new Status("Hungriness", 100, R.drawable.green_hungry_status_button);
@@ -23,6 +25,14 @@ public class User {
 
         bg_list = new ArrayList<>();
         char_list = new ArrayList<>();
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
     }
 
     public String getUsername() {
