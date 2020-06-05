@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentResultListener;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +26,7 @@ public class GameFragment extends Fragment {
     private int SNAKE_REQUEST_CODE = 12;
     private int CARDFLIPPER_REQUEST_CODE = 78;
     private int SUDOKU_REQUEST_CODE = 49;
+    private String currentCoin = "0";
 
     public GameFragment() {
         // Required empty public constructor
@@ -43,7 +46,15 @@ public class GameFragment extends Fragment {
         AnimalRacing.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                getParentFragmentManager().setFragmentResult("pass_coin_please", null);
+                getParentFragmentManager().setFragmentResultListener("pass_coin", getActivity(), new FragmentResultListener() {
+                    @Override
+                    public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                        currentCoin= result.getString("currentCoin", "0");
+                    }
+                });
                 Intent intent = new Intent(getActivity(), AnimalRacingActivity.class);
+                intent.putExtra("currentCoin",currentCoin);
                 startActivityForResult(intent, AR_REQUEST_CODE);
             }
         });

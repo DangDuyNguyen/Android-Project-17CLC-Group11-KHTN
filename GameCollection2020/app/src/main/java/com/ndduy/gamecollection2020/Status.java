@@ -10,13 +10,11 @@ import androidx.core.content.ContextCompat;
 public class Status {
     private String name;
     private int percentage;
-    private double decrease_rate;
     private int image;
 
-    public Status(String name, int percentage, double decrease_rate, int image) {
+    public Status(String name, int percentage, int image) {
         this.name = name;
         this.percentage = percentage;
-        this.decrease_rate = decrease_rate;
         this.image = image;
     }
 
@@ -42,13 +40,5 @@ public class Status {
 
     public void setPercentage(int percentage) {
         this.percentage = percentage;
-    }
-
-    public double getDecrease_rate() {
-        return decrease_rate;
-    }
-
-    public void setDecrease_rate(double decrease_rate) {
-        this.decrease_rate = decrease_rate;
     }
 }

@@ -43,6 +43,7 @@ public class AnimalRacingActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_animal_racing);
         mapping();// hàm thực hiện ánh xạ
+        tv_point.setText(getIntent().getStringExtra("currentCoin"));
         hidden();
         ///////////////////////////////
         // ẩn nút Replay trước khi bắt đầu
@@ -87,13 +88,13 @@ public class AnimalRacingActivity extends Activity {
                 {
                     if(player3.getPaddingLeft()>=goal )
                     {
-                       player3_win();
+                        player3_win();
                     }
                     else if(player2.getPaddingLeft()>=goal ) {
-                       player2_win();
+                        player2_win();
                     }
                     else if(player1.getPaddingLeft()>=goal ) {
-                       player1_win();
+                        player1_win();
                     }
                     this.cancel();
                     lose();
@@ -117,42 +118,44 @@ public class AnimalRacingActivity extends Activity {
                 }
                 if (isChosen()!=0 && isWindChosen()!=0)// nếu như chưa chọn con vật nào để đua
                 {
-                    if(Integer.parseInt(tv_point.getText().toString())<=0)
+                    if(Integer.parseInt(tv_point.getText().toString())<=10)
                     {
                         // nếu điểm âm thì đặt lại như ban đầu
-                        Toast.makeText(AnimalRacingActivity.this, "You lost all of your point", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(AnimalRacingActivity.this, "POOR YOU!!!", Toast.LENGTH_SHORT).show();
                         //=============== nếu sửa để thoát thì ở đây====================
-                        tv_point.setText("100");
+                        finish();
                     }
-                    reveal();
-                    iv_play.setVisibility(View.INVISIBLE);
-                    result.setVisibility(View.INVISIBLE);
-                    choosing.setVisibility(View.INVISIBLE);
+                    else{
+                        reveal();
+                        iv_play.setVisibility(View.INVISIBLE);
+                        result.setVisibility(View.INVISIBLE);
+                        choosing.setVisibility(View.INVISIBLE);
 
-                    // khi bắt đầu chơi thì chặn người dùng thao tác checkbox --. tránh việc người dùng chọn lại
-                    disable();
-                    //
-                    player1.setImageResource(R.drawable.pinkguyrun);
-                    player2.setImageResource(R.drawable.frogrun);
-                    player3.setImageResource(R.drawable.blueboyrun);
-                    windPower=isWindChosen();
+                        // khi bắt đầu chơi thì chặn người dùng thao tác checkbox --. tránh việc người dùng chọn lại
+                        disable();
+                        //
+                        player1.setImageResource(R.drawable.pinkguyrun);
+                        player2.setImageResource(R.drawable.frogrun);
+                        player3.setImageResource(R.drawable.blueboyrun);
+                        windPower=isWindChosen();
 
-                    switch (windPower){
-                        case 3:
-                            cloud.setImageResource(R.drawable.cloud);
-                            layout.setBackgroundResource(R.drawable.track);
-                            break;
-                        case 5:
-                            cloud.setImageResource(R.drawable.cloud);
-                            layout.setBackgroundResource(R.drawable.stormtrack);
-                            break;
-                        case 7:
-                            cloud.setImageResource(R.drawable.stormcloud);
-                            layout.setBackgroundResource(R.drawable.stormtrack);
-                            break;
+                        switch (windPower){
+                            case 2:
+                                cloud.setImageResource(R.drawable.cloud);
+                                layout.setBackgroundResource(R.drawable.track);
+                                break;
+                            case 5:
+                                cloud.setImageResource(R.drawable.cloud);
+                                layout.setBackgroundResource(R.drawable.stormtrack);
+                                break;
+                            case 7:
+                                cloud.setImageResource(R.drawable.stormcloud);
+                                layout.setBackgroundResource(R.drawable.stormtrack);
+                                break;
+                        }
+
+                        countDownTimer.start();
                     }
-
-                    countDownTimer.start();
                 }
             }
         });
@@ -246,7 +249,7 @@ public class AnimalRacingActivity extends Activity {
             @Override
             public void onClick(View v) {
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("coin", convertToCoin(Integer.parseInt(tv_point.getText().toString())));
+                returnIntent.putExtra("coin",Integer.parseInt(tv_point.getText().toString()));
                 setResult(Activity.RESULT_OK,returnIntent);
                 finish();
             }
@@ -362,9 +365,9 @@ public class AnimalRacingActivity extends Activity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-        result.setVisibility(View.VISIBLE);
-        winlose.setImageResource(R.drawable.lose);
-        tv_point.setText(Integer.parseInt(tv_point.getText().toString())-10+"");
+                result.setVisibility(View.VISIBLE);
+                winlose.setImageResource(R.drawable.lose);
+                tv_point.setText(Integer.parseInt(tv_point.getText().toString())-10+"");
             }
         },1500);
     }
@@ -394,49 +397,47 @@ public class AnimalRacingActivity extends Activity {
     }
 
     private void check_second_win(int playerA_playerB){
-       switch (playerA_playerB)
-       {
-           case 12:
-               if(player1.getPaddingLeft()-player2.getPaddingLeft()>0) {
-                   second.setImageResource(R.drawable.pinkguyidle);
-                   third.setImageResource(R.drawable.frogidle);
-               }
-               else {
-                   third.setImageResource(R.drawable.pinkguyidle);
-                   second.setImageResource(R.drawable.frogidle);
-               }
-               break;
+        switch (playerA_playerB)
+        {
+            case 12:
+                if(player1.getPaddingLeft()-player2.getPaddingLeft()>0) {
+                    second.setImageResource(R.drawable.pinkguyidle);
+                    third.setImageResource(R.drawable.frogidle);
+                }
+                else {
+                    third.setImageResource(R.drawable.pinkguyidle);
+                    second.setImageResource(R.drawable.frogidle);
+                }
+                break;
 
-           case 13:
-               if(player1.getPaddingLeft()-player3.getPaddingLeft()>0) {
-                   second.setImageResource(R.drawable.pinkguyidle);
-                   third.setImageResource(R.drawable.blueboyidle);
-               }
-               else {
-                   second.setImageResource(R.drawable.blueboyidle);
-                   third.setImageResource(R.drawable.pinkguyidle);
-               }
-               break;
-           case 23:
-               if(player3.getPaddingLeft()-player2.getPaddingLeft()>0) {
-                   second.setImageResource(R.drawable.blueboyidle);
-                   third.setImageResource(R.drawable.frogidle);
-               }
-               else {
-                   third.setImageResource(R.drawable.blueboyidle);
-                   second.setImageResource(R.drawable.frogidle);
-               }
-               break;
-           default:
-               second.setImageResource(R.drawable.blueguylose);
-               third.setImageResource(R.drawable.blueguylose);
-               break;
-       }
+            case 13:
+                if(player1.getPaddingLeft()-player3.getPaddingLeft()>0) {
+                    second.setImageResource(R.drawable.pinkguyidle);
+                    third.setImageResource(R.drawable.blueboyidle);
+                }
+                else {
+                    second.setImageResource(R.drawable.blueboyidle);
+                    third.setImageResource(R.drawable.pinkguyidle);
+                }
+                break;
+            case 23:
+                if(player3.getPaddingLeft()-player2.getPaddingLeft()>0) {
+                    second.setImageResource(R.drawable.blueboyidle);
+                    third.setImageResource(R.drawable.frogidle);
+                }
+                else {
+                    third.setImageResource(R.drawable.blueboyidle);
+                    second.setImageResource(R.drawable.frogidle);
+                }
+                break;
+            default:
+                second.setImageResource(R.drawable.blueguylose);
+                third.setImageResource(R.drawable.blueguylose);
+                break;
+        }
 
     }
 
     //convert from score to coin
-    private int convertToCoin(int score){
-        return score*20/100;
-    }
+
 }
