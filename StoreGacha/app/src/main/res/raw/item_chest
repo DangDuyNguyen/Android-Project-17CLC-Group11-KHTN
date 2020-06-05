@@ -1,0 +1,8 @@
+<items>
+    <item
+        name="pikachu"
+        image="background2"/>
+    <item
+        name="heart"
+        image="background"/>
+</items>
