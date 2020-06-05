@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true"
+    tools:context=".SignupActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <Button
+            android:id="@+id/signup_close_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/close_button"
+            android:layout_gravity="right|top"
+            />
+
+
+        <ImageView android:src="@drawable/firebase_icon"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="24dp"
+            android:layout_gravity="center_horizontal" />
+
+        <TextView android:id="@+id/Intro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:textColor="@color/darkYellow"
+            android:fontFamily="@font/bubblebobble"
+            android:text="Sign up to easily sync your game data!"
+            android:gravity="center"
+            android:textSize="24sp"/>
+
+
+        <!--  Name Label -->
+        <EditText
+            android:id="@+id/usernameEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:hint="Username"/>
+
+        <!-- Password Label -->
+        <EditText
+            android:id="@+id/passwordEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:hint="Password"
+            android:inputType="textPassword"/>
+
+        <!-- Password Label -->
+        <EditText
+            android:id="@+id/confirmEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:hint="Confirm Password"
+            android:inputType="textPassword"/>
+
+        <LinearLayout
+            android:id="@+id/progressView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            >
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                />
+
+            <TextView
+                android:id="@+id/progress_msg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text ="Creating Account..."
+                android:fontFamily="@font/bubblebobble"
+                android:layout_gravity="center"
+                android:textSize="20sp"
+                android:layout_marginStart="10dp"
+                android:textColor="@color/darkYellow"/>
+
+        </LinearLayout>
+        <!-- Signup Button -->
+        <Button
+            android:id="@+id/btn_signup"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/firebase_button"
+            android:fontFamily="@font/bubblebobble"
+            android:textSize="20sp"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:padding="12dp"
+            android:text="Create Account"/>
+
+        <TextView android:id="@+id/link_login"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:textColor="@color/darkYellow"
+            android:fontFamily="@font/bubblebobble"
+            android:text="Already a member? Login"
+            android:gravity="center"
+            android:textSize="20sp"/>
+
+
+    </LinearLayout>
+
+</ScrollView>

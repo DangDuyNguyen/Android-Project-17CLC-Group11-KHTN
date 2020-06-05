@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Handler;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -34,18 +35,33 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
+
+import io.opencensus.tags.Tag;
+
+import static android.app.Activity.RESULT_OK;
 
 public class LobbyFragment extends Fragment {
 
+    private static final String TAG = "MyActivity";
     final int CHARACTER_ITEM = 8;
     final int BACKGROUND_ITEM = 9;
+    final int LOGIN_REQUEST = 98;
 
     //current user state
     User currentUser = new User();
-    ArrayList<String> bg_list;
-    ArrayList<String> char_list;
     ArrayList<String> obtained_item;
 
     //game UI components
@@ -54,6 +70,9 @@ public class LobbyFragment extends Fragment {
     private EditText name;
     private EditText coin;
     private Button setting_btn;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     SettingClass settingClass = new SettingClass();
 
     public LobbyFragment() {
@@ -63,6 +82,172 @@ public class LobbyFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        final View rootView = inflater.inflate(R.layout.fragment_lobby, container, false);
+
+        //get UI components id
+        readVarUI(rootView);
+
+        //handle all request from other object
+        manageFragmentManagerRequest();
+
+        //initialize game value
+        initValue();
+
+        //load UI from the user data
+        refresh();
+        //loadUI(currentUser);
+
+        updateCoin();
+
+        //update Status
+        updateStatus();
+
+        name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RenameClass editName = new RenameClass();
+                editName.showPopupWindow(v, currentUser);
+            }
+        });
+
+        setting_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                settingClass.showPopupWindow(v,getActivity(), getParentFragmentManager());
+            }
+        });
+
+        hungriness.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                increaseHungryStatus(20);
+            }
+        });
+
+        flattering.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                increaseFlatterStatus(30);
+            }
+        });
+
+        return rootView;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOGIN_REQUEST) {
+            if (data != null) {
+                String username = data.getStringExtra("username");
+                pullUserFromFirebase(username);
+                settingClass.setOnLogin(setting_btn.getRootView(), username, "LOGOUT");
+            }
+        }
+    }
+
+    public void pullUserFromFirebase(String username){
+        db.collection("user").whereEqualTo("username", username).get()
+        .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                DocumentSnapshot document =  queryDocumentSnapshots.getDocuments().get(0);
+                currentUser.setUsername(Objects.requireNonNull(document.getData().get("username")).toString());
+                currentUser.setName(Objects.requireNonNull(document.getData().get("name")).toString());
+                currentUser.setCoin(Objects.requireNonNull(document.getData().get("coin")).toString());
+                currentUser.getHungriness().setPercentage(Integer.parseInt(Objects.requireNonNull(document.getData().get("hungriness")).toString()));
+                currentUser.getFlattering().setPercentage(Integer.parseInt(Objects.requireNonNull(document.getData().get("flattering")).toString()));
+                currentUser.getSleepiness().setPercentage(Integer.parseInt(Objects.requireNonNull(document.getData().get("sleepiness")).toString()));
+                currentUser.getMood().setPercentage(Integer.parseInt(Objects.requireNonNull(document.getData().get("mood")).toString()));
+                currentUser.getChar_list().addAll((ArrayList<String>) document.getData().get("character"));
+                currentUser.getBg_list().addAll((ArrayList<String>) document.getData().get("background"));
+            }
+        })
+        .addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getActivity(), "Error getting data!!!", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        loadUI(currentUser);
+    }
+
+    public void readVarUI (View rootView) {
+        hungriness = (Button) rootView.findViewById(R.id.hungry_status);
+        flattering = (Button) rootView.findViewById(R.id.bathroom_status);
+        sleepiness = (Button) rootView.findViewById(R.id.sleepy_status);
+        mood = (Button) rootView.findViewById(R.id.mood_status);
+
+        hungry_text = (TextView) rootView.findViewById(R.id.hungry_stat);
+        flatter_text = (TextView) rootView.findViewById(R.id.flatter_stat);
+        mood_text = (TextView) rootView.findViewById(R.id.mood_stat);
+        sleepy_text = (TextView) rootView.findViewById(R.id.sleepy_stat);
+
+        name = (EditText) rootView.findViewById(R.id.name);
+        coin = (EditText) rootView.findViewById(R.id.coin);
+
+        setting_btn = (Button) rootView.findViewById(R.id.setting_btn);
+        name.setInputType(InputType.TYPE_NULL);
+        coin.setInputType(InputType.TYPE_NULL);
+    }
+
+    public void initValue() {
+        obtained_item = new ArrayList<>();
+
+        obtained_item.addAll(currentUser.getChar_list());
+        obtained_item.addAll(currentUser.getBg_list());
+    }
+
+    public void loadUI (User user){
+        name.setText(user.getName());
+        coin.setText(user.getCoin());
+
+        hungry_text.setText(String.format("%s%%", Integer.toString(user.getHungriness().getPercentage())));
+        flatter_text.setText(String.format("%s%%", Integer.toString(user.getFlattering().getPercentage())));
+        sleepy_text.setText(String.format("%s%%", Integer.toString(user.getSleepiness().getPercentage())));
+        mood_text.setText(String.format("%s%%", Integer.toString(user.getMood().getPercentage())));
+
+        if (user.getHungriness().getPercentage() > 70)
+            user.getHungriness().setImage(R.drawable.green_hungry_status_button);
+        else if (user.getHungriness().getPercentage() > 40)
+            user.getHungriness().setImage(R.drawable.yellow_hungry_status_button);
+        else
+            user.getHungriness().setImage(R.drawable.red_hungry_status_button);
+
+        if (user.getFlattering().getPercentage() > 70)
+            user.getFlattering().setImage(R.drawable.green_bathroom_status_button);
+        else if (user.getFlattering().getPercentage() > 40)
+            user.getFlattering().setImage(R.drawable.yellow_bathroom_status_button);
+        else
+            user.getFlattering().setImage(R.drawable.red_bathroom_status_button);
+
+        if (user.getSleepiness().getPercentage() > 70)
+            user.getSleepiness().setImage(R.drawable.green_sleepy_status_button);
+        else if (user.getSleepiness().getPercentage() > 40)
+            user.getSleepiness().setImage(R.drawable.yellow_sleepy_status_button);
+        else
+            user.getSleepiness().setImage(R.drawable.red_sleepy_status_button);
+
+        if (user.getMood().getPercentage() > 70)
+            user.getMood().setImage(R.drawable.green_mood_status_button);
+        else if (user.getMood().getPercentage() > 40)
+            user.getMood().setImage(R.drawable.yellow_mood_status_button);
+        else
+            user.getMood().setImage(R.drawable.red_mood_status_button);
+
+
+        hungriness.setBackgroundResource(user.getHungriness().getImage());
+        flattering.setBackgroundResource(user.getFlattering().getImage());
+        sleepiness.setBackgroundResource(user.getSleepiness().getImage());
+        mood.setBackgroundResource(user.getMood().getImage());
+    }
+
+    private void manageFragmentManagerRequest(){
         getParentFragmentManager().setFragmentResultListener("coin", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
@@ -86,163 +271,97 @@ public class LobbyFragment extends Fragment {
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 if (result.getBoolean("request")){
                     Bundle savedata = new Bundle();
-                    savedata.putString("user_name", name.getText().toString());
-                    savedata.putString("user_coin", coin.getText().toString());
-                    savedata.putInt("user_hungry_status", Integer.parseInt(hungry_text.getText().toString().substring(0, hungry_text.getText().toString().indexOf('%'))));
-                    savedata.putInt("user_flatter_status", Integer.parseInt(flatter_text.getText().toString().substring(0, flatter_text.getText().toString().indexOf('%'))));
-                    savedata.putInt("user_sleep_status", Integer.parseInt(sleepy_text.getText().toString().substring(0, sleepy_text.getText().toString().indexOf('%'))));
-                    savedata.putInt("user_mood_status", Integer.parseInt(mood_text.getText().toString().substring(0, mood_text.getText().toString().indexOf('%'))));
-
+                    savedata.putString("user_name", currentUser.getName());
+                    savedata.putString("user_coin", currentUser.getCoin());
+                    savedata.putInt("user_hungry_status", currentUser.getHungriness().getPercentage());
+                    savedata.putInt("user_flatter_status", currentUser.getFlattering().getPercentage());
+                    savedata.putInt("user_sleep_status", currentUser.getSleepiness().getPercentage());
+                    savedata.putInt("user_mood_status", currentUser.getMood().getPercentage());
+                    savedata.putStringArrayList("user_char_list", currentUser.getChar_list());
+                    savedata.putStringArrayList("user_bg_list", currentUser.getBg_list());
                     getParentFragmentManager().setFragmentResult("savedata", savedata);
                 }
             }
         });
-    }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View rootView = inflater.inflate(R.layout.fragment_lobby, container, false);
-
-        //get UI components id
-        readVarUI(rootView);
-
-        //initialize game value
-        initValue();
-
-        //load user data
-        loadUser(currentUser);
-
-        //load UI from the user data
-        loadUI(currentUser);
-
-        updateCoin();
-
-        receiveDatafromStore();
-
-        //update Status
-        updateStatus();
-
-        name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RenameClass editName = new RenameClass();
-                editName.showPopupWindow(v);
-            }
-        });
-
-        setting_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                settingClass.showPopupWindow(v, getActivity(), getParentFragmentManager());
-            }
-        });
-
-        hungriness.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                increaseHungryStatus(20);
-            }
-        });
-
-        flattering.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                increaseFlatterStatus(30);
-            }
-        });
-
-        return rootView;
-    }
-
-    public void readVarUI (View rootView) {
-        hungriness = (Button) rootView.findViewById(R.id.hungry_status);
-        flattering = (Button) rootView.findViewById(R.id.bathroom_status);
-        sleepiness = (Button) rootView.findViewById(R.id.sleepy_status);
-        mood = (Button) rootView.findViewById(R.id.mood_status);
-
-        hungry_text = (TextView) rootView.findViewById(R.id.hungry_stat);
-        flatter_text = (TextView) rootView.findViewById(R.id.flatter_stat);
-        mood_text = (TextView) rootView.findViewById(R.id.mood_stat);
-        sleepy_text = (TextView) rootView.findViewById(R.id.sleepy_stat);
-
-        name = (EditText) rootView.findViewById(R.id.name);
-        coin = (EditText) rootView.findViewById(R.id.coin);
-
-        setting_btn = (Button) rootView.findViewById(R.id.setting_btn);
-        name.setInputType(InputType.TYPE_NULL);
-        coin.setInputType(InputType.TYPE_NULL);
-    }
-
-    public void initValue() {
-        bg_list = new ArrayList<>();
-        char_list = new ArrayList<>();
-        obtained_item = new ArrayList<>();
-
-        bg_list.add("bg1");
-        char_list.add("char_chicken");
-
-        obtained_item.addAll(bg_list);
-        obtained_item.addAll(char_list);
-    }
-
-    public void loadUser (final User user){
         getParentFragmentManager().setFragmentResultListener("loaduserdata", getActivity(), new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                user.setName(result.getString("user_name"));
-                user.setCoin(result.getString("user_coin"));
-                user.getHungriness().setPercentage(result.getInt("user_hungry_status"));
-                user.getFlattering().setPercentage(result.getInt("user_flatter_status"));
-                user.getSleepiness().setPercentage(result.getInt("user_sleep_status"));
-                user.getMood().setPercentage(result.getInt("user_mood_status"));
+                currentUser.setName(result.getString("user_name"));
+                currentUser.setCoin(result.getString("user_coin"));
+                currentUser.getHungriness().setPercentage(result.getInt("user_hungry_status"));
+                currentUser.getFlattering().setPercentage(result.getInt("user_flatter_status"));
+                currentUser.getSleepiness().setPercentage(result.getInt("user_sleep_status"));
+                currentUser.getMood().setPercentage(result.getInt("user_mood_status"));
+                currentUser.getChar_list().addAll(result.getStringArrayList("user_char_list"));
+                currentUser.getBg_list().addAll(result.getStringArrayList("user_bg_list"));
 
-                Toast.makeText(getActivity(), user.getName(), Toast.LENGTH_LONG).show();
+                for(int i = 0; i < currentUser.getChar_list().size();i++){
+                    Toast.makeText(getActivity(), currentUser.getChar_list().get(i), Toast.LENGTH_LONG).show();
+                }
+                for(int i = 0; i < currentUser.getBg_list().size();i++){
+                    Toast.makeText(getActivity(), currentUser.getBg_list().get(i), Toast.LENGTH_LONG).show();
+                }
 
-                if (user.getHungriness().getPercentage() > 70)
-                    user.getHungriness().setImage(R.drawable.green_hungry_status_button);
-                else if (user.getHungriness().getPercentage() > 40)
-                    user.getHungriness().setImage(R.drawable.yellow_hungry_status_button);
+                if (currentUser.getHungriness().getPercentage() > 70)
+                    currentUser.getHungriness().setImage(R.drawable.green_hungry_status_button);
+                else if (currentUser.getHungriness().getPercentage() > 40)
+                    currentUser.getHungriness().setImage(R.drawable.yellow_hungry_status_button);
                 else
-                    user.getHungriness().setImage(R.drawable.red_hungry_status_button);
+                    currentUser.getHungriness().setImage(R.drawable.red_hungry_status_button);
 
-                if (user.getFlattering().getPercentage() > 70)
-                    user.getFlattering().setImage(R.drawable.green_bathroom_status_button);
-                else if (user.getFlattering().getPercentage() > 40)
-                    user.getFlattering().setImage(R.drawable.yellow_bathroom_status_button);
+                if (currentUser.getFlattering().getPercentage() > 70)
+                    currentUser.getFlattering().setImage(R.drawable.green_bathroom_status_button);
+                else if (currentUser.getFlattering().getPercentage() > 40)
+                    currentUser.getFlattering().setImage(R.drawable.yellow_bathroom_status_button);
                 else
-                    user.getFlattering().setImage(R.drawable.red_bathroom_status_button);
+                    currentUser.getFlattering().setImage(R.drawable.red_bathroom_status_button);
 
-                if (user.getSleepiness().getPercentage() > 70)
-                    user.getSleepiness().setImage(R.drawable.green_sleepy_status_button);
-                else if (user.getSleepiness().getPercentage() > 40)
-                    user.getSleepiness().setImage(R.drawable.yellow_sleepy_status_button);
+                if (currentUser.getSleepiness().getPercentage() > 70)
+                    currentUser.getSleepiness().setImage(R.drawable.green_sleepy_status_button);
+                else if (currentUser.getSleepiness().getPercentage() > 40)
+                    currentUser.getSleepiness().setImage(R.drawable.yellow_sleepy_status_button);
                 else
-                    user.getSleepiness().setImage(R.drawable.red_sleepy_status_button);
+                    currentUser.getSleepiness().setImage(R.drawable.red_sleepy_status_button);
 
-                if (user.getMood().getPercentage() > 70)
-                    user.getMood().setImage(R.drawable.green_mood_status_button);
-                else if (user.getMood().getPercentage() > 40)
-                    user.getMood().setImage(R.drawable.yellow_mood_status_button);
+                if (currentUser.getMood().getPercentage() > 70)
+                    currentUser.getMood().setImage(R.drawable.green_mood_status_button);
+                else if (currentUser.getMood().getPercentage() > 40)
+                    currentUser.getMood().setImage(R.drawable.yellow_mood_status_button);
                 else
-                    user.getMood().setImage(R.drawable.red_mood_status_button);
+                    currentUser.getMood().setImage(R.drawable.red_mood_status_button);
 
             }
         });
-    }
 
-    public void loadUI (User user){
-        name.setText(user.getName());
-        coin.setText(user.getCoin());
 
-        hungry_text.setText(String.format("%s%%", Integer.toString(user.getHungriness().getPercentage())));
-        flatter_text.setText(String.format("%s%%", Integer.toString(user.getFlattering().getPercentage())));
-        sleepy_text.setText(String.format("%s%%", Integer.toString(user.getSleepiness().getPercentage())));
-        mood_text.setText(String.format("%s%%", Integer.toString(user.getMood().getPercentage())));
+        getParentFragmentManager().setFragmentResultListener("login_request", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                startActivityForResult(intent, LOGIN_REQUEST);
+            }
+        });
 
-        hungriness.setBackgroundResource(user.getHungriness().getImage());
-        flattering.setBackgroundResource(user.getFlattering().getImage());
-        sleepiness.setBackgroundResource(user.getSleepiness().getImage());
-        mood.setBackgroundResource(user.getMood().getImage());
+        getParentFragmentManager().setFragmentResultListener("purchase_success", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+
+                String item = result.getString("purchased_item", null);
+                obtained_item.add(item);
+                if (result.getInt("item_type", 0) == CHARACTER_ITEM) {
+                    currentUser.getChar_list().add(item);
+                }
+                else if (result.getInt("item_type", 0) == BACKGROUND_ITEM) {
+                    currentUser.getBg_list().add(item);
+                }
+
+                int cost = result.getInt("cost_coin", 0);
+                coin.setText(Integer.toString(Integer.parseInt(coin.getText().toString()) - cost));
+                sendDatatoStore();
+            }
+        });
+
     }
 
     public void updateStatus() {
@@ -339,30 +458,6 @@ public class LobbyFragment extends Fragment {
         getParentFragmentManager().setFragmentResult("lobby_to_store", bundle);
     }
 
-    public void receiveDatafromStore(){
-        getParentFragmentManager().setFragmentResultListener("purchase_success", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-
-                String item = result.getString("purchased_item", null);
-                obtained_item.add(item);
-                if (result.getInt("item_type", 0) == CHARACTER_ITEM) {
-                    char_list.add(item);
-                    Toast.makeText(getActivity(), "Add to character", Toast.LENGTH_LONG).show();
-                }
-                else if (result.getInt("item_type", 0) == BACKGROUND_ITEM) {
-                    bg_list.add(item);
-                    Toast.makeText(getActivity(), "Add to background", Toast.LENGTH_LONG).show();
-                }
-                Toast.makeText(getActivity(), "Item: " + item, Toast.LENGTH_LONG).show();
-
-                int cost = result.getInt("cost_coin", 0);
-                coin.setText(Integer.toString(Integer.parseInt(coin.getText().toString()) - cost));
-                sendDatatoStore();
-            }
-        });
-    }
-
     public void updateCoin(){
         final Handler update_coin_handler = new Handler();
         update_coin_handler.post(new Runnable() {
@@ -374,6 +469,17 @@ public class LobbyFragment extends Fragment {
         });
     }
 
+    public void refresh(){
+        final Handler refresh = new Handler();
+        refresh.post(new Runnable() {
+            @Override
+            public void run() {
+                loadUI(currentUser);
+                refresh.post(this);
+            }
+        });
+
+    }
     public void increaseHungryStatus(int range){
 
         int new_status = Integer.parseInt(hungry_text.getText().toString().substring(0, hungry_text.getText().toString().indexOf('%'))) + range;

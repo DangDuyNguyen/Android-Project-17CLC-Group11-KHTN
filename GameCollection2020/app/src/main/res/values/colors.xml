@@ -10,4 +10,6 @@
     <color name="yellow">#f5ec42</color>
     <color name="red">#bf3f36</color>
     <color name="colorAccentDark">#FFFF085C</color>
+    <color name="mangoYellow">#ffca28</color>
+    <color name="darkYellow">#ffa000</color>
 </resources>

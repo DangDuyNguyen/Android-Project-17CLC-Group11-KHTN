@@ -8,9 +8,9 @@
         android:label="Game Collection 2020!"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        >
-
+        android:theme="@style/AppTheme">
+        <activity android:name=".SignupActivity"></activity>
+        <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,28 +18,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".AnimalRacingActivity"
-            >
-        </activity>
-
-        <activity android:name=".SnakeActivity">
-
-        </activity>
-        <activity android:name=".CardFlipper.CardFlipperActivity">
-
-        </activity>
-        <activity android:name=".CardFlipper.GameActivity">
-
-        </activity>
-
-        <!--<receiver android:name=".LobbyFragment$StatusUpdateReceiver">
+        <activity android:name=".AnimalRacingActivity" />
+        <activity android:name=".SnakeActivity" />
+        <activity android:name=".CardFlipper.CardFlipperActivity" />
+        <activity android:name=".CardFlipper.GameActivity" />
+        <!--
+<receiver android:name=".LobbyFragment$StatusUpdateReceiver">
             <intent-filter>
                 <action android:name="status.action.UpdateStatus" />
             </intent-filter>
-        </receiver>-->
-        <service android:name=".UpdateStatus"/>
+        </receiver>
+        -->
+        <service android:name=".UpdateStatus" />
     </application>
 
 </manifest>

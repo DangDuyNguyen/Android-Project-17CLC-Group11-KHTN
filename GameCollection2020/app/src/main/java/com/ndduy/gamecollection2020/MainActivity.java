@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.List;
 //import com.google.android.gms.games.snapshot;
 
@@ -67,6 +68,8 @@ public class MainActivity extends FragmentActivity {
                 int user_flatter_status = result.getInt("user_flatter_status");
                 int user_sleepy_status = result.getInt("user_sleep_status");
                 int user_mood_status = result.getInt("user_mood_status");
+                ArrayList<String> char_list = result.getStringArrayList("user_char_list");
+                ArrayList<String> bg_list = result.getStringArrayList("user_bg_list");
 
                 File delete = new File(getFilesDir(), "gamedata.txt");
                 delete.delete();
@@ -86,7 +89,20 @@ public class MainActivity extends FragmentActivity {
                     outputWriter.write(Integer.toString(user_sleepy_status));
                     outputWriter.write("\n");
                     outputWriter.write(Integer.toString(user_mood_status));
-
+                    outputWriter.write("\n");
+                    for(int i = 0; i < char_list.size(); i++){
+                        outputWriter.write(char_list.get(i));
+                        outputWriter.write("\n");
+                    }
+                    outputWriter.write("\n");
+                    for(int i = 0; i < bg_list.size(); i++){
+                        if (i == bg_list.size() - 1)
+                            outputWriter.write(bg_list.get(i));
+                        else{
+                            outputWriter.write(bg_list.get(i));
+                            outputWriter.write("\n");
+                        }
+                    }
                     outputWriter.close();
 
                 } catch (FileNotFoundException e) {
@@ -197,6 +213,8 @@ public class MainActivity extends FragmentActivity {
         int flatter_status = 0;
         int sleepy_status = 0;
         int mood_status = 0;
+        ArrayList<String> char_list = new ArrayList<>();
+        ArrayList<String> bg_list = new ArrayList<>();
 
         try {
             FileInputStream fin = openFileInput("gamedata.txt");
@@ -216,7 +234,10 @@ public class MainActivity extends FragmentActivity {
                 sleepy_status = Integer.parseInt(line);
             if ((line = br.readLine()) != null)
                 mood_status = Integer.parseInt(line);
-
+            while(!(line = br.readLine()).equals(""))
+                char_list.add(line);
+            while ((line = br.readLine()) != null)
+                bg_list.add(line);
             in.close();
             fin.close();
 
@@ -227,6 +248,8 @@ public class MainActivity extends FragmentActivity {
             loaduserbundle.putInt("user_flatter_status", flatter_status);
             loaduserbundle.putInt("user_sleep_status", sleepy_status);
             loaduserbundle.putInt("user_mood_status", mood_status);
+            loaduserbundle.putStringArrayList("user_char_list", char_list);
+            loaduserbundle.putStringArrayList("user_bg_list", bg_list);
             getSupportFragmentManager().setFragmentResult("loaduserdata", loaduserbundle);
 
         } catch (FileNotFoundException e) {

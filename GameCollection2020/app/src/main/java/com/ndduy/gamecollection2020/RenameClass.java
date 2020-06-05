@@ -22,10 +22,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 class RenameClass {
-
+    String changedName = "";
    //PopupWindow display method
 
-    public void showPopupWindow(final View view) {
+    public void showPopupWindow(final View view, final User user) {
 
 
         //Create a View object yourself through inflater
@@ -52,11 +52,14 @@ class RenameClass {
         Button cancelbtn = (Button) popupView.findViewById(R.id.cancel_button);
         final EditText name = (EditText) view.findViewById(R.id.name);
 
+
         savebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!editName.getText().toString().equals(""))
+                if (!editName.getText().toString().equals("")){
+                    user.setName(editName.getText().toString());
                     name.setText(editName.getText());
+                }
                 else
                     name.setText(name.getText());
                 popupWindow.dismiss();
@@ -80,5 +83,10 @@ class RenameClass {
                 return true;
             }
         });
+
+    }
+
+    public String getChangedName(){
+        return changedName;
     }
 }
