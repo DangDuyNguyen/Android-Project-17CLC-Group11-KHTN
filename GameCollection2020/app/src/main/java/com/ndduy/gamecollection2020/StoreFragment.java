@@ -129,7 +129,7 @@ public class StoreFragment extends Fragment {
                 for (int i = 0; i < char_item.size(); i++)
                     temp.add(char_item.get(i).getName());
 
-                if(Integer.parseInt(coin.getText().toString()) < 0){
+                if(Integer.parseInt(coin.getText().toString()) < 1000){
                     setupPopupWindow(v, INSUFFICIENT_COIN);
                 }
                 else if (obtained_item.containsAll(temp)){
@@ -140,7 +140,7 @@ public class StoreFragment extends Fragment {
                     setUpDialog(ROLL_CHARACTER_ITEM);
 
                     Bundle success_bundle = new Bundle();
-                    success_bundle.putInt("cost_coin", 0);
+                    success_bundle.putInt("cost_coin", 1000);
                     success_bundle.putString("purchased_item", obtained_item.get(obtained_item.size() - 1));
                     success_bundle.putInt("item_type", CHARACTER_ITEM);
                     getParentFragmentManager().setFragmentResult("purchase_success", success_bundle);
@@ -155,7 +155,7 @@ public class StoreFragment extends Fragment {
                 for (int i = 0; i < bg_item.size(); i++)
                     temp.add(bg_item.get(i).getName());
 
-                if(Integer.parseInt(coin.getText().toString()) < 0){
+                if(Integer.parseInt(coin.getText().toString()) < 1500){
                     setupPopupWindow(v, INSUFFICIENT_COIN);
                 }
                 else if (obtained_item.containsAll(temp)){
@@ -166,7 +166,7 @@ public class StoreFragment extends Fragment {
                     setUpDialog(ROLL_BACKGROUND_ITEM);
 
                     Bundle success_bundle = new Bundle();
-                    success_bundle.putInt("cost_coin", 0);
+                    success_bundle.putInt("cost_coin", 1500);
                     success_bundle.putString("purchased_item", obtained_item.get(obtained_item.size() - 1));
                     success_bundle.putInt("item_type", BACKGROUND_ITEM);
                     getParentFragmentManager().setFragmentResult("purchase_success", success_bundle);

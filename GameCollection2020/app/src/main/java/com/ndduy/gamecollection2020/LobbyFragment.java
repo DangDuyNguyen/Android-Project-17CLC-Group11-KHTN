@@ -121,7 +121,7 @@ public class LobbyFragment extends Fragment {
         setting_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                settingClass.showPopupWindow(v,getActivity(), getParentFragmentManager());
+                settingClass.showPopupWindow(v, currentUser.getUsername(), getParentFragmentManager());
             }
         });
 
@@ -148,7 +148,7 @@ public class LobbyFragment extends Fragment {
         if (requestCode == LOGIN_REQUEST) {
             if (data != null) {
                 String username = data.getStringExtra("username");
-                currentUser.setAccount(username);
+                currentUser.setUsername(username);
                 pullUserFromFirebase(username);
                 settingClass.setOnLogin(setting_btn.getRootView(), username, "LOGOUT");
             }
@@ -168,6 +168,10 @@ public class LobbyFragment extends Fragment {
                 currentUser.getFlattering().setPercentage(Integer.parseInt(Objects.requireNonNull(document.getData().get("flattering")).toString()));
                 currentUser.getSleepiness().setPercentage(Integer.parseInt(Objects.requireNonNull(document.getData().get("sleepiness")).toString()));
                 currentUser.getMood().setPercentage(Integer.parseInt(Objects.requireNonNull(document.getData().get("mood")).toString()));
+                ArrayList<String> temp_char = new ArrayList<>();
+                ArrayList<String> temp_bg = new ArrayList<>();
+                currentUser.setChar_list(temp_char);
+                currentUser.setBg_list(temp_bg);
                 currentUser.getChar_list().addAll((ArrayList<String>) document.getData().get("character"));
                 currentUser.getBg_list().addAll((ArrayList<String>) document.getData().get("background"));
             }
@@ -275,7 +279,7 @@ public class LobbyFragment extends Fragment {
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 if (result.getBoolean("request")){
                     Bundle savedata = new Bundle();
-                    savedata.putString("user_username", currentUser.getAccount());
+                    savedata.putString("user_username", currentUser.getUsername());
                     savedata.putString("user_name", currentUser.getName());
                     savedata.putString("user_coin", currentUser.getCoin());
                     savedata.putInt("user_hungry_status", currentUser.getHungriness().getPercentage());
@@ -293,7 +297,7 @@ public class LobbyFragment extends Fragment {
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 if (result.getBoolean("request")){
                     Bundle savedata = new Bundle();
-                    savedata.putString("user_username", currentUser.getAccount());
+                    savedata.putString("user_username", currentUser.getUsername());
                     savedata.putString("user_name", currentUser.getName());
                     savedata.putString("user_coin", currentUser.getCoin());
                     savedata.putInt("user_hungry_status", currentUser.getHungriness().getPercentage());
@@ -319,7 +323,7 @@ public class LobbyFragment extends Fragment {
         getParentFragmentManager().setFragmentResultListener("loaduserdata", getActivity(), new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                currentUser.setAccount(result.getString("user_username"));
+                currentUser.setUsername(result.getString("user_username"));
                 currentUser.setName(result.getString("user_name"));
                 currentUser.setCoin(result.getString("user_coin"));
                 currentUser.getHungriness().setPercentage(result.getInt("user_hungry_status"));
@@ -374,7 +378,7 @@ public class LobbyFragment extends Fragment {
                     startActivityForResult(intent, LOGIN_REQUEST);
                 }
                 else{
-                    currentUser.setAccount("");
+                    currentUser.setUsername("");
                     settingClass.setOnLogout(setting_btn.getRootView());
                 }
             }

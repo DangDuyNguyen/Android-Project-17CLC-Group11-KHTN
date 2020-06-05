@@ -24,6 +24,13 @@ import androidx.lifecycle.LifecycleOwner;
 
 import com.google.android.material.chip.Chip;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class SettingClass extends PopupWindow{
     View popupView;
     PopupWindow popupWindow;
@@ -35,7 +42,7 @@ public class SettingClass extends PopupWindow{
     String username = "Login now to sync your data!";
     String login_state = "LOGIN";
 
-    public void showPopupWindow(View view, final Context context, final FragmentManager fragmentManager) {
+    public void showPopupWindow(View view, String acccount_username, final FragmentManager fragmentManager) {
         //Create a View object yourself through inflater
         final LayoutInflater inflater = (LayoutInflater) view.getContext().getSystemService(view.getContext().LAYOUT_INFLATER_SERVICE);
 
@@ -57,8 +64,19 @@ public class SettingClass extends PopupWindow{
         else
             vol_checkbox.setChecked(false);
 
-        firebase_signin.setText(login_state);
-        login_status_msg.setText(username);
+        if (acccount_username.equals("")) {
+            username = "Login now to sync your data!";
+            login_state = "LOGIN";
+            firebase_signin.setText(login_state);
+            login_status_msg.setText(username);
+        }
+        else {
+            username = "Login as " + acccount_username;
+            login_state = "LOGOUT";
+            firebase_signin.setText(login_state);
+            login_status_msg.setText(username);
+        }
+
 
         //Create a window with our parameters
         popupWindow = new PopupWindow(popupView, width, height, focusable);
@@ -126,6 +144,7 @@ public class SettingClass extends PopupWindow{
         popupWindow.dismiss();
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
     }
+
 
     public boolean isSound()
     {

@@ -57,16 +57,108 @@ public class MainActivity extends FragmentActivity {
     MediaPlayer backgroundMusic;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    public void saveData(){
+        Bundle saverequest = new Bundle();
+        saverequest.putBoolean("request", true);
+        getSupportFragmentManager().setFragmentResult("request_save_data", saverequest);
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
         backgroundMusic.pause();
 
-        Bundle saverequest = new Bundle();
-        saverequest.putBoolean("request", true);
-        getSupportFragmentManager().setFragmentResult("request_save_data", saverequest);
+        saveData();
+        syncData();
 
         //retrieve game data from fragment after request
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(lobbyFrag.getSettingClass().isSound())
+            backgroundMusic.start();
+
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        /*File delete = new File(getFilesDir(), "gamedata.txt");
+            delete.delete();*/
+
+        tabs = (TabLayout) findViewById(R.id.tabs);
+        viewPager = (MyViewPager) findViewById(R.id.viewpager);
+        EditText coin = (EditText) findViewById(R.id.coin);
+
+        final Button setting_btn = (Button) findViewById(R.id.setting_btn);
+        final EditText nameChange = (EditText) findViewById(R.id.name);
+
+        /*set background music for the game*/
+        backgroundMusic = MediaPlayer.create(this, R.raw.maintheme);
+        backgroundMusic.setLooping(true); // Set looping
+        backgroundMusic.setVolume(100, 100);
+        backgroundMusic.start();
+
+        readData();
+
+        manageFragmentManager();
+
+        /*get adapter for viewpager for the tablayout*/
+        final PageAdapter adapter = new PageAdapter(getSupportFragmentManager(), 1);
+
+        adapter.addFragment(gameFrag, "Game");
+        adapter.addFragment(lobbyFrag, "Character");
+        adapter.addFragment(storeFrag, "Store");
+
+        viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(4);
+        tabs.setupWithViewPager(viewPager);
+        viewPager.setCurrentItem(1);
+
+        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            FragmentTransaction fragmentTransaction;
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                saveData();
+                syncData();
+                viewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        tabs.getTabAt(0).setIcon(R.drawable.game_icon);
+        tabs.getTabAt(1).setIcon(R.drawable.character_icon);
+        tabs.getTabAt(2).setIcon(R.drawable.cart_icon);
+
+
+        //receive data with key "volume"
+        getSupportFragmentManager().setFragmentResultListener("volume", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                int vol_request = result.getInt("volume");
+                if (vol_request == 0)
+                    backgroundMusic.pause();
+                else if (vol_request == 1) {
+                    backgroundMusic.seekTo(0);
+                    backgroundMusic.start();
+                }
+            }
+        });
+    }
+
+    public void manageFragmentManager(){
         getSupportFragmentManager().setFragmentResultListener("savedata", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
@@ -124,98 +216,13 @@ public class MainActivity extends FragmentActivity {
                 }
             }
         });
-        syncData();
+
     }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(lobbyFrag.getSettingClass().isSound())
-            backgroundMusic.start();
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        /*File delete = new File(getFilesDir(), "gamedata.txt");
-                delete.delete();*/
-
-        tabs = (TabLayout) findViewById(R.id.tabs);
-        viewPager = (MyViewPager) findViewById(R.id.viewpager);
-        EditText coin = (EditText) findViewById(R.id.coin);
-
-        final Button setting_btn = (Button) findViewById(R.id.setting_btn);
-        final EditText nameChange = (EditText) findViewById(R.id.name);
-
-        /*set background music for the game*/
-        backgroundMusic = MediaPlayer.create(this, R.raw.maintheme);
-        backgroundMusic.setLooping(true); // Set looping
-        backgroundMusic.setVolume(100, 100);
-        backgroundMusic.start();
-
-        readData();
-
-        /*get adapter for viewpager for the tablayout*/
-        final PageAdapter adapter = new PageAdapter(getSupportFragmentManager(), 1);
-
-        adapter.addFragment(gameFrag, "Game");
-        adapter.addFragment(lobbyFrag, "Character");
-        adapter.addFragment(storeFrag, "Store");
-
-        viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(4);
-        tabs.setupWithViewPager(viewPager);
-        viewPager.setCurrentItem(1);
-
-        tabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            FragmentTransaction fragmentTransaction;
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                viewPager.setCurrentItem(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-        tabs.getTabAt(0).setIcon(R.drawable.game_icon);
-        tabs.getTabAt(1).setIcon(R.drawable.character_icon);
-        tabs.getTabAt(2).setIcon(R.drawable.cart_icon);
-
-
-        //receive data with key "volume"
-        getSupportFragmentManager().setFragmentResultListener("volume", this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                int vol_request = result.getInt("volume");
-                if (vol_request == 0)
-                    backgroundMusic.pause();
-                else if (vol_request == 1) {
-                    backgroundMusic.seekTo(0);
-                    backgroundMusic.start();
-                }
-            }
-        });
-    }
-
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d("TAG", "onDestroy: destroyed");
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
+        syncData();
     }
 
     public void readData() {
