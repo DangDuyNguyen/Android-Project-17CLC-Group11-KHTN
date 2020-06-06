@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.ndduy.gamecollection2020.CardFlipper.CardFlipperActivity;
+import com.ndduy.gamecollection2020.Sudoku.UI.SudokuActivity;
 
 public class GameFragment extends Fragment {
 
@@ -42,6 +43,8 @@ public class GameFragment extends Fragment {
         AnimalRacing = (ImageButton)  rootView.findViewById(R.id.animalcrossbtn);
         Snake = (ImageButton) rootView.findViewById(R.id.snakebtn);
         CardFlipper = (ImageButton) rootView.findViewById(R.id.cardflipbtn);
+        Sudoku = (ImageButton) rootView.findViewById(R.id.sudokubtn);
+
 
         AnimalRacing.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,6 +77,14 @@ public class GameFragment extends Fragment {
                 startActivityForResult(intent, CARDFLIPPER_REQUEST_CODE);
             }
         });
+
+        Sudoku.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SudokuActivity.class);
+                startActivityForResult(intent, SUDOKU_REQUEST_CODE);
+            }
+        });
         return rootView;
     }
 
@@ -87,7 +98,8 @@ public class GameFragment extends Fragment {
 
                 Bundle bundle = new Bundle();
                 bundle.putInt("coin", result);
-                getParentFragmentManager().setFragmentResult("coin", bundle);
+                bundle.putInt("mood_increase", 30);
+                getParentFragmentManager().setFragmentResult("AR_coin", bundle);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
@@ -100,6 +112,7 @@ public class GameFragment extends Fragment {
 
                 Bundle bundle = new Bundle();
                 bundle.putInt("coin", result);
+                bundle.putInt("mood_increase", 40);
                 getParentFragmentManager().setFragmentResult("Game_coin", bundle);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
@@ -113,12 +126,28 @@ public class GameFragment extends Fragment {
 
                 Bundle bundle = new Bundle();
                 bundle.putInt("coin", result);
+                bundle.putInt("mood_increase", 20);
                 getParentFragmentManager().setFragmentResult("Game_coin", bundle);
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
             }
         }
+
+        if (requestCode == SUDOKU_REQUEST_CODE) {
+            if(resultCode == Activity.RESULT_OK){
+                int result = data.getIntExtra("Sudoku_coin", 0);
+
+                Bundle bundle = new Bundle();
+                bundle.putInt("coin", result);
+                bundle.putInt("mood_increase", 10);
+                getParentFragmentManager().setFragmentResult("Game_coin", bundle);
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+
     }//onActivityResult
 
 }

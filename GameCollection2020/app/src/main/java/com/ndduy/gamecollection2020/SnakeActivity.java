@@ -59,15 +59,11 @@ public class SnakeActivity extends Activity implements View.OnClickListener {
 
       case R.id.Snake_close_button:
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("Snake_coin", convertToCoin(Integer.parseInt(Score.getText().toString())));
+        returnIntent.putExtra("Snake_coin", Integer.parseInt(Score.getText().toString()));
         setResult(Activity.RESULT_OK,returnIntent);
         finish();
         break;
     }
-  }
-  //convert from score to coin
-  private int convertToCoin(int score){
-    return score*20/100;
   }
 
   private void updateScore(){

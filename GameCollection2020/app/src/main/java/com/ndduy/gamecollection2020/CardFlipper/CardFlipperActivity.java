@@ -79,7 +79,7 @@ public class CardFlipperActivity extends Activity {
             public void onClick(View v) {
                 sys.audio.TurnOffSound();
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("Card_Flipper_coin", convertToCoin(player_score));
+                returnIntent.putExtra("Card_Flipper_coin", player_score);
                 setResult(Activity.RESULT_OK,returnIntent);
                 finish();
             }
@@ -148,10 +148,4 @@ public class CardFlipperActivity extends Activity {
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
-    //convert from score to coin
-    private int convertToCoin(int score){
-        return score*20/100;
-    }
-
 }

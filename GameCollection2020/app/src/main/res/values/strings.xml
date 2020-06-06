@@ -15,4 +15,7 @@
     <string name="soundOn">Sound: On</string>
     <string name="play_again">Play Again</string>
 
+    <string name="game_name">Sudoku</string>
+    <string name="ingame_menu_name">Settings</string>
+
 </resources>
