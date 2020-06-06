@@ -112,6 +112,7 @@ public class LobbyFragment extends Fragment {
 
         //get UI components id
         readVarUI(rootView);
+        sleep_icon.setVisibility(View.INVISIBLE);
         XmlParser parser = null;
         try {
             parser = new XmlParser(getResources().openRawResource(R.raw.char_list));
@@ -400,7 +401,10 @@ public class LobbyFragment extends Fragment {
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 coin.setText(Integer.toString( result.getInt("coin")));
                 currentUser.setCoin(coin.getText().toString());
-                currentUser.getMood().setPercentage(currentUser.getMood().getPercentage() + result.getInt("mood_increase"));
+                if (currentUser.getMood().getPercentage() + result.getInt("mood_increase") <= 100)
+                    currentUser.getMood().setPercentage(currentUser.getMood().getPercentage() + result.getInt("mood_increase"));
+                else
+                    currentUser.getMood().setPercentage(100);
             }
         });
 
@@ -410,7 +414,10 @@ public class LobbyFragment extends Fragment {
                 int extraCoin = result.getInt("coin");
                 coin.setText(Integer.toString(Integer.parseInt(coin.getText().toString()) + extraCoin));
                 currentUser.setCoin(coin.getText().toString());
-                currentUser.getMood().setPercentage(currentUser.getMood().getPercentage() + result.getInt("mood_increase"));
+                if (currentUser.getMood().getPercentage() + result.getInt("mood_increase") <= 100)
+                    currentUser.getMood().setPercentage(currentUser.getMood().getPercentage() + result.getInt("mood_increase"));
+                else
+                    currentUser.getMood().setPercentage(100);
             }
         });
 
