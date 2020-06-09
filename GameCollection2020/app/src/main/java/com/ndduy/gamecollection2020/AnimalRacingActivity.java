@@ -2,6 +2,10 @@ package com.ndduy.gamecollection2020;
 
 import android.app.Activity;
 import android.content.Intent;
+
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.CountDownTimer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,7 +40,7 @@ public class AnimalRacingActivity extends Activity {
     GifImageView  player1,player2,player3,cloud,pictureplayer1,pictureplayer2,pictureplayer3,first,second,third;
     ConstraintLayout layout;
     Button AR_close_btn;
-
+    MediaPlayer selectSound,introSound,loseSound,runningSound,winSound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +48,8 @@ public class AnimalRacingActivity extends Activity {
         setContentView(R.layout.activity_animal_racing);
         mapping();// hàm thực hiện ánh xạ
         tv_point.setText(getIntent().getStringExtra("currentCoin"));
+        introSound.seekTo(0);
+        introSound.start();
         hidden();
         ///////////////////////////////
         // ẩn nút Replay trước khi bắt đầu
@@ -60,9 +66,7 @@ public class AnimalRacingActivity extends Activity {
                 // thuật toán chính của chương trình
                 Random random = new Random();
                 player1.setPadding(player1.getPaddingLeft()+random.nextInt(10+10)-windPower,0,0,0);
-
                 player2.setPadding(player2.getPaddingLeft()+random.nextInt(10+10)-windPower,0,0,0);
-
                 player3.setPadding(player3.getPaddingLeft()+random.nextInt(10+10)-windPower,0,0,0);
 
                 int chosen = isChosen();
@@ -110,6 +114,9 @@ public class AnimalRacingActivity extends Activity {
         iv_play.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                introSound.pause();
+                runningSound.seekTo(0);
+                runningSound.start();
                 if (isChosen() == 0) {
                     Toast.makeText(AnimalRacingActivity.this, "Please choose your character", Toast.LENGTH_SHORT).show();
                 }
@@ -137,6 +144,8 @@ public class AnimalRacingActivity extends Activity {
                         player1.setImageResource(R.drawable.pinkguyrun);
                         player2.setImageResource(R.drawable.frogrun);
                         player3.setImageResource(R.drawable.blueboyrun);
+
+
                         windPower=isWindChosen();
 
                         switch (windPower){
@@ -163,6 +172,13 @@ public class AnimalRacingActivity extends Activity {
         bt_continue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(loseSound.isPlaying()) {
+                    loseSound.pause();
+                }else if(winSound.isPlaying()) {
+                    winSound.pause();
+                }
+                introSound.seekTo(0);
+                introSound.start();
                 // mỗi khi nhấn button Continue --> đặt các con vật về vị trí xuất phát
                 player1.setPadding(0,0,0,0);
                 player1.setImageResource(R.drawable.pinkguyidle);
@@ -186,6 +202,7 @@ public class AnimalRacingActivity extends Activity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b)
                 {
+                    selectSound.start();
                     enable();
                     cb_player1.setEnabled(false);
                     cb_player2.setChecked(false);
@@ -201,6 +218,7 @@ public class AnimalRacingActivity extends Activity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b)
                 {
+                    selectSound.start();
                     enable();
                     cb_player2.setEnabled(false);
                     cb_player3.setChecked(false);
@@ -216,6 +234,7 @@ public class AnimalRacingActivity extends Activity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b)
                 {
+                    selectSound.start();
                     enable();
                     cb_player3.setEnabled(false);
                     cb_player2.setChecked(false);
@@ -230,6 +249,7 @@ public class AnimalRacingActivity extends Activity {
         group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+                selectSound.start();
                 switch (isWindChosen()){
                     case 2:
                         weather.setImageResource(R.drawable.breeze);
@@ -248,6 +268,8 @@ public class AnimalRacingActivity extends Activity {
         AR_close_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                introSound.pause();
+
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("coin",Integer.parseInt(tv_point.getText().toString()));
                 setResult(Activity.RESULT_OK,returnIntent);
@@ -293,6 +315,26 @@ public class AnimalRacingActivity extends Activity {
         bt_continue = (Button)findViewById(R.id.Button_replay);
 
         AR_close_btn = (Button)findViewById(R.id.AR_close_button);
+
+        selectSound = MediaPlayer.create(getApplicationContext(),R.raw.select);
+        selectSound.setVolume(100, 100);
+
+        introSound = MediaPlayer.create(getApplicationContext(),R.raw.intro);
+        introSound.setVolume(100,100);
+        introSound.setLooping(true);
+
+        loseSound = MediaPlayer.create(getApplicationContext(),R.raw.lose);
+        loseSound.setVolume(100,100);
+        loseSound.setLooping(true);
+
+        winSound = MediaPlayer.create(getApplicationContext(),R.raw.win);
+        winSound.setVolume(100,100);
+        winSound.setLooping(true);
+
+        runningSound = MediaPlayer.create(getApplicationContext(),R.raw.running);
+        runningSound.setVolume(100,100);
+        runningSound.setLooping(true);
+
     }
     // trả về lựa chọn của người chơi
     private int isChosen()
@@ -349,27 +391,35 @@ public class AnimalRacingActivity extends Activity {
 
     private void win()
     {
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                runningSound.pause();
+                winSound.seekTo(0);
+                winSound.start();
                 tv_point.setText(Integer.parseInt(tv_point.getText().toString())+10+"");
                 winlose.setImageResource(R.drawable.win);
                 result.setVisibility(View.VISIBLE);
             }
         },1500);
-
     }
 
     private void lose()
     {
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                runningSound.pause();
+                loseSound.seekTo(0);
+                loseSound.start();
                 result.setVisibility(View.VISIBLE);
                 winlose.setImageResource(R.drawable.lose);
                 tv_point.setText(Integer.parseInt(tv_point.getText().toString())-10+"");
             }
         },1500);
+
     }
 
     private void player1_win(){
