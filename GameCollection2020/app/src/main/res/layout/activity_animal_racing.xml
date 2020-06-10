@@ -20,8 +20,8 @@
         android:id="@+id/TextView_point"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="100"
         android:fontFamily="@font/bubblebobble"
+        android:text="100"
         android:textSize="36sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.21"
@@ -29,25 +29,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.023" />
-
-    <ImageView
-        android:id="@+id/ImageView_play"
-        android:layout_width="114dp"
-        android:layout_height="121dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/play_icon"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.09" />
 
 
     <pl.droidsonroids.gif.GifImageView
@@ -105,8 +86,8 @@
 
     <FrameLayout
         android:id="@+id/choosing"
-        android:layout_width="380dp"
-        android:layout_height="491dp"
+        android:layout_width="394dp"
+        android:layout_height="539dp"
         android:layout_marginTop="192dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/border"
@@ -131,7 +112,7 @@
             <TextView
                 android:id="@+id/textView"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/bubblebobble"
                 android:text="Choose Your Weather"
@@ -184,7 +165,7 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:fontFamily="@font/bubblebobble"
                 android:text="Choose Your Character"
                 android:textAlignment="center"
@@ -193,7 +174,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="3">
 
@@ -233,7 +214,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="3">
 
@@ -264,6 +245,40 @@
                     android:src="@drawable/blueboyidle"
                     tools:ignore="MissingConstraints" />
             </LinearLayout>
+
+            <RadioGroup
+                android:id="@+id/playAs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/auto"
+                    android:layout_width="135dp"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:fontFamily="@font/bubblebobble"
+                    android:text="Auto Play"
+                    android:textSize="20sp" />
+
+                <RadioButton
+                    android:id="@+id/manual"
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:fontFamily="@font/bubblebobble"
+                    android:text="Manual"
+                    android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/ImageView_play"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:src="@drawable/play_icon" />
+
+            </RadioGroup>
         </LinearLayout>
 
     </FrameLayout>
@@ -284,17 +299,16 @@
         android:id="@+id/AR_close_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:background="@drawable/close_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="5dp"
         android:layout_marginRight="5dp"
-        />
+        android:background="@drawable/close_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
         android:id="@+id/result"
-        android:layout_width="380dp"
-        android:layout_height="491dp"
+        android:layout_width="396dp"
+        android:layout_height="535dp"
         android:layout_marginTop="192dp"
         android:layout_marginEnd="8dp"
         android:background="@drawable/border"
@@ -310,7 +324,7 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="60dp"
                 android:layout_weight="1"
                 android:fontFamily="@font/bubblebobble"
                 android:paddingTop="7dp"
@@ -342,7 +356,7 @@
                     android:weightSum="2">
 
                     <TextView
-                        android:layout_width="310dp"
+                        android:layout_width="325dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@drawable/custormborder"
@@ -458,7 +472,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="70dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="2">
 
@@ -471,6 +485,7 @@
                     android:id="@+id/Button_replay"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:layout_weight="1"
                     android:background="@drawable/replay" />
 
@@ -478,5 +493,28 @@
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/tapScreen"
+        android:layout_width="406dp"
+        android:layout_height="620dp"
+        android:layout_marginEnd="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="51dp"
+        android:layout_marginTop="60dp"
+        android:layout_marginEnd="50dp"
+        android:src="@drawable/animalracinglogo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

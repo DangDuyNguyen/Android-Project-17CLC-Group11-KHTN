@@ -10,6 +10,7 @@ import android.os.CountDownTimer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -23,24 +24,28 @@ import android.widget.Toast;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.io.Console;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 import pl.droidsonroids.gif.GifImageView;
 
 public class AnimalRacingActivity extends Activity {
     CheckBox cb_player1,cb_player2, cb_player3;
-    RadioButton breezeBtn,windyBtn,stormBtn;
-    ImageView iv_play,weather,winlose;
+    RadioButton breezeBtn,windyBtn,stormBtn,autoPlay,manual;
+    ImageView iv_play,weather,winlose,logo;
     TextView tv_point;
     Button bt_continue;
-    FrameLayout choosing,result;
-    RadioGroup group;
-    int windPower;
+    FrameLayout choosing,result,tapScreen;
+    RadioGroup group,playAs;
+    int windPower,tap=0;
     GifImageView  player1,player2,player3,cloud,pictureplayer1,pictureplayer2,pictureplayer3,first,second,third;
     ConstraintLayout layout;
     Button AR_close_btn;
     MediaPlayer selectSound,introSound,loseSound,runningSound,winSound;
+    boolean isAuto=true,isEndGame=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,56 +59,74 @@ public class AnimalRacingActivity extends Activity {
         ///////////////////////////////
         // ẩn nút Replay trước khi bắt đầu
         result.setVisibility(View.INVISIBLE);
+        tapScreen.setVisibility(View.INVISIBLE);
         //thời gian tối đa để chơi 1 game là 1 phút, mỗi lần nhảy số là 50 mili
         final CountDownTimer countDownTimer = new CountDownTimer(60000,50) {
             @Override
             public void onTick(long l) {
+                int chosen = isChosen();
                 DisplayMetrics displayMetrics = new DisplayMetrics();
                 getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
                 int device_width = displayMetrics.widthPixels;
-                int goal = device_width*80/100;
+                int goal = device_width * 80 / 100;
 
-                // thuật toán chính của chương trình
-                Random random = new Random();
-                player1.setPadding(player1.getPaddingLeft()+random.nextInt(10+10)-windPower,0,0,0);
-                player2.setPadding(player2.getPaddingLeft()+random.nextInt(10+10)-windPower,0,0,0);
-                player3.setPadding(player3.getPaddingLeft()+random.nextInt(10+10)-windPower,0,0,0);
+                if(isAuto) {
+                    Random random = new Random();
+                    player1.setPadding(player1.getPaddingLeft() + random.nextInt(10 + 10) - windPower, 0, 0, 0);
+                    player2.setPadding(player2.getPaddingLeft() + random.nextInt(10 + 10) - windPower, 0, 0, 0);
+                    player3.setPadding(player3.getPaddingLeft() + random.nextInt(10 + 10) - windPower, 0, 0, 0);
+                }
+                else   {
+                    if(chosen==1)
+                    {
+                        Random random = new Random();
 
-                int chosen = isChosen();
-                if(player1.getPaddingLeft()>=goal && chosen ==1)
-                {
+                        player2.setPadding(player2.getPaddingLeft() + random.nextInt(10 + 10) - windPower, 0, 0, 0);
+                        player3.setPadding(player3.getPaddingLeft() + random.nextInt(10 + 10) - windPower, 0, 0, 0);
+                        player1.setPadding(player1.getPaddingLeft()+tap,0,0,0);
+                    }
+                    else if(chosen==2)
+                    {
+                        Random random = new Random();
+                        player1.setPadding(player1.getPaddingLeft() + random.nextInt(10 + 10) - windPower, 0, 0, 0);
+                        player2.setPadding(player2.getPaddingLeft()+tap,0,0,0);
+                        player3.setPadding(player3.getPaddingLeft() + random.nextInt(10 + 10) - windPower, 0, 0, 0);
+                    }
+                    else {
+                        Random random = new Random();
+                        player1.setPadding(player1.getPaddingLeft() + random.nextInt(10 + 10) - windPower, 0, 0, 0);
+                        player2.setPadding(player2.getPaddingLeft() + random.nextInt(10 + 10) - windPower, 0, 0, 0);
+                        player3.setPadding(player3.getPaddingLeft()+tap,0,0,0);
+
+                    }
+                    if(tap>=0)
+                        tap-=windPower;
+                }
+
+                if (player1.getPaddingLeft() >= goal && chosen == 1) {
                     player1_win();
                     this.cancel();
                     win();
-                }
-                else if(player2.getPaddingLeft()>=goal && chosen ==2)
-                {
+                } else if (player2.getPaddingLeft() >= goal && chosen == 2) {
                     player2_win();
                     this.cancel();
                     win();
-                }
-                else if(player3.getPaddingLeft()>=goal && chosen ==3)
-                {
+                } else if (player3.getPaddingLeft() >= goal && chosen == 3) {
                     player3_win();
                     this.cancel();
                     win();
                 }
-                if((player1.getPaddingLeft()>=goal && chosen !=1)||(player2.getPaddingLeft()>=goal && chosen !=2)||(player3.getPaddingLeft()>=goal && chosen != 3))
-                {
-                    if(player3.getPaddingLeft()>=goal )
-                    {
+                if ((player1.getPaddingLeft() >= goal && chosen != 1) || (player2.getPaddingLeft() >= goal && chosen != 2) || (player3.getPaddingLeft() >= goal && chosen != 3)) {
+                    if (player3.getPaddingLeft() >= goal) {
                         player3_win();
-                    }
-                    else if(player2.getPaddingLeft()>=goal ) {
+                    } else if (player2.getPaddingLeft() >= goal) {
                         player2_win();
-                    }
-                    else if(player1.getPaddingLeft()>=goal ) {
+                    } else if (player1.getPaddingLeft() >= goal) {
                         player1_win();
                     }
                     this.cancel();
                     lose();
                 }
-
             }
 
             @Override
@@ -113,7 +136,8 @@ public class AnimalRacingActivity extends Activity {
         };
         iv_play.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 introSound.pause();
                 runningSound.seekTo(0);
                 runningSound.start();
@@ -134,10 +158,10 @@ public class AnimalRacingActivity extends Activity {
                     }
                     else{
                         reveal();
-                        iv_play.setVisibility(View.INVISIBLE);
                         result.setVisibility(View.INVISIBLE);
                         choosing.setVisibility(View.INVISIBLE);
-
+                        tapScreen.setVisibility(View.VISIBLE);
+                        logo.setVisibility(View.INVISIBLE);
                         // khi bắt đầu chơi thì chặn người dùng thao tác checkbox --. tránh việc người dùng chọn lại
                         disable();
                         //
@@ -147,6 +171,7 @@ public class AnimalRacingActivity extends Activity {
 
 
                         windPower=isWindChosen();
+                        playas();
 
                         switch (windPower){
                             case 2:
@@ -162,8 +187,8 @@ public class AnimalRacingActivity extends Activity {
                                 layout.setBackgroundResource(R.drawable.stormtrack);
                                 break;
                         }
-
                         countDownTimer.start();
+
                     }
                 }
             }
@@ -186,13 +211,16 @@ public class AnimalRacingActivity extends Activity {
                 player2.setImageResource(R.drawable.frogidle);
                 player3.setPadding(0,0,0,0);
                 player3.setImageResource(R.drawable.blueboyidle);
+                tap=0;
                 // cho phép thao tác với checkbox để chọn con vật
                 enable();
                 hidden();
                 // hiện button play và ẩn button Continue
-                iv_play.setVisibility(View.VISIBLE);
                 choosing.setVisibility(View.VISIBLE);
                 result.setVisibility(View.INVISIBLE);
+                tapScreen.setVisibility(View.INVISIBLE);
+                logo.setVisibility(View.VISIBLE);
+
             }
         });
 
@@ -264,6 +292,14 @@ public class AnimalRacingActivity extends Activity {
             }
         });
 
+        playAs.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                selectSound.start();
+
+            }
+        });
+
         //this button will send score to main lobby and close this activity
         AR_close_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -274,6 +310,13 @@ public class AnimalRacingActivity extends Activity {
                 returnIntent.putExtra("coin",Integer.parseInt(tv_point.getText().toString()));
                 setResult(Activity.RESULT_OK,returnIntent);
                 finish();
+            }
+        });
+
+        tapScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tap=10;
             }
         });
 
@@ -304,6 +347,7 @@ public class AnimalRacingActivity extends Activity {
         weather = findViewById(R.id.weather);
         choosing=findViewById(R.id.choosing);
         group=findViewById(R.id.group);
+        playAs=findViewById(R.id.playAs);
 
         first=findViewById(R.id.first);
         second=findViewById(R.id.second);
@@ -335,6 +379,11 @@ public class AnimalRacingActivity extends Activity {
         runningSound.setVolume(100,100);
         runningSound.setLooping(true);
 
+        tapScreen=findViewById(R.id.tapScreen);
+
+        autoPlay=findViewById(R.id.auto);
+        manual=findViewById(R.id.manual);
+        logo=findViewById(R.id.logo);
     }
     // trả về lựa chọn của người chơi
     private int isChosen()
@@ -358,6 +407,15 @@ public class AnimalRacingActivity extends Activity {
             return 7;
         return 0;
     }
+
+    private void playas()
+    {
+        if(autoPlay.isChecked())
+            isAuto=true;
+        if (manual.isChecked())
+            isAuto=false;
+    }
+
     //hàm chặn thao tác
     private void disable()
     {
@@ -401,6 +459,8 @@ public class AnimalRacingActivity extends Activity {
                 tv_point.setText(Integer.parseInt(tv_point.getText().toString())+10+"");
                 winlose.setImageResource(R.drawable.win);
                 result.setVisibility(View.VISIBLE);
+                tapScreen.setVisibility(View.INVISIBLE);
+
             }
         },1500);
     }
@@ -415,6 +475,7 @@ public class AnimalRacingActivity extends Activity {
                 loseSound.seekTo(0);
                 loseSound.start();
                 result.setVisibility(View.VISIBLE);
+                tapScreen.setVisibility(View.INVISIBLE);
                 winlose.setImageResource(R.drawable.lose);
                 tv_point.setText(Integer.parseInt(tv_point.getText().toString())-10+"");
             }
