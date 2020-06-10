@@ -60,15 +60,6 @@ public class PopUpNumpadMethod extends InputMethod {
 
             mNumpad.updateNumber(cell.getValue());
 
-            Map<Integer, Integer> valuesUseCount = null;
-            if (mHighlightCompletedValues || mShowNumberTotals)
-                valuesUseCount = mGame.getCells().countValuesUsed();
-
-            if (mShowNumberTotals) {
-                for (Map.Entry<Integer, Integer> entry : valuesUseCount.entrySet()) {
-                    mNumpad.setValueCount(entry.getKey(), entry.getValue());
-                }
-            }
             mNumpad.show();
         } else {
             mBoard.hideTouchedCellHint();

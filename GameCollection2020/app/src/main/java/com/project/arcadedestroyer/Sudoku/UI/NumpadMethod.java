@@ -17,21 +17,12 @@ import java.util.Map;
 
 public class NumpadMethod extends InputMethod {
 
-    private boolean moveCellSelectionOnPress = true;
     private boolean mHighlightCompletedValues = true;
-    private boolean mShowNumberTotals = false;
 
     private Cell mSelectedCell;
 
     private Map<Integer, Button> mNumberButtons;
 
-    public boolean isMoveCellSelectionOnPress() {
-        return moveCellSelectionOnPress;
-    }
-
-    public void setMoveCellSelectionOnPress(boolean moveCellSelectionOnPress) {
-        this.moveCellSelectionOnPress = moveCellSelectionOnPress;
-    }
 
     public boolean getHighlightCompletedValues() {
         return mHighlightCompletedValues;
@@ -39,14 +30,6 @@ public class NumpadMethod extends InputMethod {
 
     public void setHighlightCompletedValues(boolean highlightCompletedValues) {
         mHighlightCompletedValues = highlightCompletedValues;
-    }
-
-    public boolean getShowNumberTotals() {
-        return mShowNumberTotals;
-    }
-
-    public void setShowNumberTotals(boolean showNumberTotals) {
-        mShowNumberTotals = showNumberTotals;
     }
 
     @Override
@@ -96,7 +79,6 @@ public class NumpadMethod extends InputMethod {
         }
 
         mSelectedCell = cell;
-        update();
     }
 
     private OnClickListener mNumberButtonClick = new OnClickListener() {
@@ -109,9 +91,6 @@ public class NumpadMethod extends InputMethod {
                 if (selNumber >= 0 && selNumber <= 9) {
                     mGame.setCellValue(selCell, selNumber);
                     mBoard.setHighlightedValue(selNumber);
-                    if (isMoveCellSelectionOnPress()) {
-                        mBoard.moveCellSelectionRight();
-                    }
                 }
             }
         }
@@ -119,23 +98,9 @@ public class NumpadMethod extends InputMethod {
 
     private OnChangeListener mOnCellsChangeListener = () -> {
         if (mActive) {
-            update();
+
         }
     };
-
-
-    private void update() {
-        Map<Integer, Integer> valuesUseCount = null;
-        if (mHighlightCompletedValues || mShowNumberTotals)
-            valuesUseCount = mGame.getCells().countValuesUsed();
-
-        if (mShowNumberTotals) {
-            for (Map.Entry<Integer, Integer> entry : valuesUseCount.entrySet()) {
-                Button b = mNumberButtons.get(entry.getKey());
-                b.setText(entry.getKey() + " (" + entry.getValue() + ")");
-            }
-        }
-    }
 
     @Override
     protected void onSaveState(StateBundle outState) { }
@@ -143,7 +108,7 @@ public class NumpadMethod extends InputMethod {
     @Override
     protected void onRestoreState(StateBundle savedState) {
         if (haveInputMethodView()) {
-            update();
+
         }
     }
 }

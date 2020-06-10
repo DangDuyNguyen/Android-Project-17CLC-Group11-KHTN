@@ -55,7 +55,7 @@ public class SudokuSolver {
         return finalValues;
     }
 
-    // 1 dong Sudoku chiem 81 dong trong matrix, 1 cot Sudoku chiem 9 dong trong matrix, 1 value chiem 1 dong trong matrix
+    // 1 dong Sudoku chiem 81 dong trong matrix, 1 cot Sudoku chiem 9 dong trong 81 dòng, 1 value chiem 1 dong trong 9 dòng
     private void initConstraintMatrix() {
         mConstraintMatrix = new int[NUM_OF_CELLS * NUM_OF_VALS + 1][NUM_OF_CELLS * NUM_OF_CONSTRAINTS];
         for (int j = 0; j < mConstraintMatrix[0].length; j++)

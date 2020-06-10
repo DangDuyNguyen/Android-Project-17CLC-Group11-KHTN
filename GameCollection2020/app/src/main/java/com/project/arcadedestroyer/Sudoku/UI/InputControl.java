@@ -164,7 +164,12 @@ public class InputControl extends LinearLayout {
             View controlPanel = method.getInputMethodView();
 
             Button switchModeButton = controlPanel.findViewById(R.id.switchInputBtn);
-            switchModeButton.setOnClickListener(mSwitchModeListener);
+            switchModeButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    activateNextInputMethod();
+                }
+            });
 
             Button undoButton = controlPanel.findViewById(R.id.undoBtn);
             undoButton.setOnClickListener(new OnClickListener() {
@@ -251,6 +256,4 @@ public class InputControl extends LinearLayout {
     };
 
     public int getNumOfHints() { return mNumOfHints; }
-
-    private OnClickListener mSwitchModeListener = v -> activateNextInputMethod();
 }

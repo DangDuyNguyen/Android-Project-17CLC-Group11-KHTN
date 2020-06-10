@@ -186,24 +186,6 @@ public class CellCollection {
         }
     }
 
-    public Map<Integer, Integer> countValuesUsed() {
-        Map<Integer, Integer> valsUsed = new HashMap<>();
-        for (int val = 1; val <= CellCollection.SIZE; val++) {
-            valsUsed.put(val, 0);
-        }
-
-        for (int r = 0; r < CellCollection.SIZE; r++) {
-            for (int c = 0; c < CellCollection.SIZE; c++) {
-                int val = this.getCell(r, c).getValue();
-                if (val != 0) {
-                    valsUsed.put(val, valsUsed.get(val) + 1);
-                }
-            }
-        }
-
-        return valsUsed;
-    }
-
     public void addOnChangeListener(OnChangeListener listener) {
         if (listener == null) {
             throw new IllegalArgumentException("This listener is null.");

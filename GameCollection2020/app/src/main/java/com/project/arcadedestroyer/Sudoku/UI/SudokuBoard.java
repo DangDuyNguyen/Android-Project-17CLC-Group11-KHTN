@@ -306,13 +306,6 @@ public class SudokuBoard extends View {
             height = width;
         }
 
-        if (widthMode == MeasureSpec.AT_MOST && width > widthSize) {
-            width = widthSize;
-        }
-        if (heightMode == MeasureSpec.AT_MOST && height > heightSize) {
-            height = heightSize;
-        }
-
         mCellWidth = (width - getPaddingLeft() - getPaddingRight()) / 9.0f;
         mCellHeight = (height - getPaddingTop() - getPaddingBottom()) / 9.0f;
 

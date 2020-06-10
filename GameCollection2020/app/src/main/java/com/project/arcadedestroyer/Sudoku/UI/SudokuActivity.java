@@ -32,8 +32,6 @@ public class SudokuActivity extends Activity {
 
     private SudokuDB mDB;
 
-    private Handler mHandler;
-
     private ViewGroup mLayout;
     private SudokuBoard mSudokuBoard;
     private TextView mLevelInfo;
@@ -73,8 +71,6 @@ public class SudokuActivity extends Activity {
         sudokubtn = findViewById(R.id.Sudoku_close_button);
 
         mDB = new SudokuDB(getApplicationContext());
-
-        mHandler = new Handler();
 
         mGameTimer = new GameTimer();
 
@@ -263,11 +259,9 @@ public class SudokuActivity extends Activity {
 
         mPopupNumpad.setEnabled(true);
         mNumpad.setEnabled(true);
-        mNumpad.setMoveCellSelectionOnPress(false);
         mPopupNumpad.setHighlightCompletedValues(true);
         mPopupNumpad.setShowNumberTotals(false);
         mNumpad.setHighlightCompletedValues(true);
-        mNumpad.setShowNumberTotals(false);
 
         if (!mSudokuBoard.isReadOnly()) {
             mSudokuBoard.invokeOnCellSelected();
