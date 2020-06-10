@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/extrapink"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Congratulation"
+        android:fontFamily="@font/bubblebobble"
+        android:textSize="40sp"
+        android:gravity="center"
+        android:textColor="#FF00"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You Got"
+        android:fontFamily="@font/bubblebobble"
+        android:textSize="40sp"
+        android:gravity="center"
+        android:textColor="#674E4E" />
+
+
+    <ImageView
+        android:id="@+id/itemsGot"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+
+        android:scaleType="centerInside"
+        />
+
+    <TextView
+        android:id="@+id/itemsGotName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Coins"
+        android:fontFamily="@font/bubblebobble"
+        android:textSize="40sp"
+        android:gravity="center"
+        android:textColor="#FF00"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:weightSum="2">
+        <Button
+            android:id="@+id/OKButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="OK"
+            android:fontFamily="@font/bubblebobble"
+            android:textSize="20sp"
+            android:background="@drawable/custom_button"
+            android:layout_weight="1"
+            android:textColor="#000"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            >
+        </Button>
+
+        <Button
+            android:id="@+id/SpinAgainButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Spin again"
+            android:fontFamily="@font/bubblebobble"
+            android:textSize="20sp"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/custom_button"
+            android:textColor="#000"/>
+    </LinearLayout>
+</LinearLayout>

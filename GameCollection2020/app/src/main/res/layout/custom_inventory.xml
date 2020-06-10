@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/popup_layout">
+
+    <LinearLayout
+        android:id="@+id/tab_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="10dp"
+        android:weightSum="2"
+        >
+        <Button
+            android:id="@+id/character_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Character"
+            android:fontFamily="@font/bubblebobble"
+            android:textSize="20sp"
+            android:background="@drawable/custom_button_3"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="5dp"
+            />
+
+        <Button
+            android:id="@+id/background_tab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Background"
+            android:fontFamily="@font/bubblebobble"
+            android:textSize="20sp"
+            android:background="@drawable/custom_button_3"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="5dp"
+            />
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/scrollContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/tab_container"
+        android:layout_marginTop="20dp"
+        android:weightSum="2">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tab_container"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        >
+
+        <ListView
+            android:id="@+id/char_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+        </ListView>
+    </ScrollView>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tab_container"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        >
+        <ListView
+            android:id="@+id/bg_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center" >
+
+        </ListView>
+    </ScrollView>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/inventory_closebtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CLose"
+        android:fontFamily="@font/bubblebobble"
+        android:background="@drawable/custom_button"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:foregroundGravity="center"
+        app:layout_constraintTop_toBottomOf="@id/scrollContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

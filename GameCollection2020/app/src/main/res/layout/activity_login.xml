@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true"
+    tools:context=".Controller.LoginActivity">
+
+    <LinearLayout
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+        <Button
+            android:id="@+id/login_close_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/close_button"
+            android:layout_gravity="right|top"
+            />
+
+
+        <ImageView android:src="@drawable/firebase_icon"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="center_horizontal" />
+
+    <TextView android:id="@+id/Intro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:textColor="@color/darkYellow"
+        android:fontFamily="@font/bubblebobble"
+        android:text="Sync your game with Firebase"
+        android:gravity="center"
+        android:textSize="24sp"/>
+
+    <!-- Email Label -->
+    <EditText
+        android:id="@+id/login_usernameEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:hint="Username"
+        android:inputType="text"
+        android:textColor="#000"
+        android:textSize="20sp" />
+
+
+    <!-- Password Label -->
+    <EditText
+        android:id="@+id/login_passwordEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:hint="Password"
+        android:inputType="textPassword"
+        android:textColor="#000"
+        android:textSize="20sp" />
+
+    <LinearLayout
+        android:id="@+id/login_progressView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        >
+        <ProgressBar
+            android:id="@+id/login_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
+
+        <TextView
+            android:id="@+id/login_progress_msg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text ="Authenticating..."
+            android:fontFamily="@font/bubblebobble"
+            android:layout_gravity="center"
+            android:textSize="20sp"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/darkYellow"/>
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/btn_login"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/firebase_button"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
+        android:padding="12dp"
+        android:fontFamily="@font/bubblebobble"
+        android:textSize="20sp"
+        android:text="Login"/>
+
+    <TextView android:id="@+id/link_signup"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="No account yet? Create one"
+        android:fontFamily="@font/bubblebobble"
+        android:textColor="@color/darkYellow"
+        android:gravity="center"
+        android:textSize="20sp"/>
+
+</LinearLayout>
+</ScrollView>

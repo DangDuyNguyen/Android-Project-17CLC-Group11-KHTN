@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.project.arcadedestroyer">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="Game Collection 2020!"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name="com.project.arcadedestroyer.Controller.SignupActivity" />
+        <activity android:name="com.project.arcadedestroyer.Controller.LoginActivity" />
+        <activity android:name="com.project.arcadedestroyer.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.project.arcadedestroyer.AnimalRacing.AnimalRacingActivity" />
+        <activity android:name="com.project.arcadedestroyer.Snake.SnakeActivity" />
+        <activity android:name="com.project.arcadedestroyer.CardFlipper.CardFlipperActivity" />
+        <activity android:name="com.project.arcadedestroyer.CardFlipper.GameActivity" />
+        <activity android:name="com.project.arcadedestroyer.Sudoku.UI.SudokuActivity" />
+
+        <service android:name="com.project.arcadedestroyer.Method.UpdateStatus" />
+    </application>
+
+</manifest>
