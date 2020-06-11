@@ -86,7 +86,7 @@ public class SudokuBoard extends View {
 
         setLineColor(a.getColor(R.styleable.SudokuBoard_lineColor, Color.BLACK));
         setSectorLineColor(a.getColor(R.styleable.SudokuBoard_lineColor, Color.BLACK));
-        setTextColor(a.getColor(R.styleable.SudokuBoard_textColor, Color.BLACK));
+        setTextColor(a.getColor(R.styleable.SudokuBoard_textColor, Color.BLUE));
         setTextColorReadOnly(a.getColor(R.styleable.SudokuBoard_textColorReadOnly, Color.BLACK));
         setBackgroundColor(a.getColor(R.styleable.SudokuBoard_color, Color.WHITE));
         setBackgroundColorSecondary(a.getColor(R.styleable.SudokuBoard_colorSecondary, NONE_COLOR));

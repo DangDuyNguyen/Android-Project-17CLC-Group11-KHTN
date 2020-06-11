@@ -9,8 +9,6 @@ import com.project.arcadedestroyer.R;
 import com.project.arcadedestroyer.Sudoku.game.Cell;
 import com.project.arcadedestroyer.Sudoku.UI.PopUpNumpad.OnNumberEditListener;
 
-import java.util.Map;
-
 public class PopUpNumpadMethod extends InputMethod {
     private boolean mHighlightCompletedValues = true;
     private boolean mShowNumberTotals = false;

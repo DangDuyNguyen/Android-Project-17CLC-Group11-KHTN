@@ -30,7 +30,7 @@ public class SudokuDB {
 
         SQLiteDatabase db = mHelper.getReadableDatabase();
 
-        Cursor cursor = qb.query(db, null, "id", null,
+        Cursor cursor = qb.query(db, null, "boardId", null,
                 null, null, null);
 
         ArrayList<Long> res = new ArrayList<>();
@@ -50,7 +50,7 @@ public class SudokuDB {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
         qb.setTables(TABLE_NAME);
-        qb.appendWhere("id = " + boardId);
+        qb.appendWhere("boardId = " + boardId);
 
         SQLiteDatabase db;
         SudokuGame game = null;
@@ -58,7 +58,7 @@ public class SudokuDB {
         try (Cursor cursor = qb.query(db, null, null,
                 null, null, null, null)) {
             if (cursor.moveToFirst()) {
-                long id = cursor.getLong(cursor.getColumnIndex("id"));
+                long id = cursor.getLong(cursor.getColumnIndex("boardId"));
                 long levelId = cursor.getLong(cursor.getColumnIndex("levelId"));
                 String data = cursor.getString(cursor.getColumnIndex("data"));
 

@@ -57,7 +57,7 @@ public class InputControl extends LinearLayout {
         if (mActiveMethodIndex == -1 || !mInputMethods.get(mActiveMethodIndex).isEnabled()) {
             activateInputMethod(0);
         }
-
+        else activateInputMethod(mActiveMethodIndex);
     }
 
     public void activateInputMethod(int methodID) {
@@ -143,12 +143,15 @@ public class InputControl extends LinearLayout {
         if (mInputMethods.size() == 0) {
             throw new IllegalStateException("Input methods are not created!");
         }
-
     }
 
     private void createInputMethods() {
         if(mInputMethods.size() != 0)
+        {
             mInputMethods.clear();
+            mActiveMethodIndex = -1;
+            this.removeAllViews();
+        }
         addInputMethod(INPUT_METHOD_POPUP, new PopUpNumpadMethod());
         addInputMethod(INPUT_METHOD_NUMPAD, new NumpadMethod());
     }

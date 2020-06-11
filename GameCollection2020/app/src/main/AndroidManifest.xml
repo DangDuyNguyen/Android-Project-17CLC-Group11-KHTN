@@ -9,20 +9,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.project.arcadedestroyer.Controller.SignupActivity" />
-        <activity android:name="com.project.arcadedestroyer.Controller.LoginActivity" />
-        <activity android:name="com.project.arcadedestroyer.MainActivity">
+        <activity android:name="com.project.arcadedestroyer.Controller.SignupActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.project.arcadedestroyer.Controller.LoginActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.project.arcadedestroyer.MainActivity" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.project.arcadedestroyer.AnimalRacing.AnimalRacingActivity" />
-        <activity android:name="com.project.arcadedestroyer.Snake.SnakeActivity" />
-        <activity android:name="com.project.arcadedestroyer.CardFlipper.CardFlipperActivity" />
-        <activity android:name="com.project.arcadedestroyer.CardFlipper.GameActivity" />
-        <activity android:name="com.project.arcadedestroyer.Sudoku.UI.SudokuActivity" />
+        <activity android:name="com.project.arcadedestroyer.AnimalRacing.AnimalRacingActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.project.arcadedestroyer.Snake.SnakeActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.project.arcadedestroyer.CardFlipper.CardFlipperActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.project.arcadedestroyer.CardFlipper.GameActivity" android:screenOrientation="portrait"/>
+        <activity android:name="com.project.arcadedestroyer.Sudoku.UI.SudokuActivity" android:screenOrientation="portrait"/>
 
         <service android:name="com.project.arcadedestroyer.Method.UpdateStatus" />
     </application>
