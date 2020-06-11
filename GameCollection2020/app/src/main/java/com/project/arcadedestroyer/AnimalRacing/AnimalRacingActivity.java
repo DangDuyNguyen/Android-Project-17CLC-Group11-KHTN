@@ -31,7 +31,7 @@ public class AnimalRacingActivity extends Activity{
     RadioButton breezeBtn,windyBtn,stormBtn,autoPlay,manual;
     ImageView iv_play,weather,winlose,logo;
     TextView tv_point;
-    Button bt_continue;
+    Button bt_continue,bt_exit;
     FrameLayout choosing,result,tapScreen;
     RadioGroup group,playAs;
     int windPower,tap=0,sec=0;
@@ -200,7 +200,7 @@ public class AnimalRacingActivity extends Activity{
                                 logo.setImageResource(R.drawable.animalracinglogo);
 
                             }
-                        },4700);
+                        },4900);
                     }
                 }
             }
@@ -326,6 +326,21 @@ public class AnimalRacingActivity extends Activity{
                 finish();
             }
         });
+        bt_exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                introSound.pause();
+                winSound.pause();
+                loseSound.pause();
+                runningSound.pause();
+
+
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("coin",Integer.parseInt(tv_point.getText().toString()));
+                setResult(Activity.RESULT_OK,returnIntent);
+                finish();
+            }
+        });
 
         tapScreen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -374,6 +389,7 @@ public class AnimalRacingActivity extends Activity{
         bt_continue = (Button)findViewById(R.id.Button_replay);
 
         AR_close_btn = (Button)findViewById(R.id.AR_close_button);
+        bt_exit = findViewById(R.id.Button_exit);
 
         selectSound = MediaPlayer.create(getApplicationContext(),R.raw.select);
         selectSound.setVolume(100, 100);
