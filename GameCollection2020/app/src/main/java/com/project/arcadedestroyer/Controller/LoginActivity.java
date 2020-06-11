@@ -17,6 +17,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.project.arcadedestroyer.Method.SHAHasher;
 import com.project.arcadedestroyer.R;
 
 public class LoginActivity extends Activity {
@@ -84,6 +85,7 @@ public class LoginActivity extends Activity {
 
         String username = usernameEdit.getText().toString();
         String password = passwordEdit.getText().toString();
+        password = SHAHasher.hashing(password);
 
         // implement check authentication
         db.collection("user")

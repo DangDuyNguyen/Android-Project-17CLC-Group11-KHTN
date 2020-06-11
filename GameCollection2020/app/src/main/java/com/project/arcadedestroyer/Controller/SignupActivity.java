@@ -22,6 +22,7 @@ import com.project.arcadedestroyer.R;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import com.project.arcadedestroyer.Method.SHAHasher;
 
 public class SignupActivity extends Activity {
 
@@ -108,7 +109,7 @@ public class SignupActivity extends Activity {
     public void writeUsertoFirebase(){
         Map<String, Object> user = new HashMap<>();
         user.put("username", usernameEdit.getText().toString());
-        user.put("password", passwordEdit.getText().toString());
+        user.put("password", SHAHasher.hashing(passwordEdit.getText().toString()));
         user.put("name", "My name is...");
         user.put("coin", "100");
         user.put("hungriness", 100);
