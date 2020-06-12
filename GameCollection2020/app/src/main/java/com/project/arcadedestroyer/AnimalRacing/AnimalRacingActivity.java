@@ -53,6 +53,12 @@ public class AnimalRacingActivity extends Activity{
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_animal_racing);
@@ -186,18 +192,20 @@ public class AnimalRacingActivity extends Activity{
                                 break;
                         }
 
-                       new Handler().postDelayed(new Runnable() {
+                     new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
+                                if(startSound!=null)
+                                {
+                                    startSound.start();
+                                    player1.setImageResource(R.drawable.pinkguyrun);
+                                    player2.setImageResource(R.drawable.frogrun);
+                                    player3.setImageResource(R.drawable.blueboyrun);
 
-                                startSound.start();
-                                player1.setImageResource(R.drawable.pinkguyrun);
-                                player2.setImageResource(R.drawable.frogrun);
-                                player3.setImageResource(R.drawable.blueboyrun);
-
-                                logo.setVisibility(View.INVISIBLE);
-                                countDownTimer.start();
-                                logo.setImageResource(R.drawable.animalracinglogo);
+                                    logo.setVisibility(View.INVISIBLE);
+                                    countDownTimer.start();
+                                    logo.setImageResource(R.drawable.animalracinglogo);
+                                }
 
                             }
                         },4900);
@@ -209,8 +217,11 @@ public class AnimalRacingActivity extends Activity{
         bt_continue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loseSound.pause();
-                winSound.pause();
+                if(loseSound.isPlaying())
+                    loseSound.pause();
+
+                if (winSound.isPlaying())
+                    winSound.pause();
 
                 introSound.seekTo(0);
                 introSound.start();
@@ -319,6 +330,7 @@ public class AnimalRacingActivity extends Activity{
                 loseSound.pause();
                 runningSound.pause();
 
+                startSound=null;
 
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("coin",Integer.parseInt(tv_point.getText().toString()));
